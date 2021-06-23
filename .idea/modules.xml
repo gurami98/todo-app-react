@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/todo-app-with-classes.iml" filepath="$PROJECT_DIR$/.idea/todo-app-with-classes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/todo-app-react.iml" filepath="$PROJECT_DIR$/.idea/todo-app-react.iml" />
     </modules>
   </component>
 </project>
