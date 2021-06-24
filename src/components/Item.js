@@ -17,6 +17,9 @@ const ListItem = styled.li`
 `
 
 const Button = styled.button`
+  &:hover {
+    opacity: 0.7;
+  }
 	margin-left: auto;
 	background-color: #fc0303;
 	color: white;
@@ -32,7 +35,7 @@ const EditButton = styled(Button)`
 	background-color: #fab905;
 `
 
-function Item({list, setList, item, index}) {
+const Item = ({list, setList, item, index}) => {
 	const markDone = (e, index) => {
 		let updated
 		if(e.target.checked){

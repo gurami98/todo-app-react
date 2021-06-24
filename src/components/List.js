@@ -1,4 +1,3 @@
-import '../App.css';
 import Item from './Item'
 import styled from 'styled-components'
 
@@ -8,7 +7,7 @@ const UnorderedList = styled.ul`
 	margin-top: 30px;
 `
 
-function List({list, setList}) {
+const List = ({list, setList}) => {
 
 	return (
 		<UnorderedList>
