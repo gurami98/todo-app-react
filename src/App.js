@@ -8,7 +8,7 @@ const App = () => {
 
   const handleSubmit = (e, text) => {
     e.preventDefault()
-    if(text.trim()) setList([...list, {text, done:''}])
+    if(text.trim()) setList([...list, {text, done:false}])
     else alert('Enter an item')
   }
 

@@ -13,9 +13,13 @@ ul li input[type=checkbox]{
   width: 20px;
   height: 20px;
 }
+
 ul li span{
-  width: 150px;
+  width: 300px;
   margin-left: 30px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .finished-item{

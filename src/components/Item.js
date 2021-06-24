@@ -40,14 +40,14 @@ const Item = ({list, setList, item, index}) => {
 		let updated
 		if(e.target.checked){
 			updated = list.map((item, i) => {
-				if(index === i) item.done = 'true'
+				if(index === i) item.done = true
 				return item
 			})
 			setList(updated)
 		}
 		else{
 			updated = list.map((item, i) => {
-				if(index === i) item.done = ''
+				if(index === i) item.done = false
 				return item
 			})
 			setList(updated)
@@ -67,8 +67,8 @@ const Item = ({list, setList, item, index}) => {
 
 	return (
 		<ListItem key={index}>
-			<input type="checkbox" onClick={(e)=>markDone(e, index)}/>
-			<span className={item.done && 'finished-item'}>{item.text}</span>
+			<input type="checkbox" onClick={(e)=>markDone(e, index)} defaultChecked={item.done}/>
+			<span className={item.done ? 'finished-item' : ''}>{item.text}</span>
 			<Button onClick={()=> deleteItem(index)}>Delete</Button>
 			<EditButton onClick={()=> editItem(index)}>Edit</EditButton>
 		</ListItem>
