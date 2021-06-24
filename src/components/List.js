@@ -1,18 +1,17 @@
 import '../App.css';
 import Item from './Item'
+import styled from 'styled-components'
+
+const UnorderedList = styled.ul`
+  width: 522px;
+  margin-left: 0;
+	margin-top: 30px;
+`
+
 function List({list, setList}) {
 
-	// const deleteItem = (index) => {
-	//   let newArr = [...list]
-	//   newArr.splice(index, 1)
-	//   setList(newArr)
-	// }
-	//
-	// const editItem = (index) => {
-	//
-	// }
 	return (
-		<ul>
+		<UnorderedList>
 			{
 				list.map((item, index) => {
 					return (
@@ -20,7 +19,7 @@ function List({list, setList}) {
 					)
 				})
 			}
-		</ul>
+		</UnorderedList>
 	)
 }
 

@@ -1,26 +1,30 @@
 .App {
   text-align: center;
+  width: 600px;
+  margin: 0 auto;
 }
 
 .App form{
   margin-top: 50px;
 }
 
-ul{
-  width: 600px;
-  margin: 30px auto 0;
-}
+/*ul{*/
+/*  width: 600px;*/
+/*  margin: 30px auto 0;*/
+/*}*/
 
-ul li{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  list-style-type: none;
-  text-align: left;
-}
+/*ul li{*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: center;*/
+/*  list-style-type: none;*/
+/*  text-align: left;*/
+/*}*/
 
 ul li input[type=checkbox]{
-
+  margin: 0;
+  width: 20px;
+  height: 20px;
 }
 
 ul li span{
@@ -30,6 +34,6 @@ ul li span{
 
 .finished-item{
   text-decoration: line-through;
-  color: gray;
+  color: red;
 }
 
