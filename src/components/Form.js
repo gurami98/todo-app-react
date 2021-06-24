@@ -38,8 +38,9 @@ const Form = ({handleSubmit}) => {
 
 	return (
 		<StyledForm onSubmit={(e) => {
-			handleSubmit(e, text)
+			handleSubmit(text)
 			setText(' ')
+			e.preventDefault()
 		}}>
 			<Input autoFocus type="text" value={text} onChange={e => setText(e.target.value)} placeholder='New Todo'/>
 			<Button type='submit'>Add Task</Button>

@@ -6,8 +6,7 @@ import Form from './components/Form'
 const App = () => {
   const [list, setList] = useState([])
 
-  const handleSubmit = (e, text) => {
-    e.preventDefault()
+  const handleSubmit = (text) => {
     if(text.trim()) setList([...list, {text, done:false}])
     else alert('Enter an item')
   }
