@@ -44,14 +44,14 @@ const Item = ({list, setList, item, index}) => {
 	const markDone = (e, index) => {
 		let updated
 		if (e.target.checked) {
-			updated = list.map((item, i) => {
-				if (index === i) item.done = true
+			updated = [...list].map((item, i) => {
+				if (index === i) return {...item, done: true}
 				return item
 			})
 			setList(updated)
 		} else {
-			updated = list.map((item, i) => {
-				if (index === i) item.done = false
+			updated = [...list].map((item, i) => {
+				if (index === i) return {...item, done: false}
 				return item
 			})
 			setList(updated)
@@ -60,30 +60,33 @@ const Item = ({list, setList, item, index}) => {
 
 
 	const deleteItem = (index) => {
-		let newArr = [...list]
-		newArr.splice(index, 1)
-		setList(newArr)
+		if(!beingEdited) {
+			let newArr = [...list]
+			newArr.splice(index, 1)
+			setList(newArr)
+		}else alert('Item is being edited, save it first!')
 	}
 
 
 	const editItem = (index) => {
-		setBeingEdited(!beingEdited)
-		if (beingEdited) {
-			if (editText.trim()) {
-				let newArr = [...list]
-				newArr[index].text = editText
-				setList(newArr)
-			} else {
-				setBeingEdited(true)
-				alert('Enter some text')
+		if(!item.done) {
+			setBeingEdited(!beingEdited)
+			if (beingEdited) {
+				if (editText.trim()) {
+					let newArr = [...list]
+					newArr[index].text = editText
+					setList(newArr)
+				} else {
+					setBeingEdited(true)
+					alert('Enter some text')
+				}
 			}
-		}
+		}else alert('Cant edit, Item is marked as done')
 	}
 
 	const handleKeyPress = (e) => {
 		if (e.key === 'Enter') editItem(index)
 		else if (e.key==='Escape') {
-			console.log('esc clicked')
 			setList(list)
 			setBeingEdited(false)
 			setEditText(list[index].text)
