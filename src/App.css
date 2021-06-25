@@ -5,6 +5,13 @@
   justify-content: center;
   align-items: center;
   margin: 0 auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 800px){
+  .App {
+    width: 100%;
+  }
 }
 
 .App form{

@@ -6,6 +6,9 @@ const UnorderedList = styled.ul`
 	max-width: 522px;
 	margin: 30px auto 0;
   padding-left: 0;
+  @media (max-width: 800px){
+	  width: 422px;
+  }
 `
 
 const List = ({list, setList}) => {

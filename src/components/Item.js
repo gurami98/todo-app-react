@@ -2,10 +2,17 @@ import '../App.css';
 import styled from 'styled-components'
 import { useState } from "react";
 
+const CustomDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+	justify-content: space-around;
+	padding: 1px 0 1px 0;
+`
+
 const ListItem = styled.li`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   align-items: center;
   list-style-type: none;
   text-align: left;
@@ -15,6 +22,10 @@ const ListItem = styled.li`
   margin: 10px 0;
   box-sizing: border-box;
   width: 100%;
+	@media  (max-width: 800px){
+		flex-direction: column;
+		align-items: center;
+  }
 `
 
 const Button = styled.button`
@@ -60,16 +71,16 @@ const Item = ({list, setList, item, index}) => {
 
 
 	const deleteItem = (index) => {
-		if(!beingEdited) {
+		if (!beingEdited) {
 			let newArr = [...list]
 			newArr.splice(index, 1)
 			setList(newArr)
-		}else alert('Item is being edited, save it first!')
+		} else alert('Item is being edited, save it first!')
 	}
 
 
 	const editItem = (index) => {
-		if(!item.done) {
+		if (!item.done) {
 			setBeingEdited(!beingEdited)
 			if (beingEdited) {
 				if (editText.trim()) {
@@ -81,12 +92,12 @@ const Item = ({list, setList, item, index}) => {
 					alert('Enter some text')
 				}
 			}
-		}else alert('Cant edit, Item is marked as done')
+		} else alert('Cant edit, Item is marked as done')
 	}
 
 	const handleKeyPress = (e) => {
 		if (e.key === 'Enter') editItem(index)
-		else if (e.key==='Escape') {
+		else if (e.key === 'Escape') {
 			setList(list)
 			setBeingEdited(false)
 			setEditText(list[index].text)
@@ -95,13 +106,19 @@ const Item = ({list, setList, item, index}) => {
 
 	return (
 		<ListItem key={index}>
-			<input type="checkbox" onChange={(e) => markDone(e, index)} checked={item.done}/>
-			{
-				beingEdited ? <input onKeyDown={handleKeyPress} autoFocus type="text" id={'li-' + index} value={editText} onChange={e => setEditText(e.target.value)}/>
-					: <span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
-			}
-			<Button onClick={() => deleteItem(index)}>Delete</Button>
-			<EditButton onClick={() => editItem(index)}>Edit</EditButton>
+			<CustomDiv>
+				<input type="checkbox" onChange={(e) => markDone(e, index)} checked={item.done}/>
+				{
+					beingEdited ? <input onKeyDown={handleKeyPress} autoFocus type="text" id={'li-' + index} value={editText}
+					                     onChange={e => setEditText(e.target.value)}/>
+						:
+						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
+				}
+			</CustomDiv>
+			<CustomDiv>
+				<Button onClick={() => deleteItem(index)}>Delete</Button>
+				<EditButton onClick={() => editItem(index)}>Edit</EditButton>
+			</CustomDiv>
 		</ListItem>
 	)
 }

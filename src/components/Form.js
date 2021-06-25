@@ -5,21 +5,33 @@ const StyledForm = styled.form`
 	width: 500px;
   max-width: 500px;
   display: flex;
-  flex-direction: column;
-  height: 70px;
-  justify-content: space-around;
+  flex-direction: row;
   margin: 0 auto;
   padding: 10px;
   border: 1px solid gray;
   border-radius: 3px;
+	
+	@media (max-width: 800px){
+		flex-direction: column;
+    height: 70px;
+    width: 400px;
+		justify-content: space-around;
+	}
 `
 
 const Input = styled.input`
   text-indent: 5px;
   border-radius: 5px;
+	width: 400px;
+	margin-right: 25px;
   height: 25px;
   outline: none;
   border: 1px solid gray;
+	box-sizing: border-box;
+  @media (max-width: 800px){
+	  width: 100%;
+    margin-right: 0;
+  }
 `
 
 const Button = styled.button`
