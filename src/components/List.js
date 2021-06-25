@@ -3,8 +3,9 @@ import styled from 'styled-components'
 
 const UnorderedList = styled.ul`
   width: 522px;
-  margin-left: 0;
-	margin-top: 30px;
+	max-width: 522px;
+	margin: 30px auto 0;
+  padding-left: 0;
 `
 
 const List = ({list, setList}) => {

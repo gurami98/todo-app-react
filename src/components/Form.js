@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 
 const StyledForm = styled.form`
-  width: 500px;
+	width: 500px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   height: 70px;
