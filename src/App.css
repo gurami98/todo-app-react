@@ -25,20 +25,30 @@ ul li input[type=checkbox]{
 }
 
 ul li input[type=text]{
-  margin: 0 0 0 30px;
+  margin: 0 145px 0 30px;
   padding: 0;
   height: 21px;
   outline: none;
   box-sizing: border-box;
   text-indent: 5px;
 }
-
 ul li span{
   width: 300px;
   margin-left: 30px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+@media (max-width: 800px){
+  ul li input[type=text]{
+    width: inherit;
+    margin: 0 0 0 4%;
+  }
+  ul li span{
+    width: inherit;
+    margin-left: 1px;
+  }
 }
 
 .finished-item{

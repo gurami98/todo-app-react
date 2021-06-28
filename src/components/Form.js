@@ -3,10 +3,9 @@ import { useState } from "react";
 
 const StyledForm = styled.form`
 	width: 500px;
-  max-width: 500px;
   display: flex;
   flex-direction: row;
-  margin: 0 auto;
+  margin: 10px;
   padding: 10px;
   border: 1px solid gray;
   border-radius: 3px;
@@ -14,8 +13,11 @@ const StyledForm = styled.form`
 	@media (max-width: 800px){
 		flex-direction: column;
     height: 70px;
-    width: 400px;
+    width: 360px;
 		justify-content: space-around;
+	}
+	@media (max-width: 450px){
+		width: 85%;
 	}
 `
 

@@ -2,13 +2,6 @@ import '../App.css';
 import styled from 'styled-components'
 import { useState } from "react";
 
-const CustomDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-	justify-content: space-around;
-	padding: 1px 0 1px 0;
-`
-
 const ListItem = styled.li`
   display: flex;
   flex-direction: row;
@@ -24,8 +17,19 @@ const ListItem = styled.li`
   width: 100%;
 	@media  (max-width: 800px){
 		flex-direction: column;
-		align-items: center;
+    text-align: center;
   }
+`
+
+const CustomDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+	justify-content: space-around;
+	padding: 1px 0 1px 0;
+	width: inherit;
+	@media (max-width: 800px){
+		justify-content: center;
+	}
 `
 
 const Button = styled.button`
@@ -40,6 +44,10 @@ const Button = styled.button`
   border: 0;
   cursor: pointer;
   height: 20px;
+	
+	@media (max-width: 800px){
+		margin-left: 0;
+	}
 
 `
 

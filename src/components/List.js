@@ -7,7 +7,10 @@ const UnorderedList = styled.ul`
 	margin: 30px auto 0;
   padding-left: 0;
   @media (max-width: 800px){
-	  width: 422px;
+	  width: 382px;
+  }
+  @media (max-width: 450px){
+	  width: 90%;
   }
 `
 
