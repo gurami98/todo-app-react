@@ -79,7 +79,7 @@ const Item = ({list, setList, item, index}) => {
 
 
 	const deleteItem = (index) => {
-		if (!beingEdited) {
+		if (!beingEdited && window.confirm('Are you sure you want to delete this item')) {
 			let newArr = [...list]
 			newArr.splice(index, 1)
 			setList(newArr)
