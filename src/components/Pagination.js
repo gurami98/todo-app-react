@@ -43,20 +43,25 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({list, activePage, setActive, changePage}) => {
+const Pagination = ({list, activePage, setActive, changePage, itemsToShow}) => {
 	let listCount = list.length
-	let pageCount = Math.ceil(listCount / 8)
+	let pageCount = Math.ceil(listCount / itemsToShow)
 	let pagesArr = Array.from({length: pageCount}, (_, i) => i + 1)
 	const [pages, setPages] = useState([1]);
 
 	useEffect(() => {
 		if(listCount === 0) setPages([1])
-		else if(listCount % 8 === 0 || listCount % 8  === 1) {
+		else if(listCount % itemsToShow === 0 || listCount % itemsToShow  === 1) {
 			setPages(pagesArr)
 			setActive(pageCount)
 		}
 	},[list])
-	
+
+	useEffect(() => {
+		setPages(pagesArr)
+		setActive(pageCount)
+	}, [itemsToShow])
+
 	const prevPage = (page) => {
 		if(page > 1) setActive(page - 1)
 	}

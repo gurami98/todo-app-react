@@ -16,9 +16,9 @@ const UnorderedList = styled.ul`
   }
 `
 
-const List = ({list, setList, activePage}) => {
-	let startIndex = (activePage - 1) * 8
-	let endIndex = startIndex + 7;
+const List = ({list, setList, activePage, itemsToShow}) => {
+	let startIndex = (activePage - 1) * itemsToShow
+	let endIndex = startIndex + (itemsToShow - 1);
 	return (
 		<UnorderedList>
 			{
