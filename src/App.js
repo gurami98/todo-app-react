@@ -44,7 +44,7 @@ const App = () => {
     <div className="App">
       <Form handleSubmit={handleSubmit} />
       <Dropdown listCount={listCount} pageCount={pageCount} setPageNumbers={setPageNumbers} setActive={setActive} itemsToShow={itemsToShow} setItemsToShow={setItemsToShow}/>
-      <List setPageNumbers={setPageNumbers} setActive={setActive} list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>
+      <List activePage={activePage} pageNumbers={pageNumbers} setPageNumbers={setPageNumbers} setActive={setActive} list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>
       <Pagination pageCount={pageCount} pageNumbers={pageNumbers} activePage={activePage} setActive={setActive} changePage={changePage}/>
     </div>
   );

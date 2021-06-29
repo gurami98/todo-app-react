@@ -1,7 +1,13 @@
 import styled from "styled-components";
 import { useEffect } from "react";
 
+const Container = styled.div`
+	display: flex;
+	flex-direction: row;
+`
+
 const DropDownMenu = styled.select`
+	margin-left: 20px;
 	
 `
 
@@ -22,7 +28,7 @@ const Dropdown = ({itemsToShow, setItemsToShow, listCount, pageCount, setPageNum
 
 
 	return (
-		<>
+		<Container>
 			<span>Select Number Of Items To Show</span>
 			<DropDownMenu value={itemsToShow} onChange={changeItemsToShow}>
 				<option value={2}>2</option>
@@ -30,7 +36,7 @@ const Dropdown = ({itemsToShow, setItemsToShow, listCount, pageCount, setPageNum
 				<option value={5}>5</option>
 				<option value={8} defaultValue={8}>8</option>
 			</DropDownMenu>
-		</>
+		</Container>
 	)
 }
 

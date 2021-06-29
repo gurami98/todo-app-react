@@ -56,7 +56,7 @@ const EditButton = styled(Button)`
   background-color: #fab905;
 `
 
-const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActive}) => {
+const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActive, activePage, pageNumbers}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 
@@ -87,9 +87,11 @@ const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActiv
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if(listCount === 0) setPageNumbers([1])
-			else if(listCount % itemsToShow === 0) {
+			else if(listCount % itemsToShow === 0 && activePage === pageNumbers) {
 				setPageNumbers(pageCount)
 				setActive(pageCount)
+			}else if(listCount % itemsToShow === 0 && activePage < pageNumbers){
+				setPageNumbers(pageCount)
 			}
 		} else alert('Item is being edited, save it first!')
 	}
@@ -100,7 +102,10 @@ const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActiv
 			if (beingEdited) {
 				if (editText.trim()) {
 					let newArr = [...list]
-					newArr[index].text = editText
+					newArr = newArr.map(item => {
+						if (item.id === index) item.text = editText
+						return item
+					})
 					setList(newArr)
 				} else {
 					setBeingEdited(true)
@@ -115,7 +120,9 @@ const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActiv
 		else if (e.key === 'Escape') {
 			setList(list)
 			setBeingEdited(false)
-			setEditText(list[index].text)
+			list.forEach(item => {
+				if(item.id === index) setEditText(item.text)
+			})
 		}
 	}
 
@@ -131,7 +138,7 @@ const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActiv
 				}
 			</CustomDiv>
 			<CustomDiv>
-				<Button onClick={() => {deleteItem(index); console.log(index)}}>Delete</Button>
+				<Button onClick={() => deleteItem(index)}>Delete</Button>
 				<EditButton onClick={() => editItem(index)}>Edit</EditButton>
 			</CustomDiv>
 		</ListItem>

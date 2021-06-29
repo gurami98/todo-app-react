@@ -16,7 +16,7 @@ const UnorderedList = styled.ul`
   }
 `
 
-const List = ({list, setList, itemsArr, setPageNumbers, setActive, itemsToShow}) => {
+const List = ({list, setList, itemsArr, setPageNumbers, setActive, itemsToShow, activePage, pageNumbers}) => {
 
 	return (
 		<UnorderedList>
@@ -24,7 +24,7 @@ const List = ({list, setList, itemsArr, setPageNumbers, setActive, itemsToShow})
 				itemsArr.map((item) => {
 						return (
 							<Item setPageNumbers={setPageNumbers} setActive={setActive} list={list}
-							      setList={setList} item={item} index={item.id} key={item.id} itemsToShow={itemsToShow}/>
+							      setList={setList} item={item} index={item.id} key={item.id} itemsToShow={itemsToShow} activePage={activePage} pageNumbers={pageNumbers}/>
 						)
 				})
 			}
