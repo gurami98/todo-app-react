@@ -43,30 +43,68 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({pageCount, pageNumbers, activePage, setActive, changePage}) => {
+const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, setMaxPageNumberLimit, minPageNumberLimit, setMinPageNumberLimit, pageCount, pageNumbers, activePage, setActive, changePage}) => {
 
 	const prevPage = (page) => {
-		if(page > 1) setActive(page - 1)
+		if(page > 1) {
+			setActive(page - 1)
+
+			console.log(pageNumberLimit, minPageNumberLimit, maxPageNumberLimit)
+			if(activePage <= minPageNumberLimit){
+				setMaxPageNumberLimit(maxPageNumberLimit - 1)
+				setMinPageNumberLimit(minPageNumberLimit - 1)
+			}
+		}
 	}
 
 	const nextPage = (page) => {
-		if(page < pageCount) setActive(page + 1)
+		if(page < pageCount) {
+			setActive(page + 1)
+
+			console.log(pageNumberLimit, minPageNumberLimit, maxPageNumberLimit)
+			if(activePage + 1 > maxPageNumberLimit){
+				setMaxPageNumberLimit(maxPageNumberLimit + 1)
+				setMinPageNumberLimit(minPageNumberLimit + 1)
+			}
+		}
+	}
+
+	let pageDecrementBtn = null
+	if(minPageNumberLimit > 1){
+		pageDecrementBtn = <PageButton onClick={() => prevPage(activePage)}> &hellip; </PageButton>
+	}
+
+	let pageIncrementBtn = null
+	if(pageNumbers > maxPageNumberLimit){
+		pageIncrementBtn = <PageButton onClick={() => nextPage(activePage)}> &hellip; </PageButton>
 	}
 
 	let pagesArr = []
 	for(let i = 1; i <= pageNumbers; i++){
 		pagesArr.push(i) // JSX can be pushed also
 	}
+
+	let lastPage = pagesArr[pagesArr.length - 1]
+	console.log(lastPage)
 	return (
 		<CustomPagesDiv>
 			{pageCount > 1 && <PageLeft onClick={() => prevPage(activePage)}>Prev</PageLeft>}
+			{activePage > pageNumberLimit && <PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
+			             key={1}>1</PageButton>}
+			{pageDecrementBtn}
 			{
 				pagesArr.map((page, index) => {
-					return (
-						<PageButton onClick={() => changePage(page)} className={page === activePage ? "active-page" : ''} key={index}>{page}</PageButton>
-					)
+					if(page <= maxPageNumberLimit && page >= minPageNumberLimit) {
+						return (
+							<PageButton onClick={() => changePage(page)} className={page === activePage ? "active-page" : ''}
+							            key={index}>{page}</PageButton>
+						)
+					}
 				})
 			}
+			{pageIncrementBtn}
+			{pageCount > maxPageNumberLimit && <PageButton onClick={() => changePage(lastPage)} className={lastPage === activePage ? "active-page" : ''}
+			             key={lastPage}>{lastPage}</PageButton>}
 			{pageCount > 1 && <PageRight onClick={() => nextPage(activePage)}>Next</PageRight>}
 		</CustomPagesDiv>
 	)
