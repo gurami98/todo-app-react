@@ -56,7 +56,7 @@ const EditButton = styled(Button)`
   background-color: #fab905;
 `
 
-const Item = ({list, setList, item, index}) => {
+const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActive}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 
@@ -77,15 +77,22 @@ const Item = ({list, setList, item, index}) => {
 		}
 	}
 
-
 	const deleteItem = (index) => {
 		if (!beingEdited && window.confirm('Are you sure you want to delete this item')) {
 			let newArr = [...list]
-			newArr.splice(index, 1)
+			newArr = newArr.filter(item => {
+				return item.id !== index
+			})
 			setList(newArr)
+			let listCount = newArr.length
+			let pageCount = Math.ceil(listCount / itemsToShow)
+			if(listCount === 0) setPageNumbers([1])
+			else if(listCount % itemsToShow === 0) {
+				setPageNumbers(pageCount)
+				setActive(pageCount)
+			}
 		} else alert('Item is being edited, save it first!')
 	}
-
 
 	const editItem = (index) => {
 		if (!item.done) {
@@ -124,7 +131,7 @@ const Item = ({list, setList, item, index}) => {
 				}
 			</CustomDiv>
 			<CustomDiv>
-				<Button onClick={() => deleteItem(index)}>Delete</Button>
+				<Button onClick={() => {deleteItem(index); console.log(index)}}>Delete</Button>
 				<EditButton onClick={() => editItem(index)}>Edit</EditButton>
 			</CustomDiv>
 		</ListItem>

@@ -16,19 +16,16 @@ const UnorderedList = styled.ul`
   }
 `
 
-const List = ({list, setList, activePage, itemsToShow}) => {
-	let startIndex = (activePage - 1) * itemsToShow
-	let endIndex = startIndex + (itemsToShow - 1);
+const List = ({list, setList, itemsArr, setPageNumbers, setActive, itemsToShow}) => {
+
 	return (
 		<UnorderedList>
 			{
-				list.map((item, index) => {
-						if (index >= startIndex && index <= endIndex) {
-							return (
-								<Item list={list} setList={setList} item={item} index={index} key={index}/>
-							)
-						}
-
+				itemsArr.map((item) => {
+						return (
+							<Item setPageNumbers={setPageNumbers} setActive={setActive} list={list}
+							      setList={setList} item={item} index={item.id} key={item.id} itemsToShow={itemsToShow}/>
+						)
 				})
 			}
 		</UnorderedList>

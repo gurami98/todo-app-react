@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const CustomPagesDiv = styled.div`
@@ -43,24 +43,7 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({list, activePage, setActive, changePage, itemsToShow}) => {
-	let listCount = list.length
-	let pageCount = Math.ceil(listCount / itemsToShow)
-	let pagesArr = Array.from({length: pageCount}, (_, i) => i + 1)
-	const [pages, setPages] = useState([1]);
-
-	useEffect(() => {
-		if(listCount === 0) setPages([1])
-		else if(listCount % itemsToShow === 0 || listCount % itemsToShow  === 1) {
-			setPages(pagesArr)
-			setActive(pageCount)
-		}
-	},[list])
-
-	useEffect(() => {
-		setPages(pagesArr)
-		setActive(pageCount)
-	}, [itemsToShow])
+const Pagination = ({pageCount, pageNumbers, activePage, setActive, changePage}) => {
 
 	const prevPage = (page) => {
 		if(page > 1) setActive(page - 1)
@@ -70,11 +53,15 @@ const Pagination = ({list, activePage, setActive, changePage, itemsToShow}) => {
 		if(page < pageCount) setActive(page + 1)
 	}
 
+	let pagesArr = []
+	for(let i = 1; i <= pageNumbers; i++){
+		pagesArr.push(i) // JSX can be pushed also
+	}
 	return (
 		<CustomPagesDiv>
 			{pageCount > 1 && <PageLeft onClick={() => prevPage(activePage)}>Prev</PageLeft>}
 			{
-				pages.map((page, index) => {
+				pagesArr.map((page, index) => {
 					return (
 						<PageButton onClick={() => changePage(page)} className={page === activePage ? "active-page" : ''} key={index}>{page}</PageButton>
 					)
