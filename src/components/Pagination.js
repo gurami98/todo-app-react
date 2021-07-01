@@ -49,9 +49,21 @@ const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, se
 		if(page > 1) {
 			setActive(page - 1)
 
-			console.log(pageNumberLimit, minPageNumberLimit, maxPageNumberLimit)
-			if(activePage <= minPageNumberLimit){
-				setMaxPageNumberLimit(maxPageNumberLimit - 1)
+			console.log(pageNumberLimit, activePage, page, minPageNumberLimit, maxPageNumberLimit)
+			console.log("pageCount", pageCount)
+			if(page - 1 >= pageCount - pageNumberLimit + 1){
+				console.log("else if", activePage, pageCount, minPageNumberLimit, maxPageNumberLimit)
+				setMaxPageNumberLimit(pageCount)
+				setMinPageNumberLimit(pageCount - pageNumberLimit + 1)
+			}
+			else if(activePage > pageNumberLimit + 1){
+				console.log("first if")
+				setMaxPageNumberLimit(page + 1)
+				setMinPageNumberLimit(page - 3)
+			}
+			else{
+				console.log('else')
+				setMaxPageNumberLimit(pageNumberLimit)
 				setMinPageNumberLimit(minPageNumberLimit - 1)
 			}
 		}
@@ -63,8 +75,8 @@ const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, se
 
 			console.log(pageNumberLimit, minPageNumberLimit, maxPageNumberLimit)
 			if(activePage + 1 > maxPageNumberLimit){
-				setMaxPageNumberLimit(maxPageNumberLimit + 1)
-				setMinPageNumberLimit(minPageNumberLimit + 1)
+				setMaxPageNumberLimit(page + 3)
+				setMinPageNumberLimit(page - 1)
 			}
 		}
 	}

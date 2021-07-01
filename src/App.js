@@ -34,8 +34,8 @@ const App = () => {
         setPageNumbers(pageCount)
         setActive(pageCount)
         if(pageCount > maxPageNumberLimit){
-          setMaxPageNumberLimit(maxPageNumberLimit + 1)
-          setMinPageNumberLimit(maxPageNumberLimit - pageNumberLimit)
+          setMaxPageNumberLimit(pageCount)
+          setMinPageNumberLimit(pageCount - pageNumberLimit + 1)
         }
       }
     }else alert('Enter an item')
@@ -46,9 +46,12 @@ const App = () => {
     if(page < pageNumberLimit) {
       setMaxPageNumberLimit(pageNumberLimit)
       setMinPageNumberLimit(1)
-    }else {
-      setMaxPageNumberLimit(page)
-      setMinPageNumberLimit(page - pageNumberLimit)
+    }else if(page >= pageNumbers - pageNumberLimit + 1){
+      setMaxPageNumberLimit(pageNumbers)
+      setMinPageNumberLimit(pageNumbers - pageNumberLimit + 1)
+    }else{
+      setMaxPageNumberLimit(page + 2)
+      setMinPageNumberLimit(page - 2)
     }
   }
 
