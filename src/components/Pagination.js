@@ -51,7 +51,7 @@ const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, se
 
 			console.log(pageNumberLimit, activePage, page, minPageNumberLimit, maxPageNumberLimit)
 			console.log("pageCount", pageCount)
-			if(page - 1 >= pageCount - pageNumberLimit + 1){
+			if(page - 1 >= pageCount - pageNumberLimit + 1 && page - 1 > pageNumberLimit){
 				console.log("else if", activePage, pageCount, minPageNumberLimit, maxPageNumberLimit)
 				setMaxPageNumberLimit(pageCount)
 				setMinPageNumberLimit(pageCount - pageNumberLimit + 1)
@@ -64,7 +64,7 @@ const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, se
 			else{
 				console.log('else')
 				setMaxPageNumberLimit(pageNumberLimit)
-				setMinPageNumberLimit(minPageNumberLimit - 1)
+				setMinPageNumberLimit(1)
 			}
 		}
 	}
@@ -73,8 +73,13 @@ const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, se
 		if(page < pageCount) {
 			setActive(page + 1)
 
-			console.log(pageNumberLimit, minPageNumberLimit, maxPageNumberLimit)
-			if(activePage + 1 > maxPageNumberLimit){
+			console.log(activePage, page, pageNumberLimit, minPageNumberLimit, maxPageNumberLimit)
+		  if(activePage + 1 >= pageCount - pageNumberLimit + 1 && activePage + 1 > pageNumberLimit){
+				console.log("esaa")
+				setMaxPageNumberLimit(pageCount)
+				setMinPageNumberLimit(pageCount - pageNumberLimit + 1)
+			}else if(activePage + 1 > maxPageNumberLimit - 2){
+			  console.log("meore")
 				setMaxPageNumberLimit(page + 3)
 				setMinPageNumberLimit(page - 1)
 			}
@@ -82,12 +87,12 @@ const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, se
 	}
 
 	let pageDecrementBtn = null
-	if(minPageNumberLimit > 1){
+	if(minPageNumberLimit > 1 && pageCount > 6){
 		pageDecrementBtn = <PageButton onClick={() => prevPage(activePage)}> &hellip; </PageButton>
 	}
 
 	let pageIncrementBtn = null
-	if(pageNumbers > maxPageNumberLimit){
+	if(pageNumbers > maxPageNumberLimit && pageCount > 6){
 		pageIncrementBtn = <PageButton onClick={() => nextPage(activePage)}> &hellip; </PageButton>
 	}
 

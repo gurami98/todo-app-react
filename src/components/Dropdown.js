@@ -11,7 +11,7 @@ const DropDownMenu = styled.select`
 	
 `
 
-const Dropdown = ({itemsToShow, setItemsToShow, listCount, pageCount, setPageNumbers, setActive}) => {
+const Dropdown = ({itemsToShow, setItemsToShow, listCount, pageCount, setPageNumbers, setActive, setMaxPageNumberLimit, setMinPageNumberLimit, setPageNumberLimit}) => {
 
 	const changeItemsToShow = (e) => {
 		setItemsToShow(parseInt(e.target.value))
@@ -22,6 +22,8 @@ const Dropdown = ({itemsToShow, setItemsToShow, listCount, pageCount, setPageNum
 		else {
 			setPageNumbers(pageCount)
 			setActive(pageCount)
+			setMaxPageNumberLimit(pageCount)
+			setMinPageNumberLimit(pageCount - 4)
 		}
 	}, [itemsToShow])
 
@@ -29,7 +31,7 @@ const Dropdown = ({itemsToShow, setItemsToShow, listCount, pageCount, setPageNum
 
 	return (
 		<Container>
-			<span>Select Number Of Items To Show</span>
+			<span>Show Items</span>
 			<DropDownMenu value={itemsToShow} onChange={changeItemsToShow}>
 				<option value={2}>2</option>
 				<option value={4}>4</option>
