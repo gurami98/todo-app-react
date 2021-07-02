@@ -16,15 +16,16 @@ const UnorderedList = styled.ul`
   }
 `
 
-const List = ({list, setList, itemsArr, setPageNumbers, setActive, itemsToShow, activePage, pageNumbers}) => {
+const List = ({paginationInfo, setPaginationInfo, list, setList, itemsArr, setActive, itemsToShow, activePage, }) => {
 
 	return (
 		<UnorderedList>
 			{
 				itemsArr.map((item) => {
 						return (
-							<Item setPageNumbers={setPageNumbers} setActive={setActive} list={list}
-							      setList={setList} item={item} index={item.id} key={item.id} itemsToShow={itemsToShow} activePage={activePage} pageNumbers={pageNumbers}/>
+							<Item paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+										setActive={setActive} list={list}
+							      setList={setList} item={item} index={item.id} key={item.id} itemsToShow={itemsToShow} activePage={activePage} />
 						)
 				})
 			}

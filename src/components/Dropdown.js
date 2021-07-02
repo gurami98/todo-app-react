@@ -11,32 +11,27 @@ const DropDownMenu = styled.select`
 	
 `
 
-const Dropdown = ({itemsToShow, setItemsToShow, listCount, pageCount, setPageNumbers, setActive, setMaxPageNumberLimit, setMinPageNumberLimit, setPageNumberLimit}) => {
+const Dropdown = ({paginationInfo, setPaginationInfo, itemsToShow, setItemsToShow, listCount, pageCount, setActive}) => {
+
+	const itemNumbers = [2,4,5,8]
 
 	const changeItemsToShow = (e) => {
 		setItemsToShow(parseInt(e.target.value))
 	}
 
 	useEffect(() => {
-		if(listCount === 0) setPageNumbers([1])
+		if(listCount === 0) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
 		else {
-			setPageNumbers(pageCount)
+			setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: pageCount, startPage: pageCount - 4})
 			setActive(pageCount)
-			setMaxPageNumberLimit(pageCount)
-			setMinPageNumberLimit(pageCount - 4)
 		}
 	}, [itemsToShow])
-
-
 
 	return (
 		<Container>
 			<span>Show Items</span>
 			<DropDownMenu value={itemsToShow} onChange={changeItemsToShow}>
-				<option value={2}>2</option>
-				<option value={4}>4</option>
-				<option value={5}>5</option>
-				<option value={8} defaultValue={8}>8</option>
+				{itemNumbers.map(item => <option key={item} value={item} defaultValue={item === 8 ? 8 :null}>{item}</option>)}
 			</DropDownMenu>
 		</Container>
 	)

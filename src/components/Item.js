@@ -36,83 +36,73 @@ const Button = styled.button`
   &:hover {
     opacity: 0.7;
   }
-
-  margin-left: auto;
-  background-color: #fc0303;
   color: white;
   border-radius: 3px;
   border: 0;
   cursor: pointer;
   height: 20px;
+	margin-left: auto;
+	background-color: #fc0303;
 	
 	@media (max-width: 800px){
 		margin-left: 0;
 	}
-
+  ${props => props.type === "edit" &&
+		`margin: 0 0 0 10px;
+     background-color: #fab905;` 		
+	}
+  ${props => props.disabled && props.type === "edit" &&
+		`color: #a2a199;
+		 background-color: #c7c1c1;
+		 &:hover {
+      opacity: 1;
+		  cursor: default
+     }` 
+	}
 `
 
-const EditButton = styled(Button)`
-  margin: 0 0 0 10px;
-  background-color: #fab905;
-`
-
-const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActive, activePage, pageNumbers}) => {
+const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 
 	const markDone = (e, index) => {
-		let updated
-		if (e.target.checked) {
-			updated = [...list].map((item, i) => {
-				if (index === i) return {...item, done: true}
-				return item
-			})
-			setList(updated)
-		} else {
-			updated = [...list].map((item, i) => {
-				if (index === i) return {...item, done: false}
-				return item
-			})
-			setList(updated)
-		}
+		setList([...list].map(item => item.id === index ? {...item, done: e.target.checked} : item))
 	}
 
 	const deleteItem = (index) => {
 		if (!beingEdited && window.confirm('Are you sure you want to delete this item')) {
 			let newArr = [...list]
-			newArr = newArr.filter(item => {
+				newArr = newArr.filter(item => {
 				return item.id !== index
 			})
 			setList(newArr)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
-			if(listCount === 0) setPageNumbers([1])
-			else if(listCount % itemsToShow === 0 && activePage === pageNumbers) {
-				setPageNumbers(pageCount)
+			if(listCount === 0) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
+			else if(listCount % itemsToShow === 0 && activePage === paginationInfo.pageNumbers) {
+				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 				setActive(pageCount)
-			}else if(listCount % itemsToShow === 0 && activePage < pageNumbers){
-				setPageNumbers(pageCount)
+			}else if(listCount % itemsToShow === 0 && activePage < paginationInfo.pageNumbers){
+				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 			}
 		} else alert('Item is being edited, save it first!')
 	}
 
 	const editItem = (index) => {
-		if (!item.done) {
-			setBeingEdited(!beingEdited)
-			if (beingEdited) {
-				if (editText.trim()) {
-					let newArr = [...list]
-					newArr = newArr.map(item => {
-						if (item.id === index) item.text = editText
-						return item
-					})
-					setList(newArr)
-				} else {
-					setBeingEdited(true)
-					alert('Enter some text')
-				}
+		setBeingEdited(!beingEdited)
+		if (beingEdited) {
+			if (editText.trim()) {
+				let newArr = [...list]
+				newArr = newArr.map(item => {
+					if (item.id === index) item.text = editText
+					return item
+				})
+				setList(newArr)
+			} else {
+				setBeingEdited(true)
+				alert('Enter some text')
 			}
-		} else alert('Cant edit, Item is marked as done')
+		}
 	}
 
 	const handleKeyPress = (e) => {
@@ -139,7 +129,7 @@ const Item = ({list, setList, item, index, itemsToShow, setPageNumbers, setActiv
 			</CustomDiv>
 			<CustomDiv>
 				<Button onClick={() => deleteItem(index)}>Delete</Button>
-				<EditButton onClick={() => editItem(index)}>Edit</EditButton>
+				<Button disabled={item.done} type={"edit"} onClick={() => editItem(index)}>Edit</Button>
 			</CustomDiv>
 		</ListItem>
 	)

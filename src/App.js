@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import List from './components/List'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
@@ -9,11 +9,10 @@ const App = () => {
 	const [list, setList] = useState([])
 	const [activePage, setActive] = useState(1)
 	const [itemsToShow, setItemsToShow] = useState(8)
-	const [pageNumbers, setPageNumbers] = useState(1)
 
-	const [pageNumberLimit, setPageNumberLimit] = useState(5)
-	const [maxPageNumberLimit, setMaxPageNumberLimit] = useState(5)
-	const [minPageNumberLimit, setMinPageNumberLimit] = useState(1)
+	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 5, startPage: 1})
+
+	const [checkedAll, setCheckedAll] = useState(false)
 
 	let listCount = list.length
 	let pageCount = Math.ceil(listCount / itemsToShow)
@@ -22,6 +21,14 @@ const App = () => {
 	let endIndex = startIndex + itemsToShow
 	let itemsArr = list.slice(startIndex, endIndex)
 
+	useEffect(() => {
+		let counter = 0;
+		list.forEach(item => {
+			if(!item.done) setCheckedAll(false)
+			else counter++
+		})
+		if(counter === list.length && counter > 0) setCheckedAll(true)
+	}, [list])
 
 	const handleSubmit = (text) => {
 		let newArr = [...list, {text, done: false, id: new Date().getTime()}]
@@ -29,51 +36,81 @@ const App = () => {
 			setList(newArr)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
-			if (listCount === 0) setPageNumbers([1])
+			if (listCount === 0)  setPaginationInfo({...paginationInfo, pageNumbers: [1]})
 			else if (listCount % itemsToShow === 1) {
-				setPageNumbers(pageCount)
 				setActive(pageCount)
-				if (pageCount > maxPageNumberLimit) {
-					setMaxPageNumberLimit(pageCount)
-					setMinPageNumberLimit(pageCount - pageNumberLimit + 1)
+				if (pageCount > paginationInfo.endPage) {
+					setPaginationInfo({
+						...paginationInfo,
+						endPage: pageCount,
+						startPage: pageCount - paginationInfo.pagesToShow + 1,
+						pageNumbers: pageCount
+					})
 				}
 			}
+			setActive(pageCount)
 		} else alert('Enter an item')
 	}
 
 	const changePage = (page) => {
 		setActive(page)
-		if (page <= pageNumberLimit) {
-			setMaxPageNumberLimit(pageNumberLimit)
-			setMinPageNumberLimit(1)
-		} else if (page >= pageNumbers - pageNumberLimit + 1) {
-			setMaxPageNumberLimit(pageNumbers)
-			setMinPageNumberLimit(pageNumbers - pageNumberLimit + 1)
+		if (page <= paginationInfo.pagesToShow) {
+			setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
+		} else if (page >= paginationInfo.pageNumbers - paginationInfo.pagesToShow + 1) {
+			setPaginationInfo({...paginationInfo, endPage: paginationInfo.pageNumbers, startPage: paginationInfo.pageNumbers - paginationInfo.pagesToShow + 1})
 		} else {
-			setMaxPageNumberLimit(page + 2)
-			setMinPageNumberLimit(page - 2)
+			setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
 		}
 	}
 
-	// add and delete handler functions for todo
-	// edit item too
+	const tick = () => {
+		setCheckedAll(!checkedAll)
+		setList([...list].map(item => ({...item, done: !checkedAll})))
+	}
+
+	const deleteSelected = () => {
+		let noneChecked = true
+		let newArr = []
+		if(list.length){
+			newArr = [...list]
+			newArr = newArr.filter(item => {
+				if(item.done) noneChecked = false;
+				return !item.done
+			})
+			listCount = newArr.length
+			pageCount = Math.ceil(listCount / itemsToShow)
+			setList(newArr)
+		}else alert('There are no items')
+
+		if(noneChecked && list.length) alert('No items selected')
+		else if(!pageCount) {
+			setPaginationInfo({...paginationInfo, pageNumbers: 1})
+			setActive(1)
+		}else{
+			setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
+			setActive(pageCount)
+		}
+	}
 
 	return (
 		<div className="App">
 			<Form handleSubmit={handleSubmit}/>
-			<Dropdown setPageNumberLimit={setPageNumberLimit} setMaxPageNumberLimit={setMaxPageNumberLimit}
-			          setMinPageNumberLimit={setMinPageNumberLimit} listCount={listCount} pageCount={pageCount}
-			          setPageNumbers={setPageNumbers} setActive={setActive} itemsToShow={itemsToShow}
+			<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+								listCount={listCount} pageCount={pageCount}
+			           setActive={setActive} itemsToShow={itemsToShow}
 			          setItemsToShow={setItemsToShow}/>
 
+			<div id="checker">
+				<input disabled={!listCount} type="checkbox" id="select-all" name="select-all" checked={checkedAll} onChange={() => tick()}/>
+				<label htmlFor="select-all">Select All</label>
+				<button onClick={()=>deleteSelected()}>Delete Selected</button>
+			</div>
 
-
-			<List activePage={activePage} pageNumbers={pageNumbers} setPageNumbers={setPageNumbers} setActive={setActive}
+			<List paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+						activePage={activePage} setActive={setActive}
 			      list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>
-			<Pagination pageNumberLimit={pageNumberLimit} setPageNumberLimit={setPageNumberLimit}
-			            maxPageNumberLimit={maxPageNumberLimit} setMaxPageNumberLimit={setMaxPageNumberLimit}
-			            minPageNumberLimit={minPageNumberLimit} setMinPageNumberLimit={setMinPageNumberLimit}
-			            pageCount={pageCount} pageNumbers={pageNumbers} activePage={activePage} setActive={setActive}
+			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+			            pageCount={pageCount} activePage={activePage} setActive={setActive}
 			            changePage={changePage}/>
 		</div>
 );

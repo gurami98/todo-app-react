@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const CustomPagesDiv = styled.div`
@@ -43,28 +42,20 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, setMaxPageNumberLimit, minPageNumberLimit, setMinPageNumberLimit, pageCount, pageNumbers, activePage, setActive, changePage}) => {
+const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, setActive, changePage}) => {
 
 	const prevPage = (page) => {
 		if(page > 1) {
 			setActive(page - 1)
 
-			console.log(pageNumberLimit, activePage, page, minPageNumberLimit, maxPageNumberLimit)
-			console.log("pageCount", pageCount)
-			if(page - 1 >= pageCount - pageNumberLimit + 1 && page - 1 > pageNumberLimit){
-				console.log("else if", activePage, pageCount, minPageNumberLimit, maxPageNumberLimit)
-				setMaxPageNumberLimit(pageCount)
-				setMinPageNumberLimit(pageCount - pageNumberLimit + 1)
+			if(page - 1 >= pageCount - paginationInfo.pagesToShow + 1 && page - 1 > paginationInfo.pagesToShow){
+				setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
 			}
-			else if(activePage > pageNumberLimit + 1){
-				console.log("first if")
-				setMaxPageNumberLimit(page + 1)
-				setMinPageNumberLimit(page - 3)
+			else if(activePage > paginationInfo.pagesToShow + 1){
+				setPaginationInfo({...paginationInfo, endPage: page + 1, startPage: page - 3})
 			}
 			else{
-				console.log('else')
-				setMaxPageNumberLimit(pageNumberLimit)
-				setMinPageNumberLimit(1)
+				setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
 			}
 		}
 	}
@@ -73,55 +64,44 @@ const Pagination = ({pageNumberLimit, setPageNumberLimit, maxPageNumberLimit, se
 		if(page < pageCount) {
 			setActive(page + 1)
 
-			console.log(activePage, page, pageNumberLimit, minPageNumberLimit, maxPageNumberLimit)
-		  if(activePage + 1 >= pageCount - pageNumberLimit + 1 && activePage + 1 > pageNumberLimit){
-				console.log("esaa")
-				setMaxPageNumberLimit(pageCount)
-				setMinPageNumberLimit(pageCount - pageNumberLimit + 1)
-			}else if(activePage + 1 > maxPageNumberLimit - 2){
-			  console.log("meore")
-				setMaxPageNumberLimit(page + 3)
-				setMinPageNumberLimit(page - 1)
+		  if(activePage + 1 >= pageCount - paginationInfo.pagesToShow + 1 && activePage + 1 > paginationInfo.pagesToShow){
+			  setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
+			}else if(activePage + 1 > paginationInfo.endPage - 2 && activePage + 1 > 5){
+			  setPaginationInfo({...paginationInfo, endPage: page + 3, startPage: page - 1})
 			}
 		}
 	}
 
 	let pageDecrementBtn = null
-	if(minPageNumberLimit > 1 && pageCount > 6){
+	if(paginationInfo.startPage > 1 && pageCount > 6){
 		pageDecrementBtn = <PageButton onClick={() => prevPage(activePage)}> &hellip; </PageButton>
 	}
 
 	let pageIncrementBtn = null
-	if(pageNumbers > maxPageNumberLimit && pageCount > 6){
+	if(paginationInfo.pageNumbers > paginationInfo.endPage && pageCount > 6){
 		pageIncrementBtn = <PageButton onClick={() => nextPage(activePage)}> &hellip; </PageButton>
 	}
 
 	let pagesArr = []
-	for(let i = 1; i <= pageNumbers; i++){
-		pagesArr.push(i) // JSX can be pushed also
+	if(pageCount === 0) pagesArr.push(<PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
+	                                              key={1}>{1}</PageButton>)
+	for(let i = 1; i <= pageCount; i++){
+		if(i <= paginationInfo.endPage && i >= paginationInfo.startPage) {
+			pagesArr.push(<PageButton onClick={() => changePage(i)} className={i === activePage ? "active-page" : ''}
+			                          key={i}>{i}</PageButton>)
+		}
 	}
 
-	let lastPage = pagesArr[pagesArr.length - 1]
-	console.log(lastPage)
 	return (
 		<CustomPagesDiv>
 			{pageCount > 1 && <PageLeft onClick={() => prevPage(activePage)}>Prev</PageLeft>}
-			{activePage > pageNumberLimit && <PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
+			{activePage > paginationInfo.pagesToShow && <PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
 			             key={1}>1</PageButton>}
 			{pageDecrementBtn}
-			{
-				pagesArr.map((page, index) => {
-					if(page <= maxPageNumberLimit && page >= minPageNumberLimit) {
-						return (
-							<PageButton onClick={() => changePage(page)} className={page === activePage ? "active-page" : ''}
-							            key={index}>{page}</PageButton>
-						)
-					}
-				})
-			}
+			{pagesArr}
 			{pageIncrementBtn}
-			{pageCount > maxPageNumberLimit && <PageButton onClick={() => changePage(lastPage)} className={lastPage === activePage ? "active-page" : ''}
-			             key={lastPage}>{lastPage}</PageButton>}
+			{pageCount > paginationInfo.endPage && <PageButton onClick={() => changePage(pageCount)} className={pageCount === activePage ? "active-page" : ''}
+			                                                   key={pageCount}>{pageCount}</PageButton>}
 			{pageCount > 1 && <PageRight onClick={() => nextPage(activePage)}>Next</PageRight>}
 		</CustomPagesDiv>
 	)
