@@ -59,6 +59,14 @@ const Button = styled.button`
 		  cursor: default
      }` 
 	}
+  ${props => props.disabled && props.type === "delete" &&
+          `color: #a2a199;
+		 background-color: #c7c1c1;
+		 &:hover {
+      opacity: 1;
+		  cursor: default
+     }`
+  }
 `
 
 const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
@@ -70,7 +78,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 	}
 
 	const deleteItem = (index) => {
-		if (!beingEdited && window.confirm('Are you sure you want to delete this item')) {
+		if (window.confirm('Are you sure you want to delete this item')) {
 			let newArr = [...list]
 				newArr = newArr.filter(item => {
 				return item.id !== index
@@ -78,14 +86,14 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 			setList(newArr)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
-			if(listCount === 0) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
-			else if(listCount % itemsToShow === 0 && activePage === paginationInfo.pageNumbers) {
+			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
+			else if(!(listCount % itemsToShow) && activePage === paginationInfo.pageNumbers) {
 				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 				setActive(pageCount)
-			}else if(listCount % itemsToShow === 0 && activePage < paginationInfo.pageNumbers){
+			}else if(!(listCount % itemsToShow) && activePage < paginationInfo.pageNumbers){
 				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 			}
-		} else alert('Item is being edited, save it first!')
+		}
 	}
 
 	const editItem = (index) => {
@@ -128,7 +136,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 				}
 			</CustomDiv>
 			<CustomDiv>
-				<Button onClick={() => deleteItem(index)}>Delete</Button>
+				<Button disabled={beingEdited} type={"delete"} onClick={() => deleteItem(index)}>Delete</Button>
 				<Button disabled={item.done} type={"edit"} onClick={() => editItem(index)}>Edit</Button>
 			</CustomDiv>
 		</ListItem>

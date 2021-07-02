@@ -1,16 +1,39 @@
 import './App.css';
+import styled from "styled-components";
 import { useEffect, useState } from "react";
 import List from './components/List'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
 import Dropdown from './components/Dropdown'
 
+const Button = styled.button`
+	&:hover{
+		opacity: 0.7;
+	}
+	cursor: pointer;
+  vertical-align: super;
+  background-color: #d9534f;
+  color: white;
+  border: 0;
+  border-radius: 5px;
+  width: 120px;
+  height: 25px;
+  ${props => props.disabled && 
+				  `color: #a2a199;
+		 background-color: #c7c1c1;
+		 &:hover {
+      opacity: 1;
+		  cursor: default
+     }`
+  }
+`
+
 const App = () => {
 	const [list, setList] = useState([])
 	const [activePage, setActive] = useState(1)
 	const [itemsToShow, setItemsToShow] = useState(8)
 
-	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 5, startPage: 1})
+	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 
 	const [checkedAll, setCheckedAll] = useState(false)
 
@@ -36,7 +59,7 @@ const App = () => {
 			setList(newArr)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
-			if (listCount === 0)  setPaginationInfo({...paginationInfo, pageNumbers: [1]})
+			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
 			else if (listCount % itemsToShow === 1) {
 				setActive(pageCount)
 				if (pageCount > paginationInfo.endPage) {
@@ -46,9 +69,12 @@ const App = () => {
 						startPage: pageCount - paginationInfo.pagesToShow + 1,
 						pageNumbers: pageCount
 					})
+				}else{
+					setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 				}
 			}
 			setActive(pageCount)
+			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
 		} else alert('Enter an item')
 	}
 
@@ -56,8 +82,8 @@ const App = () => {
 		setActive(page)
 		if (page <= paginationInfo.pagesToShow) {
 			setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
-		} else if (page >= paginationInfo.pageNumbers - paginationInfo.pagesToShow + 1) {
-			setPaginationInfo({...paginationInfo, endPage: paginationInfo.pageNumbers, startPage: paginationInfo.pageNumbers - paginationInfo.pagesToShow + 1})
+		} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
+			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
 		} else {
 			setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
 		}
@@ -69,28 +95,31 @@ const App = () => {
 	}
 
 	const deleteSelected = () => {
-		let noneChecked = true
-		let newArr = []
-		if(list.length){
-			newArr = [...list]
-			newArr = newArr.filter(item => {
-				if(item.done) noneChecked = false;
-				return !item.done
-			})
-			listCount = newArr.length
-			pageCount = Math.ceil(listCount / itemsToShow)
-			setList(newArr)
-		}else alert('There are no items')
+		let newArr = [...list]
+		newArr = newArr.filter(item => {
+			return !item.done
+		})
+		listCount = newArr.length
+		pageCount = Math.ceil(listCount / itemsToShow)
+		setList(newArr)
 
-		if(noneChecked && list.length) alert('No items selected')
-		else if(!pageCount) {
+		if(pageCount > activePage){
+			setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
+		}
+		else if (!pageCount) {
 			setPaginationInfo({...paginationInfo, pageNumbers: 1})
 			setActive(1)
-		}else{
-			setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
+		}
+		else {
 			setActive(pageCount)
+			setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
 		}
 	}
+
+	let isAnyItemChecked = false;
+	list.forEach(item => {
+			if(item.done) isAnyItemChecked = true
+	})
 
 	return (
 		<div className="App">
@@ -103,7 +132,7 @@ const App = () => {
 			<div id="checker">
 				<input disabled={!listCount} type="checkbox" id="select-all" name="select-all" checked={checkedAll} onChange={() => tick()}/>
 				<label htmlFor="select-all">Select All</label>
-				<button onClick={()=>deleteSelected()}>Delete Selected</button>
+				<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
 			</div>
 
 			<List paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}

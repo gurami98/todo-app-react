@@ -20,9 +20,9 @@ const Dropdown = ({paginationInfo, setPaginationInfo, itemsToShow, setItemsToSho
 	}
 
 	useEffect(() => {
-		if(listCount === 0) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
+		if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
 		else {
-			setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: pageCount, startPage: pageCount - 4})
+			setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: pageCount, startPage: pageCount > 5 ? pageCount - 4 : 1})
 			setActive(pageCount)
 		}
 	}, [itemsToShow])

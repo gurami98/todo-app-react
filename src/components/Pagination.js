@@ -78,18 +78,16 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 	}
 
 	let pageIncrementBtn = null
-	if(paginationInfo.pageNumbers > paginationInfo.endPage && pageCount > 6){
+	if(pageCount > paginationInfo.endPage && pageCount > 6){
 		pageIncrementBtn = <PageButton onClick={() => nextPage(activePage)}> &hellip; </PageButton>
 	}
 
 	let pagesArr = []
-	if(pageCount === 0) pagesArr.push(<PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
+	if(!pageCount) pagesArr.push(<PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
 	                                              key={1}>{1}</PageButton>)
-	for(let i = 1; i <= pageCount; i++){
-		if(i <= paginationInfo.endPage && i >= paginationInfo.startPage) {
+	else for(let i = paginationInfo.startPage; i <= paginationInfo.endPage; i++){
 			pagesArr.push(<PageButton onClick={() => changePage(i)} className={i === activePage ? "active-page" : ''}
 			                          key={i}>{i}</PageButton>)
-		}
 	}
 
 	return (
