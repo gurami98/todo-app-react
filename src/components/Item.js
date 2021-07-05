@@ -1,76 +1,144 @@
 import '../App.css';
 import styled from 'styled-components'
+import { useState } from "react";
 
 const ListItem = styled.li`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-	align-items: center;
+  justify-content: space-evenly;
+  align-items: center;
   list-style-type: none;
   text-align: left;
-	border: 1px solid gray;
-	border-radius: 3px;
-	padding: 5px 10px;
-	margin: 10px 0;
-	box-sizing: border-box;
-	width: 100%;
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 5px 10px;
+  margin: 10px 0;
+  box-sizing: border-box;
+  width: 100%;
+	@media  (max-width: 800px){
+		flex-direction: column;
+    text-align: center;
+  }
+`
+
+const CustomDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+	justify-content: space-around;
+	padding: 1px 0 1px 0;
+	width: inherit;
+	@media (max-width: 800px){
+		justify-content: center;
+	}
 `
 
 const Button = styled.button`
   &:hover {
     opacity: 0.7;
   }
+  color: white;
+  border-radius: 3px;
+  border: 0;
+  cursor: pointer;
+  height: 20px;
 	margin-left: auto;
 	background-color: #fc0303;
-	color: white;
-	border-radius: 3px;
-	border:0;
-	cursor: pointer;
-	height: 20px;
 	
+	@media (max-width: 800px){
+		margin-left: 0;
+	}
+  ${props => props.type === "edit" &&
+		`margin: 0 0 0 10px;
+     background-color: #fab905;` 		
+	}
+  ${props => props.disabled && props.type === "edit" &&
+		`color: #a2a199;
+		 background-color: #c7c1c1;
+		 &:hover {
+      opacity: 1;
+		  cursor: default
+     }` 
+	}
+  ${props => props.disabled && props.type === "delete" &&
+          `color: #a2a199;
+		 background-color: #c7c1c1;
+		 &:hover {
+      opacity: 1;
+		  cursor: default
+     }`
+  }
 `
 
-const EditButton = styled(Button)`
-	margin: 0 0 0 10px;
-	background-color: #fab905;
-`
+const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
+	const [editText, setEditText] = useState(item.text)
+	const [beingEdited, setBeingEdited] = useState(false)
 
-const Item = ({list, setList, item, index}) => {
 	const markDone = (e, index) => {
-		let updated
-		if(e.target.checked){
-			updated = list.map((item, i) => {
-				if(index === i) item.done = true
-				return item
-			})
-			setList(updated)
-		}
-		else{
-			updated = list.map((item, i) => {
-				if(index === i) item.done = false
-				return item
-			})
-			setList(updated)
-		}
+		setList([...list].map(item => item.id === index ? {...item, done: e.target.checked} : item))
 	}
 
-
 	const deleteItem = (index) => {
-	  let newArr = [...list]
-	  newArr.splice(index, 1)
-	  setList(newArr)
+		if (window.confirm('Are you sure you want to delete this item')) {
+			let newArr = [...list]
+				newArr = newArr.filter(item => {
+				return item.id !== index
+			})
+			setList(newArr)
+			let listCount = newArr.length
+			let pageCount = Math.ceil(listCount / itemsToShow)
+			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
+			else if(!(listCount % itemsToShow) && activePage === paginationInfo.pageNumbers) {
+				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
+				setActive(pageCount)
+			}else if(!(listCount % itemsToShow) && activePage < paginationInfo.pageNumbers){
+				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
+			}
+		}
 	}
 
 	const editItem = (index) => {
+		setBeingEdited(!beingEdited)
+		if (beingEdited) {
+			if (editText.trim()) {
+				let newArr = [...list]
+				newArr = newArr.map(item => {
+					if (item.id === index) item.text = editText
+					return item
+				})
+				setList(newArr)
+			} else {
+				setBeingEdited(true)
+				alert('Enter some text')
+			}
+		}
+	}
 
+	const handleKeyPress = (e) => {
+		if (e.key === 'Enter') editItem(index)
+		else if (e.key === 'Escape') {
+			setList(list)
+			setBeingEdited(false)
+			list.forEach(item => {
+				if(item.id === index) setEditText(item.text)
+			})
+		}
 	}
 
 	return (
 		<ListItem key={index}>
-			<input type="checkbox" onClick={(e)=>markDone(e, index)} defaultChecked={item.done}/>
-			<span className={item.done ? 'finished-item' : ''}>{item.text}</span>
-			<Button onClick={()=> deleteItem(index)}>Delete</Button>
-			<EditButton onClick={()=> editItem(index)}>Edit</EditButton>
+			<CustomDiv>
+				<input type="checkbox" onChange={(e) => markDone(e, index)} checked={item.done}/>
+				{
+					beingEdited ? <input onKeyDown={handleKeyPress} autoFocus type="text" id={'li-' + index} value={editText}
+					                     onChange={e => setEditText(e.target.value)}/>
+						:
+						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
+				}
+			</CustomDiv>
+			<CustomDiv>
+				<Button disabled={beingEdited} type={"delete"} onClick={() => deleteItem(index)}>Delete</Button>
+				<Button disabled={item.done} type={"edit"} onClick={() => editItem(index)}>Edit</Button>
+			</CustomDiv>
 		</ListItem>
 	)
 }

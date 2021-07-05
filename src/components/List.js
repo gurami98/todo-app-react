@@ -3,19 +3,30 @@ import styled from 'styled-components'
 
 const UnorderedList = styled.ul`
   width: 522px;
-  margin-left: 0;
-	margin-top: 30px;
+	max-width: 522px;
+	height: 370px;
+	margin: 30px auto 0;
+  padding-left: 0;
+  @media (max-width: 800px){
+	  height: 550px;
+	  width: 382px;
+  }
+  @media (max-width: 450px){
+	  width: 90%;
+  }
 `
 
-const List = ({list, setList}) => {
+const List = ({paginationInfo, setPaginationInfo, list, setList, itemsArr, setActive, itemsToShow, activePage, }) => {
 
 	return (
 		<UnorderedList>
 			{
-				list.map((item, index) => {
-					return (
-							<Item list={list} setList={setList} item={item} index={index} key={index}/>
-					)
+				itemsArr.map((item) => {
+						return (
+							<Item paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+										setActive={setActive} list={list}
+							      setList={setList} item={item} index={item.id} key={item.id} itemsToShow={itemsToShow} activePage={activePage} />
+						)
 				})
 			}
 		</UnorderedList>
