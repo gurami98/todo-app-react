@@ -48,33 +48,23 @@ const Button = styled.button`
   background-color: #329ea8;
 `
 
-const Form = ({handleSubmit, typeDropdown, setTypeDropdown, dueDate, setDueDate}) => {
-	const [text, setText] = useState('')
+const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, dueDate, setDueDate}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
 
-	useEffect(() => {
-		let btnText = typeDropdown.typeDropdownText
-		const handleClickOutside = (e) => {
-			if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
-				// small bug, button text resets after clicking outside of button
-				setTypeDropdown({...typeDropdown, typeDropdownText: btnText, typeDropdownShow: false})
-			}
+	const handleClickOutside = (e) => {
+		document.removeEventListener("mousedown", handleClickOutside);
+		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
+			setTypeDropdown({...typeDropdown, typeDropdownShow: false})
 		}
-		// Bind the event listener
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			// Unbind the event listener on clean up
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, [dropdownItemsRef]);
+	}
+	document.addEventListener("mousedown", handleClickOutside);
 
 	const handleFormInputKeyPress = (e) => {
 		if (e.key === 'Enter') handleFormInput(e)
 	}
 	const handleFormInput = (e) => {
 		handleSubmit(text)
-		setText('')
 		e.preventDefault()
 	}
 
@@ -98,7 +88,6 @@ const Form = ({handleSubmit, typeDropdown, setTypeDropdown, dueDate, setDueDate}
 	}
 
 	const choseType = (e) => {
-		console.log(e.target.innerHTML)
 		setTypeDropdown({...typeDropdown, typeDropdownText: e.target.innerHTML, typeDropdownShow: !typeDropdown.typeDropdownShow})
 	}
 

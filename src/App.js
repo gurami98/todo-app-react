@@ -35,6 +35,7 @@ const App = () => {
 	const [dueDate, setDueDate] = useState('')
 	const filterDropdownItemsRef = useRef(null)
 	const filterDropdownBtn = useRef(null)
+	const [text, setText] = useState('')
 	//const [filterText, setFilterText] = useState('')
 
 	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
@@ -63,6 +64,7 @@ const App = () => {
 
 	const choseFilterType = (e) => {
 		let tempArr = [...list]
+		setFilterDropdown({...filterDropdown, filterDropdownShow: !filterDropdown.filterDropdownShow, filterDropdownText: e.target.innerHTML})
 		switch(e.target.innerHTML) {
 			case 'A-Z':
 				tempArr = tempArr.sort((a, b) => a.text.localeCompare(b.text))
@@ -102,19 +104,13 @@ const App = () => {
 		if(counter === list.length && counter > 0) setCheckedAll(true)
 	}, [list])
 
-	useEffect(() => {
-		const handleClickOutside = (e) => {
-			if (filterDropdownItemsRef.current && !filterDropdownBtn.current.contains(e.target) && !filterDropdownItemsRef.current.contains(e.target) && filterDropdownItemsRef.current.classList.contains('show')) {
-				setFilterDropdown({...filterDropdown, filterDropdownShow: false})
-			}
+	const handleClickOutside = (e) => {
+		document.removeEventListener("mousedown", handleClickOutside);
+		if (filterDropdownItemsRef.current && !filterDropdownBtn.current.contains(e.target) && !filterDropdownItemsRef.current.contains(e.target) && filterDropdownItemsRef.current.classList.contains('show')) {
+			setFilterDropdown({...filterDropdown, filterDropdownShow: false})
 		}
-		// Bind the event listener
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			// Unbind the event listener on clean up
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, [filterDropdownItemsRef]);
+	}
+	document.addEventListener("mousedown", handleClickOutside);
 
 	const handleSubmit = (text) => {
 		if (text.trim() && typeDropdown.typeDropdownText !== 'Task Type' && dueDate.trim()) {
@@ -153,6 +149,7 @@ const App = () => {
 			}
 			setActive(pageCount)
 			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
+			setText('')
 		} else alert('Enter every value needed in form')
 	}
 
@@ -209,7 +206,7 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<Form handleSubmit={handleSubmit} dueDate={dueDate} setDueDate={setDueDate} typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}/>
+			<Form handleSubmit={handleSubmit} text={text} setText={setText} dueDate={dueDate} setDueDate={setDueDate} typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}/>
 			<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 								listCount={listCount} pageCount={pageCount}
 			           setActive={setActive} itemsToShow={itemsToShow}
