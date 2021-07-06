@@ -57,11 +57,13 @@ ul li span{
 }
 
 #checker{
+  display: flex;
+  align-items: center;
   margin-top: 50px;
   font-size: 24px;
 }
 
-#checker input{
+#checker input[type="checkbox"]{
   width: 25px;
   height: 25px;
   margin-right: 5px;
@@ -70,6 +72,114 @@ ul li span{
 #checker label{
   vertical-align: top;
   margin-right: 10px;
+}
+
+#checker .dropdown{
+  height: 25px;
+}
+
+#checker .dropbtn{
+  vertical-align: super;
+}
+
+/* Dropdown Button */
+.dropbtn {
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 25px;
+  width: 121px;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #329ea8;
+  color: white;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 0 5px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  max-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-items{
+  overflow-y: auto;
+  height: 100px;
+}
+
+/* Links inside the dropdown */
+.dropdown-content p {
+  color: black;
+  padding: 6px 8px;
+  margin: 0;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content p:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
+.add-new-item{
+  display: flex;
+}
+
+.add-new-item input{
+  width: 73px;
+}
+
+.add-new-item button{
+  background-color: #329ea8;
+  color: white;
+  border: 0;
+  border-radius: 1px;
+}
+
+.add-new-item button:hover{
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+#filter-label{
+  margin-left: 20px;
+}
+
+#filter-items{
+  vertical-align: super;
+}
+
+#checker .dropdown-items p{
+  font-size: initial;
+}
+
+#checker .dropdown-content{
+  width: 147px;
+  max-width: 147px;
+}
+
+#checker .dropbtn{
+  width: 147px;
 }
 
 
