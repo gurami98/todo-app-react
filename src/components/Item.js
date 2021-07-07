@@ -19,6 +19,10 @@ const ListItem = styled.li`
 		flex-direction: column;
     text-align: center;
   }
+
+  ${props => props.timeLeft < 48 &&
+          `border: 2px solid red`
+  }
 `
 
 const CustomDiv = styled.div`
@@ -124,8 +128,11 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		}
 	}
 
+	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
+
+	console.log(hoursLeft, "saatebi", item)
 	return (
-		<ListItem key={index}>
+		<ListItem key={index} className={hoursLeft > 48 ? 'red-overlay' : ''} timeLeft={hoursLeft}>
 			<CustomDiv>
 				<input type="checkbox" onChange={(e) => markDone(e, index)} checked={item.done}/>
 				{
@@ -134,6 +141,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 						:
 						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
 				}
+				<span>Due: {hoursLeft > 48 ? item.dueDate : hoursLeft > 24 ? 'TOMORROW' : 'TODAY'}</span>
 			</CustomDiv>
 			<CustomDiv>
 				<Button disabled={beingEdited} type={"delete"} onClick={() => deleteItem(index)}>Delete</Button>

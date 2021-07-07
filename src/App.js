@@ -38,14 +38,31 @@ const App = () => {
 	const [text, setText] = useState('')
 	//const [filterText, setFilterText] = useState('')
 
-	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
-	const [typeDropdown, setTypeDropdown] = useState(		{typeDropdownShow: false,
-																																typeDropdownData: ['University', 'Home', 'Work'],
-																																typeDropdownInput: '',
-																																typeDropdownText: 'Task Type'})
+	const filterData = {
+		az: 'A-Z',
+		za: 'Z-A',
+		oldest: 'Oldest First',
+		newest: 'Newest First',
+		dueAsc: 'Due Ascending',
+		dueDesc: 'Due Descending',
+		prioAsc: 'Priority Asc',
+		prioDesc: 'Priority Desc',
+	}
+
 	const [filterDropdown, setFilterDropdown] = useState({filterDropdownShow: false,
-																																	filterDropdownData: ['A-Z', 'Z-A', 'Oldest First', 'Newest First', 'Due Ascending', 'Due Descending'],
-																																	filterDropdownText: 'Sort By'})
+																												filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
+																																							filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
+																												filterDropdownText: 'Sort By'})
+	const [typeDropdown, setTypeDropdown] = useState({typeDropdownShow: false,
+																										typeDropdownData: ['University', 'Home', 'Work'],
+																										typeDropdownInput: '',
+																										typeDropdownText: 'Task Type'})
+	const [priorityDropdown, setPriorityDropdown] = useState({priorityDropdownShow: false,
+																														priorityDropdownData: ['Low', 'Normal', 'High'],
+																														priorityDropdownDataNumbers: [1, 2, 3],
+																														priorityDropdownText: 'Chose Priority'})
+
+	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 
 	const [checkedAll, setCheckedAll] = useState(false)
 
@@ -66,28 +83,36 @@ const App = () => {
 		let tempArr = [...list]
 		setFilterDropdown({...filterDropdown, filterDropdownShow: !filterDropdown.filterDropdownShow, filterDropdownText: e.target.innerHTML})
 		switch(e.target.innerHTML) {
-			case 'A-Z':
+			case filterData.az:
 				tempArr = tempArr.sort((a, b) => a.text.localeCompare(b.text))
 				setList(tempArr)
 				break;
-			case 'Z-A':
+			case filterData.za:
 				tempArr = tempArr.sort((a, b) => b.text.localeCompare(a.text))
 				setList(tempArr)
 				break;
-			case 'Newest First':
-				tempArr = tempArr.sort((a,b) => new Date(b.timeAdded) - new Date(a.timeAdded))
-				setList(tempArr)
-				break;
-			case 'Oldest First':
+			case filterData.oldest:
 				tempArr = tempArr.sort((a,b) => new Date(a.timeAdded) - new Date(b.timeAdded))
 				setList(tempArr)
 				break;
-			case 'Due Ascending':
+			case filterData.newest:
+				tempArr = tempArr.sort((a,b) => new Date(b.timeAdded) - new Date(a.timeAdded))
+				setList(tempArr)
+				break;
+			case filterData.dueAsc:
 				tempArr = tempArr.sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate))
 				setList(tempArr)
 				break;
-			case 'Due Descending':
+			case filterData.dueDesc:
 				tempArr = tempArr.sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate))
+				setList(tempArr)
+				break;
+			case filterData.prioAsc:
+				tempArr = tempArr.sort((a,b) => a.priority - b.priority)
+				setList(tempArr)
+				break;
+			case filterData.prioDesc:
+				tempArr = tempArr.sort((a,b) => b.priority - a.priority)
 				setList(tempArr)
 				break;
 			default:
@@ -114,23 +139,16 @@ const App = () => {
 
 	const handleSubmit = (text) => {
 		if (text.trim() && typeDropdown.typeDropdownText !== 'Task Type' && dueDate.trim()) {
-			let d = new Date(),
-				seconds = '' + d.getSeconds(),
-				minutes = '' + d.getMinutes(),
-				hours = '' + d.getHours(),
-				month = '' + (d.getMonth() + 1),
-				day = '' + d.getDate(),
-				year = d.getFullYear();
-			if(seconds < 10) seconds = '0' + seconds
-			if(minutes < 10) minutes = '0' + minutes
-			if (month.length < 2) month = '0' + month;
-			if (day.length < 2) day = '0' + day;
-			let dateAdded = [year, month, day].join(' ').concat(" ", [hours, minutes, seconds].join(':'));
+			let dateAdded = new Date()
+			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
 
-			let newArr = [...list, {text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded, done: false, id: new Date().getTime()}]
+			let newArr = [...list, {text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
+															priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false, id: new Date().getTime()}]
 
 			setList(newArr)
 			setTypeDropdown({...typeDropdown, typeDropdownText: 'Task Type'})
+			setPriorityDropdown({...priorityDropdown, priorityDropdownText: 'Chose Priority'})
+			setDueDate('')
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
@@ -155,7 +173,10 @@ const App = () => {
 
 	const changePage = (page) => {
 		setActive(page)
-		if (page <= paginationInfo.pagesToShow) {
+		if(page < paginationInfo.pagesToShow){
+			// do nothing
+		}
+		else if (page <= paginationInfo.pagesToShow) {
 			setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
 		} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
 			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
@@ -196,17 +217,13 @@ const App = () => {
 			if(item.done) isAnyItemChecked = true
 	})
 
-	// const handleFilterKeyPress = (e) => {
-	// 	if (e.key === 'Enter') filterItems()
-	// }
-	//
-	// const filterItems = () => {
-	// 	console.log(filterText)
-	// }
-
 	return (
 		<div className="App">
-			<Form handleSubmit={handleSubmit} text={text} setText={setText} dueDate={dueDate} setDueDate={setDueDate} typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}/>
+			<Form handleSubmit={handleSubmit}
+			      text={text} setText={setText}
+			      dueDate={dueDate} setDueDate={setDueDate}
+			      typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}
+			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 			<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 								listCount={listCount} pageCount={pageCount}
 			           setActive={setActive} itemsToShow={itemsToShow}
@@ -216,9 +233,6 @@ const App = () => {
 				<input disabled={!listCount} type="checkbox" id="select-all" name="select-all" checked={checkedAll} onChange={() => tick()}/>
 				<label htmlFor="select-all">Select All</label>
 				<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
-				{/*<label htmlFor="filter-items" id="filter-label">Filter</label>*/}
-				{/*<input value={filterText} onChange={(e)=>setFilterText(e.target.value)} onKeyDown={handleFilterKeyPress} type="text" id="filter-items" name="filter-items"/>*/}
-				{/*<button type="button" onClick={filterItems}>Filter</button>*/}
 				<div className="dropdown">
 					<button ref={filterDropdownBtn} onClick={(e)=> showFilterDropDown(e)} className="dropbtn" type="button">{filterDropdown.filterDropdownText}</button>
 					<div id="myDropdown" ref={filterDropdownItemsRef} className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>

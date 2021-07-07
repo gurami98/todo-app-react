@@ -25,7 +25,7 @@ ul li input[type=checkbox]{
 }
 
 ul li input[type=text]{
-  margin: 0 145px 0 30px;
+  margin: 0 0 0 30px;
   padding: 0;
   height: 21px;
   outline: none;
@@ -33,7 +33,7 @@ ul li input[type=text]{
   text-indent: 5px;
 }
 ul li span{
-  width: 300px;
+  width: 160px;
   margin-left: 30px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -102,7 +102,8 @@ ul li span{
 .dropdown {
   position: relative;
   display: inline-block;
-  margin: 0 5px;
+  margin: 0 auto;
+  width: 122px;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -180,6 +181,13 @@ ul li span{
 
 #checker .dropbtn{
   width: 147px;
+}
+
+.dropdown.second{
+}
+
+.red-overlay{
+  border: 2px solid red;
 }
 
 

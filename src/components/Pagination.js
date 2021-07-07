@@ -48,7 +48,10 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 		if(page > 1) {
 			setActive(page - 1)
 
-			if(page - 1 >= pageCount - paginationInfo.pagesToShow + 1 && page - 1 > paginationInfo.pagesToShow){
+			if(page < paginationInfo.pagesToShow){
+				// do nothing
+			}
+			else if(page - 1 >= pageCount - paginationInfo.pagesToShow + 1 && page - 1 > paginationInfo.pagesToShow){
 				setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
 			}
 			else if(activePage > paginationInfo.pagesToShow + 1){
@@ -64,7 +67,11 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 		if(page < pageCount) {
 			setActive(page + 1)
 
-		  if(activePage + 1 >= pageCount - paginationInfo.pagesToShow + 1 && activePage + 1 > paginationInfo.pagesToShow){
+
+			if(page < paginationInfo.pagesToShow){
+				// do nothing
+			}
+		  else if(activePage + 1 >= pageCount - paginationInfo.pagesToShow + 1 && activePage + 1 > paginationInfo.pagesToShow){
 			  setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
 			}else if(activePage + 1 > paginationInfo.endPage - 2 && activePage + 1 > 5){
 			  setPaginationInfo({...paginationInfo, endPage: page + 3, startPage: page - 1})
