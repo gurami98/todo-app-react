@@ -36,7 +36,6 @@ const App = () => {
 	const filterDropdownItemsRef = useRef(null)
 	const filterDropdownBtn = useRef(null)
 	const [text, setText] = useState('')
-	//const [filterText, setFilterText] = useState('')
 
 	const filterData = {
 		az: 'A-Z',
@@ -49,18 +48,21 @@ const App = () => {
 		prioDesc: 'Priority Desc',
 	}
 
+	let defaultFilterText = 'Sort By'
 	const [filterDropdown, setFilterDropdown] = useState({filterDropdownShow: false,
 																												filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
 																																							filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
-																												filterDropdownText: 'Sort By'})
+																												filterDropdownText: defaultFilterText})
+	let defaultTypeText = 'Task Type'
 	const [typeDropdown, setTypeDropdown] = useState({typeDropdownShow: false,
 																										typeDropdownData: ['University', 'Home', 'Work'],
 																										typeDropdownInput: '',
-																										typeDropdownText: 'Task Type'})
+																										typeDropdownText: defaultTypeText})
+	let defaultPriorityText = 'Choose Priority'
 	const [priorityDropdown, setPriorityDropdown] = useState({priorityDropdownShow: false,
 																														priorityDropdownData: ['Low', 'Normal', 'High'],
 																														priorityDropdownDataNumbers: [1, 2, 3],
-																														priorityDropdownText: 'Chose Priority'})
+																														priorityDropdownText: defaultPriorityText})
 
 	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 
@@ -75,7 +77,6 @@ const App = () => {
 
 	const showFilterDropDown = (e) => {
 		e.preventDefault();
-		console.log('test')
 		setFilterDropdown({...filterDropdown, filterDropdownShow: !filterDropdown.filterDropdownShow})
 	}
 
@@ -138,7 +139,7 @@ const App = () => {
 	document.addEventListener("mousedown", handleClickOutside);
 
 	const handleSubmit = (text) => {
-		if (text.trim() && typeDropdown.typeDropdownText !== 'Task Type' && dueDate.trim()) {
+		//if (text.trim() && typeDropdown.typeDropdownText !== defaultTypeText && priorityDropdown.priorityDropdownText !== defaultPriorityText && dueDate.trim()) {
 			let dateAdded = new Date()
 			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
 
@@ -146,8 +147,8 @@ const App = () => {
 															priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false, id: new Date().getTime()}]
 
 			setList(newArr)
-			setTypeDropdown({...typeDropdown, typeDropdownText: 'Task Type'})
-			setPriorityDropdown({...priorityDropdown, priorityDropdownText: 'Chose Priority'})
+			setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
+			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultPriorityText})
 			setDueDate('')
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
@@ -168,20 +169,20 @@ const App = () => {
 			setActive(pageCount)
 			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
 			setText('')
-		} else alert('Enter every value needed in form')
+		//} else alert('Enter every value needed in form')
 	}
 
 	const changePage = (page) => {
 		setActive(page)
-		if(page < paginationInfo.pagesToShow){
-			// do nothing
-		}
-		else if (page <= paginationInfo.pagesToShow) {
-			setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
-		} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
-			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
-		} else {
-			setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
+		if(pageCount >= paginationInfo.pagesToShow){
+			if (page <= paginationInfo.pagesToShow) {
+				setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
+				console.log('1')
+			} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
+				setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
+			} else {
+				setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
+			}
 		}
 	}
 
@@ -234,8 +235,8 @@ const App = () => {
 				<label htmlFor="select-all">Select All</label>
 				<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
 				<div className="dropdown">
-					<button ref={filterDropdownBtn} onClick={(e)=> showFilterDropDown(e)} className="dropbtn" type="button">{filterDropdown.filterDropdownText}</button>
-					<div id="myDropdown" ref={filterDropdownItemsRef} className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
+					<button ref={filterDropdownBtn} onClick={(e)=> showFilterDropDown(e)} className="dropbtn" type="button">{filterDropdown.filterDropdownText} <span>▼</span></button>
+					<div ref={filterDropdownItemsRef} className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 						<div className={"dropdown-items"}>
 							{filterDropdown.filterDropdownData.map(item => {
 								return(

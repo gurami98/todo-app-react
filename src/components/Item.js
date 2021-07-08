@@ -129,8 +129,6 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 	}
 
 	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
-
-	console.log(hoursLeft, "saatebi", item)
 	return (
 		<ListItem key={index} className={hoursLeft > 48 ? 'red-overlay' : ''} timeLeft={hoursLeft}>
 			<CustomDiv>

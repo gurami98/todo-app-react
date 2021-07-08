@@ -28,7 +28,7 @@ const StyledForm = styled.form`
 const Input = styled.input`
   text-indent: 5px;
   border-radius: 5px;
-	width: 235px;
+	width: 195px;
   height: 25px;
   outline: none;
   border: 1px solid gray;
@@ -80,11 +80,11 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 		e.preventDefault()
 	}
 
-	const showDropDown = (e) => {
-		e.preventDefault();
-		if(e.target.innerHTML === typeDropdown.typeDropdownText) {
+	const showDropDown = (a) => {
+		if(a.includes(typeDropdown.typeDropdownText)) {
 			setTypeDropdown({...typeDropdown, typeDropdownShow: !typeDropdown.typeDropdownShow})
-		}else{
+		}
+		else{
 			setPriorityDropdown({...priorityDropdown, priorityDropdownShow: !priorityDropdown.priorityDropdownShow})
 		}
 	}
@@ -93,9 +93,7 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 		setTypeDropdown({...typeDropdown, typeDropdownInput: e.target.value})
 	}
 
-	const handleDropInputKeyPress = (e) => {
-		if (e.key === 'Enter') handleAddType(e)
-	}
+	const handleDropInputKeyPress = (e) => e.key === 'Enter' && handleAddType(e)
 
 	const handleAddType = (e) => {
 		e.preventDefault();
@@ -119,8 +117,8 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 		<StyledForm>
 			<Input autoFocus type="text" value={text} onChange={e => setText(e.target.value)} onKeyDown={handleFormInputKeyPress} placeholder='New Todo'/>
 			<div className="dropdown">
-				<button ref={dropdownBtn} onClick={(e)=> showDropDown(e)} className="dropbtn" type="button">{typeDropdown.typeDropdownText}</button>
-				<div id="myDropdown" ref={dropdownItemsRef} className={typeDropdown.typeDropdownShow ? "dropdown-content show" : "dropdown-content"}>
+				<button ref={dropdownBtn} onClick={(e)=> showDropDown(typeDropdown.typeDropdownText)} className="dropbtn" type="button">{typeDropdown.typeDropdownText} <span>▼</span> </button>
+				<div ref={dropdownItemsRef} className={typeDropdown.typeDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 					<div className={"dropdown-items"}>
 						{typeDropdown.typeDropdownData.map(item => {
 							return(
@@ -136,8 +134,8 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 			</div>
 
 			<div className="dropdown second">
-				<button ref={dropdownBtn2} onClick={(e)=> showDropDown(e)} className="dropbtn" type="button">{priorityDropdown.priorityDropdownText}</button>
-				<div id="myDropdown" ref={dropdownItemsRef2} className={priorityDropdown.priorityDropdownShow ? "dropdown-content show" : "dropdown-content"}>
+				<button ref={dropdownBtn2} onClick={(e)=> showDropDown(priorityDropdown.priorityDropdownText)} className="dropbtn" type="button">{priorityDropdown.priorityDropdownText} <span>▼</span> </button>
+				<div ref={dropdownItemsRef2} className={priorityDropdown.priorityDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 					<div className={"dropdown-items"}>
 						{priorityDropdown.priorityDropdownData.map(item => {
 							return(

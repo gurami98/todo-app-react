@@ -89,7 +89,11 @@ ul li span{
   cursor: pointer;
   border-radius: 5px;
   height: 25px;
-  width: 121px;
+  width: 142px;
+}
+
+.dropbtn span{
+  float: right;
 }
 
 /* Dropdown button on hover & focus */
