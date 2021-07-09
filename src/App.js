@@ -5,6 +5,10 @@ import List from './components/List'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
 import Dropdown from './components/Dropdown'
+import Categories from './components/Categories'
+import { MdArrowDropDown } from 'react-icons/md';
+import { GrSort } from 'react-icons/gr';
+
 
 const Button = styled.button`
 	&:hover{
@@ -12,15 +16,16 @@ const Button = styled.button`
 	}
 	cursor: pointer;
   vertical-align: super;
-  background-color: #d9534f;
-  color: white;
+  color: #EB8383;
+	background-color: #F6F4F4;
   border: 0;
+	font-size: 14px;
   border-radius: 5px;
   width: 120px;
-  height: 25px;
+  height: 100%;
   ${props => props.disabled && 
 				  `color: #a2a199;
-		 background-color: #c7c1c1;
+				  background-color: #F6F4F4;
 		 &:hover {
       opacity: 1;
 		  cursor: default
@@ -29,13 +34,16 @@ const Button = styled.button`
 `
 
 const App = () => {
+	let currentDate = new Date().toJSON().slice(0,10)
+	console.log(currentDate)
 	const [list, setList] = useState([])
 	const [activePage, setActive] = useState(1)
 	const [itemsToShow, setItemsToShow] = useState(8)
-	const [dueDate, setDueDate] = useState('')
+	const [dueDate, setDueDate] = useState(currentDate)
 	const filterDropdownItemsRef = useRef(null)
 	const filterDropdownBtn = useRef(null)
 	const [text, setText] = useState('')
+
 
 	const filterData = {
 		az: 'A-Z',
@@ -220,22 +228,21 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<Form handleSubmit={handleSubmit}
-			      text={text} setText={setText}
-			      dueDate={dueDate} setDueDate={setDueDate}
-			      typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}
-			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
-			<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-								listCount={listCount} pageCount={pageCount}
-			           setActive={setActive} itemsToShow={itemsToShow}
-			          setItemsToShow={setItemsToShow}/>
-
 			<div id="checker">
-				<input disabled={!listCount} type="checkbox" id="select-all" name="select-all" checked={checkedAll} onChange={() => tick()}/>
-				<label htmlFor="select-all">Select All</label>
-				<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
+				{/*<input disabled={!listCount} type="checkbox" id="select-all" name="select-all" checked={checkedAll} onChange={() => tick()}/>*/}
+				{/*<label htmlFor="select-all">Select All</label>*/}
+				<div className='select-delete-main-container'>
+					<div className="round">
+						<input type="checkbox" id="checkbox"/>
+						<label htmlFor="checkbox"/>
+						<span>Select All</span>
+					</div>
+					<div className="delete-selected-btn-container">
+						<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
+					</div>
+				</div>
 				<div className="dropdown">
-					<button ref={filterDropdownBtn} onClick={(e)=> showFilterDropDown(e)} className="dropbtn" type="button">{filterDropdown.filterDropdownText} <span>▼</span></button>
+					<button ref={filterDropdownBtn} onClick={(e)=> showFilterDropDown(e)} className="dropbtn" type="button"><GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span> </button>
 					<div ref={filterDropdownItemsRef} className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 						<div className={"dropdown-items"}>
 							{filterDropdown.filterDropdownData.map(item => {
@@ -247,10 +254,20 @@ const App = () => {
 					</div>
 				</div>
 			</div>
+			<Categories typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}/>
+			<Form handleSubmit={handleSubmit}
+			      text={text} setText={setText}
+			      dueDate={dueDate} setDueDate={setDueDate}
+			      typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}
+			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
+			{/*<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}*/}
+			{/*					listCount={listCount} pageCount={pageCount}*/}
+			{/*           setActive={setActive} itemsToShow={itemsToShow}*/}
+			{/*          setItemsToShow={setItemsToShow}/>*/}
 
 			<List paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 						activePage={activePage} setActive={setActive}
-			      list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>
+			      list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr} priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			            pageCount={pageCount} activePage={activePage} setActive={setActive}
 			            changePage={changePage}/>
