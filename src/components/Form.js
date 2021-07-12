@@ -14,12 +14,12 @@ const StyledForm = styled.form`
 	
 	@media (max-width: 800px){
 		flex-direction: column;
-    min-height: 150px;
-    width: 360px;
+    //min-height: 150px;
+    width: 382px;
 		justify-content: space-around;
 	}
 	@media (max-width: 450px){
-		width: 85%;
+		width: 90%;
 	}
 `
 
@@ -65,12 +65,27 @@ const Wrapper = styled.div`
 	width: 100%;
 	box-sizing: border-box;
 	align-items: flex-start;
-  height: 90px;
+  min-height: 90px;
   justify-content: space-around;
 	${props => props.visible === true ? 
 					`display: flex;`
 					: `display: none;`
 		
+  };
+
+  @media (max-width: 800px){
+		&{
+			padding: 10px;
+			gap: 5px;
+		}
+	  & .row1{
+		  flex-direction: column;
+		  gap: 5px;
+	  }
+    & .row2{
+      flex-direction: column;
+	    gap: 5px;
+    }
   }
 	
 	& label{

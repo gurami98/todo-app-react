@@ -27,6 +27,13 @@ const Container = styled.div`
     flex-direction: row;
     column-gap: 10px;		
 		padding-bottom: 2px;
+		box-sizing: border-box;
+	@media (max-width: 800px){
+		&{
+			width: 90%;
+			margin: 20px 20px 0;
+		}
+	}
 `
 
 const Button = styled.button`
