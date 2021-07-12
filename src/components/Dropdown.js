@@ -4,6 +4,9 @@ import { useEffect } from "react";
 const Container = styled.div`
 	display: flex;
 	flex-direction: row;
+	& span{
+		color: #2794BD;
+	}
 `
 
 const DropDownMenu = styled.select`

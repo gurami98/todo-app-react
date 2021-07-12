@@ -1,16 +1,12 @@
 import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
+import {useRef, useState } from "react";
 
 const StyledForm = styled.form`
 	width: 522px;
   display: flex;
   flex-direction: column;
 	flex-wrap: wrap;
-  //margin: 10px;
-  //padding: 10px;
-  //border: 1px solid gray;
   border-radius: 3px;	
-	//height: 60px;
 	align-content: space-between;
 	justify-content: flex-start;
 	align-items: flex-start;
@@ -33,10 +29,13 @@ const Input = styled.input`
 	width: 90%;
   height: 25px;
   outline: none;
-  //border: 1px solid gray;
 	border: 0;
 	box-sizing: border-box;
   background-color: transparent;
+	&::placeholder{
+		color: white;
+		font-size: 16px;
+	}
   @media (max-width: 800px){
 	  width: 100%;
     margin-right: 0;
@@ -84,11 +83,12 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 	const dropdownBtn = useRef(null)
 	const dropdownItemsRef2 = useRef(null)
 	const dropdownBtn2 = useRef(null)
+	const formRef = useRef(null)
 
 	const [wrapperVisible, setWrapperVisible] = useState(false)
 
-
 	const myStorage = window.localStorage
+
 
 
 	const handleClickOutside = (e) => {
@@ -98,6 +98,9 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 		}
 		if (dropdownItemsRef2.current && !dropdownBtn2.current.contains(e.target) && !dropdownItemsRef2.current.contains(e.target) && dropdownItemsRef2.current.classList.contains('show')) {
 			setPriorityDropdown({...priorityDropdown, priorityDropdownShow: false})
+		}
+		if (!formRef.current?.contains(e.target)) {
+			setWrapperVisible(false)
 		}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
@@ -154,7 +157,7 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 	}
 
 	return (
-		<StyledForm>
+		<StyledForm ref={formRef}>
 			<div className="input-container">
 				<label onClick={handleToggle}>+</label>
 				<Input onFocus={()=>setWrapperVisible(true)} id='add-item' placeholder='Add a task' autoFocus type="text" value={text} onChange={e => setText(e.target.value)} onKeyDown={handleFormInputKeyPress}/>

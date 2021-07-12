@@ -11,7 +11,7 @@ const ListItem = styled.li`
   list-style-type: none;
   text-align: left;
   border-radius: 3px;
-  padding: 5px 10px;
+  padding: 5px 10px 5px 0;
   margin: 10px 0;
   box-sizing: border-box;
 	background-color: #EBEBEB;
@@ -20,10 +20,11 @@ const ListItem = styled.li`
 		flex-direction: column;
     text-align: center;
   }
-
-  ${props => props.timeLeft < 48 
-          //`border: 2px solid red`
+	
+  ${props => props.timeLeft < 48 &&  
+          `border: 2px solid red`
   }
+  
 `
 
 const CustomDiv = styled.div`
@@ -52,21 +53,22 @@ const CustomDiv = styled.div`
 `
 
 const CustomContentDiv = styled.div`
-	margin-top: 10px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-	align-items: flex-start;
-	padding: 1px 0 1px 0;
-	width: inherit;
-	@media (max-width: 800px){
-		justify-content: center;
-	}
-	
-	${props => props.status === true ?
-					`display: flex`
-					: `display: none`
-	
-	}
+  align-items: flex-start;
+  padding: 1px 0 1px 10px;
+  box-sizing: border-box;
+  width: inherit;
+  @media (max-width: 800px) {
+    justify-content: center;
+  }
+
+  ${props => props.status === true ?
+          `display: flex`
+          : `display: none`
+
+  }
 `
 
 const DetailsButton = styled.button`
@@ -100,7 +102,6 @@ const Button = styled.button`
   &:hover {
     opacity: 0.7;
   }
-  color: #EB8383;
   border-radius: 3px;
   border: 0;
   cursor: pointer;
@@ -115,7 +116,10 @@ const Button = styled.button`
 		`margin: 0 0 0 10px;
 		 color: #2794BD` 		
 	}
-  ${props => props.disabled && props.type === "edit" &&
+  ${props => props.type === "delete" &&
+          `color: #EB8383`
+  }
+  ${props => props.type === "edit" && props.disabled  &&
 		`color: #a2a199;
 		 background-color: #c7c1c1;
 		 &:hover {
@@ -193,10 +197,10 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 	}
 
 	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
+	console.log(hoursLeft)
 	return (
-		<ListItem key={index} className={hoursLeft > 48 ? 'red-overlay' : ''} timeLeft={hoursLeft}>
+		<ListItem key={index} timeLeft={hoursLeft}>
 			<CustomDiv status={detailsShow}>
-				{/*<input type="checkbox" onChange={(e) => markDone(e, index)} checked={item.done}/>*/}
 				<div className="round">
 					<input type="checkbox" id={index} onChange={(e) => markDone(e, index)} checked={item.done}/>
 					<label htmlFor={index}/>
@@ -209,12 +213,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 				}
 				<DetailsButton  onClick={() => showDetails(index)}>Details <MdArrowDropDown className='item-details-icon'/> </DetailsButton>
 				<PriorityContainer priority={item.priority}/>
-				{/*<span>Due: {hoursLeft > 48 ? item.dueDate : hoursLeft > 24 ? 'TOMORROW' : 'TODAY'}</span>*/}
 			</CustomDiv>
-			{/*<CustomDiv>*/}
-			{/*	<Button disabled={beingEdited} type={"delete"} onClick={() => deleteItem(index)}>Delete</Button>*/}
-			{/*	<Button disabled={item.done} type={"edit"} onClick={() => editItem(index)}>Edit</Button>*/}
-			{/*</CustomDiv>*/}
 			<CustomContentDiv status={detailsShow}>
 				<p className='task-type'>To do for: <span >{item.taskType}</span></p>
 				<div className='dates'>

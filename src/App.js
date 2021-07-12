@@ -44,6 +44,8 @@ const App = () => {
 	const filterDropdownBtn = useRef(null)
 	const [text, setText] = useState('')
 
+	const myStorage = window.localStorage
+
 
 	const filterData = {
 		az: 'A-Z',
@@ -63,9 +65,11 @@ const App = () => {
 																												filterDropdownText: defaultFilterText})
 	let defaultTypeText = 'Task Type'
 	const [typeDropdown, setTypeDropdown] = useState({typeDropdownShow: false,
-																										typeDropdownData: ['University', 'Home', 'Work'],
+																										typeDropdownData: ['University', 'Home', 'Work',
+																											...JSON.parse(myStorage.getItem('typeDropdownData'))].filter((item, i, arr)=> arr.indexOf(item) === i),
 																										typeDropdownInput: '',
 																										typeDropdownText: defaultTypeText})
+
 	let defaultPriorityText = 'Choose Priority'
 	const [priorityDropdown, setPriorityDropdown] = useState({priorityDropdownShow: false,
 																														priorityDropdownData: ['Low', 'Normal', 'High'],
@@ -76,12 +80,16 @@ const App = () => {
 
 	const [checkedAll, setCheckedAll] = useState(false)
 
+
+
 	let listCount = list.length
 	let pageCount = Math.ceil(listCount / itemsToShow)
 
 	let startIndex = (activePage - 1) * itemsToShow
 	let endIndex = startIndex + itemsToShow
 	let itemsArr = list.slice(startIndex, endIndex)
+
+
 
 	const showFilterDropDown = (e) => {
 		e.preventDefault();
@@ -147,12 +155,12 @@ const App = () => {
 	document.addEventListener("mousedown", handleClickOutside);
 
 	const handleSubmit = (text) => {
-		//if (text.trim() && typeDropdown.typeDropdownText !== defaultTypeText && priorityDropdown.priorityDropdownText !== defaultPriorityText && dueDate.trim()) {
+		if (text.trim() && typeDropdown.typeDropdownText !== defaultTypeText && priorityDropdown.priorityDropdownText !== defaultPriorityText && dueDate.trim()) {
 			let dateAdded = new Date()
 			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
 
 			let newArr = [...list, {text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
-															priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false, id: new Date().getTime()}]
+															priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false, id: new Date().getTime(), visible: true}]
 
 			setList(newArr)
 			setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
@@ -177,7 +185,7 @@ const App = () => {
 			setActive(pageCount)
 			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
 			setText('')
-		//} else alert('Enter every value needed in form')
+		} else alert('Enter every value needed in form')
 	}
 
 	const changePage = (page) => {
@@ -229,18 +237,22 @@ const App = () => {
 	return (
 		<div className="App">
 			<div id="checker">
-				{/*<input disabled={!listCount} type="checkbox" id="select-all" name="select-all" checked={checkedAll} onChange={() => tick()}/>*/}
-				{/*<label htmlFor="select-all">Select All</label>*/}
 				<div className='select-delete-main-container'>
 					<div className="round">
-						<input type="checkbox" id="checkbox"/>
-						<label htmlFor="checkbox"/>
+						<input type="checkbox" id="select-all" name="select-all" checked={checkedAll} />
+						<label htmlFor="checkbox" onClick={() => tick()}/>
 						<span>Select All</span>
 					</div>
 					<div className="delete-selected-btn-container">
 						<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
 					</div>
 				</div>
+
+				<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+				           listCount={listCount} pageCount={pageCount}
+				           setActive={setActive} itemsToShow={itemsToShow}
+				           setItemsToShow={setItemsToShow}/>
+
 				<div className="dropdown">
 					<button ref={filterDropdownBtn} onClick={(e)=> showFilterDropDown(e)} className="dropbtn" type="button"><GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span> </button>
 					<div ref={filterDropdownItemsRef} className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
@@ -254,20 +266,20 @@ const App = () => {
 					</div>
 				</div>
 			</div>
-			<Categories typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}/>
+
+			<Categories typeDropdown={typeDropdown} list={list} setList={setList}/>
+
 			<Form handleSubmit={handleSubmit}
 			      text={text} setText={setText}
 			      dueDate={dueDate} setDueDate={setDueDate}
 			      typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}
 			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
-			{/*<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}*/}
-			{/*					listCount={listCount} pageCount={pageCount}*/}
-			{/*           setActive={setActive} itemsToShow={itemsToShow}*/}
-			{/*          setItemsToShow={setItemsToShow}/>*/}
+
 
 			<List paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 						activePage={activePage} setActive={setActive}
 			      list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr} priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
+
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			            pageCount={pageCount} activePage={activePage} setActive={setActive}
 			            changePage={changePage}/>

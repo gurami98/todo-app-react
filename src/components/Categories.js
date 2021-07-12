@@ -38,15 +38,37 @@ const Button = styled.button`
 	background-color: #F6F4F4;
 	padding: 5px 10px;
 	border-radius: 6px;
+	
+	&:hover{
+		cursor: pointer;
+		opacity: 0.7;
+	}
 `
 
-const Categories = ({typeDropdown, setTypeDropdown}) => {
+const Categories = ({list, setList, typeDropdown}) => {
+
+	const filterByCategory = (e) => {
+		let tempArr = [...list]
+		if(e.target.innerHTML === 'All Categories'){
+			setList(tempArr.map(item => {
+				return {...item, visible: true}
+			}))
+		}
+		else {
+			setList(tempArr.map(item => {
+				if (item.taskType !== e.target.innerHTML) {
+					return {...item, visible: false}
+				} else return {...item, visible: true}
+			}))
+		}
+	}
 
 	return (
 		<Container>
+			<Button onClick={(e) => filterByCategory(e)}>All Categories</Button>
 			{typeDropdown.typeDropdownData.map((item, index) => {
 				return (
-					<Button key={index}>{item}</Button>
+					<Button key={index} onClick={(e) => filterByCategory(e, index)}>{item}</Button>
 				)
 			})}
 		</Container>

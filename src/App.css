@@ -196,11 +196,11 @@ ul li span{
   border: 1px solid #ccc;
   border-radius: 50%;
   cursor: pointer;
-  height: 25px;
-  width: 25px;
-  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  font-size: 18px;
   color: #2794BD;
-  line-height: 25px;
+  line-height: 18px;
 }
 
 /*#checker input[type="checkbox"]{*/
@@ -325,7 +325,11 @@ ul li span{
 }
 
 #checker .dropbtn{
-  width: 120px;
+  width: 145px;
+}
+
+.hide-item{
+  display: none;
 }
 
 .dropdown.second{
