@@ -63,15 +63,15 @@ const App = () => {
 																												filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
 																																							filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
 																												filterDropdownText: defaultFilterText})
-	let defaultTypeText = 'Task Type'
+	let defaultTypeText = 'University'
 	const [typeDropdown, setTypeDropdown] = useState({typeDropdownShow: false,
 																										typeDropdownData: [...JSON.parse(myStorage.getItem('typeDropdownData'))],
 																										typeDropdownInput: '',
 																										typeDropdownText: defaultTypeText})
 
-	let defaultPriorityText = 'Choose Priority'
+	let defaultPriorityText = 'Medium'
 	const [priorityDropdown, setPriorityDropdown] = useState({priorityDropdownShow: false,
-																														priorityDropdownData: ['Low', 'Normal', 'High'],
+																														priorityDropdownData: ['Low', 'Medium', 'High'],
 																														priorityDropdownDataNumbers: [1, 2, 3],
 																														priorityDropdownText: defaultPriorityText})
 
@@ -154,7 +154,7 @@ const App = () => {
 	document.addEventListener("mousedown", handleClickOutside);
 
 	const handleSubmit = (text) => {
-		if (text.trim() && typeDropdown.typeDropdownText !== defaultTypeText && priorityDropdown.priorityDropdownText !== defaultPriorityText && dueDate.trim()) {
+		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
 			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
 
@@ -164,7 +164,7 @@ const App = () => {
 			setList(newArr)
 			setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
 			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultPriorityText})
-			setDueDate('')
+			setDueDate(currentDate)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
@@ -237,7 +237,7 @@ const App = () => {
 			<div id="checker">
 				<div className='select-delete-main-container'>
 					<div className="round">
-						<input type="checkbox" id="select-all" name="select-all" checked={checkedAll} />
+						<input type="checkbox" id="select-all" name="select-all" checked={checkedAll} readOnly />
 						<label htmlFor="checkbox" onClick={tick}/>
 						<span>Select All</span>
 					</div>
@@ -268,6 +268,7 @@ const App = () => {
 			<Categories typeDropdown={typeDropdown} list={list} setList={setList}/>
 
 			<Form handleSubmit={handleSubmit}
+			      currentDate={currentDate}
 			      text={text} setText={setText}
 			      dueDate={dueDate} setDueDate={setDueDate}
 			      typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}

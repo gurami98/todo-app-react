@@ -22,7 +22,7 @@ const ListItem = styled.li`
   }
 	
   ${props => props.timeLeft < 48 &&  
-          `border: 2px solid red`
+          `background-color: #FFE6E6`
   }
   
 `

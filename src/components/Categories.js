@@ -30,10 +30,15 @@ const Container = styled.div`
 		box-sizing: border-box;
 	@media (max-width: 800px){
 		&{
-			width: 90%;
+			width: 382px;
 			margin: 20px 20px 0;
 		}
 	}
+  @media (max-width: 450px){
+	  &{
+		  width: 90%;
+	  }
+  }
 `
 
 const Button = styled.button`

@@ -81,12 +81,21 @@
   margin-left: 15px;
 }
 
-.row1 input[type="date"] {
+.row2 input[type="date"] {
   color: #2794BD;
   border: 0;
   background-color: transparent;
   outline: none;
-  width: 131px;
+  position: relative;
+  width: 110px;
+}
+
+.row2 input[type="date"]::-webkit-calendar-picker-indicator {
+  margin-inline-start: unset;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding-left: 100%;
 }
 
 .round input[type="checkbox"]:checked + label:after {
@@ -279,6 +288,7 @@ ul li span{
 
 .add-new-item input{
   width: 78px;
+  outline: none;
 }
 
 .add-new-item button{

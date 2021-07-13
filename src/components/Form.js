@@ -25,7 +25,7 @@ const StyledForm = styled.form`
 const Input = styled.input`
   text-indent: 5px;
   border-radius: 5px;
-	width: 90%;
+	width: 75%;
   height: 25px;
   outline: none;
 	border: 0;
@@ -36,7 +36,7 @@ const Input = styled.input`
 		font-size: 16px;
 	}
   @media (max-width: 800px){
-	  width: 100%;
+	  width: 60%;
     margin-right: 0;
   }
 `
@@ -51,7 +51,7 @@ const Button = styled.button`
   border: 0;
 	color: #2794BD;
   background-color: #F6F4F4;
-	margin-left: 30px;
+	//margin-left: 30px;
   @media (max-width: 800px){
 	  margin-left: 0;
   }
@@ -87,7 +87,7 @@ const Wrapper = styled.div`
 	}
 `
 
-const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, priorityDropdown, setPriorityDropdown, dueDate, setDueDate}) => {
+const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, priorityDropdown, setPriorityDropdown, dueDate, setDueDate, currentDate}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
 	const dropdownItemsRef2 = useRef(null)
@@ -170,6 +170,10 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 			<div className="input-container">
 				<label onClick={handleToggle}>+</label>
 				<Input onFocus={()=>setWrapperVisible(true)} id='add-item' placeholder='Add a task' autoFocus type="text" value={text} onChange={e => setText(e.target.value)} onKeyDown={handleFormInputKeyPress}/>
+
+				<Button type='button' onClick={handleFormInput}>
+					Add Task
+				</Button>
 			</div>
 			<Wrapper visible={wrapperVisible}>
 				<div className="row1">
@@ -190,10 +194,6 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 							</div>
 						</div>
 					</div>
-					<div>
-						<label htmlFor="due-date">Due:</label>
-						<input value={dueDate} onChange={(e) => handleDate(e)} type="date" id="due-date" name="due-date"/>
-					</div>
 				</div>
 
 				<div className="row2">
@@ -210,9 +210,10 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 							</div>
 						</div>
 					</div>
-					<Button type='button' onClick={handleFormInput}>
-						Add Task
-					</Button>
+					<div>
+						<label htmlFor="due-date">Due:</label>
+						<input value={dueDate} onChange={(e) => handleDate(e)} type="date" min={currentDate} id="due-date" name="due-date"/>
+					</div>
 				</div>
 
 
