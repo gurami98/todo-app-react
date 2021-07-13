@@ -53,10 +53,11 @@ const Button = styled.button`
 `
 
 const Categories = ({list, setList, typeDropdown}) => {
+	const allCategories = 'All Categories'
 
 	const filterByCategory = (e) => {
 		let tempArr = [...list]
-		if(e.target.innerHTML === 'All Categories'){
+		if(e.target.innerHTML === allCategories){
 			setList(tempArr.map(item => {
 				return {...item, visible: true}
 			}))

@@ -1,7 +1,7 @@
 import './App.css';
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import List from './components/List'
+import TasksList from './components/TasksList'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
 import Dropdown from './components/Dropdown'
@@ -35,7 +35,6 @@ const Button = styled.button`
 
 const App = () => {
 	let currentDate = new Date().toJSON().slice(0,10)
-	console.log(currentDate)
 	const [list, setList] = useState([])
 	const [activePage, setActive] = useState(1)
 	const [itemsToShow, setItemsToShow] = useState(8)
@@ -46,6 +45,7 @@ const App = () => {
 
 	const myStorage = window.localStorage
 
+	if(!myStorage.length) myStorage.setItem('typeDropdownData', JSON.stringify( ['University', 'Home', 'Work']))
 
 	const filterData = {
 		az: 'A-Z',
@@ -65,8 +65,7 @@ const App = () => {
 																												filterDropdownText: defaultFilterText})
 	let defaultTypeText = 'Task Type'
 	const [typeDropdown, setTypeDropdown] = useState({typeDropdownShow: false,
-																										typeDropdownData: ['University', 'Home', 'Work',
-																											...JSON.parse(myStorage.getItem('typeDropdownData'))].filter((item, i, arr)=> arr.indexOf(item) === i),
+																										typeDropdownData: [...JSON.parse(myStorage.getItem('typeDropdownData'))],
 																										typeDropdownInput: '',
 																										typeDropdownText: defaultTypeText})
 
@@ -193,7 +192,6 @@ const App = () => {
 		if(pageCount >= paginationInfo.pagesToShow){
 			if (page <= paginationInfo.pagesToShow) {
 				setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
-				console.log('1')
 			} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
 				setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
 			} else {
@@ -240,11 +238,11 @@ const App = () => {
 				<div className='select-delete-main-container'>
 					<div className="round">
 						<input type="checkbox" id="select-all" name="select-all" checked={checkedAll} />
-						<label htmlFor="checkbox" onClick={() => tick()}/>
+						<label htmlFor="checkbox" onClick={tick}/>
 						<span>Select All</span>
 					</div>
 					<div className="delete-selected-btn-container">
-						<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
+						<Button disabled={!isAnyItemChecked} onClick={deleteSelected}>Delete Selected</Button>
 					</div>
 				</div>
 
@@ -254,7 +252,7 @@ const App = () => {
 				           setItemsToShow={setItemsToShow}/>
 
 				<div className="dropdown">
-					<button ref={filterDropdownBtn} onClick={(e)=> showFilterDropDown(e)} className="dropbtn" type="button"><GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span> </button>
+					<button ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn" type="button"><GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span> </button>
 					<div ref={filterDropdownItemsRef} className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 						<div className={"dropdown-items"}>
 							{filterDropdown.filterDropdownData.map(item => {
@@ -276,9 +274,9 @@ const App = () => {
 			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 
 
-			<List paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-						activePage={activePage} setActive={setActive}
-			      list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr} priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
+			<TasksList paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+			           activePage={activePage} setActive={setActive}
+			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr} priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			            pageCount={pageCount} activePage={activePage} setActive={setActive}

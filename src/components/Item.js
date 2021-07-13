@@ -137,7 +137,7 @@ const Button = styled.button`
   }
 `
 
-const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage, priorityDropdown, setPriorityDropdown}) => {
+const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
@@ -192,12 +192,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		}
 	}
 
-	const showDetails = () => {
-		setDetailsShow(!detailsShow)
-	}
-
 	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
-	console.log(hoursLeft)
 	return (
 		<ListItem key={index} timeLeft={hoursLeft}>
 			<CustomDiv status={detailsShow}>
@@ -211,7 +206,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 						:
 						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
 				}
-				<DetailsButton  onClick={() => showDetails(index)}>Details <MdArrowDropDown className='item-details-icon'/> </DetailsButton>
+				<DetailsButton  onClick={() => setDetailsShow(!detailsShow)}>Details <MdArrowDropDown className='item-details-icon'/> </DetailsButton>
 				<PriorityContainer priority={item.priority}/>
 			</CustomDiv>
 			<CustomContentDiv status={detailsShow}>

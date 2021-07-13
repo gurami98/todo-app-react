@@ -14,7 +14,6 @@ const StyledForm = styled.form`
 	
 	@media (max-width: 800px){
 		flex-direction: column;
-    //min-height: 150px;
     width: 382px;
 		justify-content: space-around;
 	}
@@ -59,7 +58,6 @@ const Button = styled.button`
 `
 
 const Wrapper = styled.div`
-	display: flex;
 	flex-direction: column;
   padding: 10px 10px 10px 50px;
 	width: 100%;
@@ -67,11 +65,7 @@ const Wrapper = styled.div`
 	align-items: flex-start;
   min-height: 90px;
   justify-content: space-around;
-	${props => props.visible === true ? 
-					`display: flex;`
-					: `display: none;`
-		
-  };
+	display: ${props => props.visible ? `flex;` : `none;`};
 
   @media (max-width: 800px){
 		&{
