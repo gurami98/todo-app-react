@@ -95,11 +95,28 @@
   position: absolute;
   right: 0;
   bottom: 0;
+  opacity: 0;
+  z-index: 1;
   padding-left: 100%;
+}
+
+.row2 input[type="date"]:after {
+  content: '';
+  background-image: url('icons/calendar.svg');
+  background-size: 20px 20px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0;
 }
 
 .round input[type="checkbox"]:checked + label:after {
   opacity: 1;
+}
+
+.calendar-container{
+  display: flex;
+  justify-content: center;
 }
 
 ul li .round{

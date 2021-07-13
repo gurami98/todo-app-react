@@ -209,7 +209,7 @@ const Form = ({text, setText, handleSubmit, typeDropdown, setTypeDropdown, prior
 							</div>
 						</div>
 					</div>
-					<div>
+					<div className={"calendar-container"}>
 						<label htmlFor="due-date">Due:</label>
 						<input value={dueDate} onChange={(e) => handleDate(e)} type="date" min={currentDate} id="due-date" name="due-date"/>
 					</div>
