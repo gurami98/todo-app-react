@@ -51,7 +51,6 @@ const Button = styled.button`
   border: 0;
 	color: #2794BD;
   background-color: #F6F4F4;
-	//margin-left: 30px;
   @media (max-width: 800px){
 	  margin-left: 0;
   }
