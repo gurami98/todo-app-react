@@ -239,16 +239,21 @@ const App = () => {
 		setList([...list].map(item => ({...item, done: !checkedAll})))
 	}
 
+	const deleteMethod = async (id) => {
+		const deleteUrl = `http://localhost:3001/todos/${id}`
+		await axios.delete(deleteUrl)
+	}
 	const deleteSelected = async () => {
 		let newArr = [...list]
-		newArr = newArr.filter(item => {
-			return !item.done
-		})
+		await list.forEach(item => item.done && deleteMethod(item._id))
+
+		getList()
+		// newArr = newArr.filter(item => {
+		// 	return !item.done
+		// })
 		listCount = newArr.length
 		pageCount = Math.ceil(listCount / itemsToShow)
-		const deleteUrl = `http://localhost:3001/todos/`
-		await axios.delete(deleteUrl)
-		getList()
+
 		// setList(newArr)
 
 		if(pageCount > activePage){
