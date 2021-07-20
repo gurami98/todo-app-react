@@ -212,17 +212,6 @@ ul li span{
   line-height: 18px;
 }
 
-/*#checker input[type="checkbox"]{*/
-/*  width: 25px;*/
-/*  height: 25px;*/
-/*  margin-right: 5px;*/
-/*}*/
-
-/*#checker label{*/
-/*  vertical-align: top;*/
-/*  margin-right: 10px;*/
-/*}*/
-
 #checker .dropdown{
   height: 26px;
 }
@@ -256,8 +245,6 @@ ul li span{
 .dropdown {
   position: relative;
   display: inline-block;
-  /*margin: 0 auto;*/
-  /*width: 122px;*/
 }
 
 /* Dropdown Content (Hidden by Default) */

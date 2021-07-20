@@ -23,7 +23,7 @@ const ListItem = styled.li`
     text-align: center;
   }
 	
-  ${props => props.timeLeft < 48 &&  
+  ${props => props.deadLine &&  
           `background-color: #FFE6E6`
   }
   
@@ -100,6 +100,9 @@ const PriorityContainer = styled.div`
   }
 `
 
+const editText = 'edit'
+const deleteText = 'delete'
+
 const Button = styled.button`
   &:hover {
     opacity: 0.7;
@@ -114,14 +117,14 @@ const Button = styled.button`
 	@media (max-width: 800px){
 		margin-left: 0;
 	}
-  ${props => props.type === "edit" &&
+  ${props => props.type === editText &&
 		`margin: 0 0 0 10px;
 		 color: #2794BD` 		
 	}
-  ${props => props.type === "delete" &&
+  ${props => props.type === deleteText &&
           `color: #EB8383`
   }
-  ${props => props.type === "edit" && props.disabled  &&
+  ${props => props.type === editText && props.disabled  &&
 		`color: #a2a199;
 		 background-color: #c7c1c1;
 		 &:hover {
@@ -129,7 +132,7 @@ const Button = styled.button`
 		  cursor: default
      }` 
 	}
-  ${props => props.disabled && props.type === "delete" &&
+  ${props => props.disabled && props.type === deleteText &&
           `color: #a2a199;
 		 background-color: #c7c1c1;
 		 &:hover {
@@ -144,8 +147,7 @@ const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, 
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
 	const editItemInDB = async (index, e) => {
-		const editUrl = `http://localhost:3001/todos/${index}`
-		await axios.put(editUrl, {done: e.target.checked})
+		await axios.put(`http://localhost:3001/todo/todos/${index}`, {done: e.target.checked})
 	}
 	const markDone = (e, index) => {
 		editItemInDB(index, e)
@@ -158,13 +160,11 @@ const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, 
 			newArr = newArr.filter(item => {
 				return item._id !== index
 			})
-			const deleteUrl = `http://localhost:3001/todos/${index}`
-			await axios.delete(deleteUrl)
+			await axios.delete(`http://localhost:3001/todo/todos/${index}`)
 			getList()
-			// setList(newArr)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
-			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
+			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
 			else if(!(listCount % itemsToShow) && activePage === paginationInfo.pageNumbers) {
 				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 				setActive(pageCount)
@@ -178,15 +178,8 @@ const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, 
 		setBeingEdited(!beingEdited)
 		if (beingEdited) {
 			if (editText.trim()) {
-				const editUrl = `http://localhost:3001/todos/${index}`
-				await axios.put(editUrl, {text: editText})
+				await axios.put(`http://localhost:3001/todo/todos/${index}`, {text: editText})
 				getList()
-				// let newArr = [...list]
-				// newArr = newArr.map(item => {
-				// 	if (item.id === index) item.text = editText
-				// 	return item
-				// })
-				// setList(newData.data)
 			} else {
 				setBeingEdited(true)
 				alert('Enter some text')
@@ -207,7 +200,7 @@ const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, 
 
 	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
 	return (
-		<ListItem key={index} timeLeft={hoursLeft}>
+		<ListItem key={index} deadLine={hoursLeft < 48}>
 			<CustomDiv status={detailsShow}>
 				<div className="round">
 					<input type="checkbox" id={index} onChange={(e) => markDone(e, index)} checked={item.done}/>

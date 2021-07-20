@@ -57,31 +57,13 @@ const Button = styled.button`
 	}
 `
 
-const Categories = ({list, setList, typeDropdown}) => {
-	const allCategories = 'All Categories'
-
-	const filterByCategory = (e) => {
-		let tempArr = [...list]
-		if(e.target.innerHTML === allCategories){
-			setList(tempArr.map(item => {
-				return {...item, visible: true}
-			}))
-		}
-		else {
-			setList(tempArr.map(item => {
-				if (item.taskType !== e.target.innerHTML) {
-					return {...item, visible: false}
-				} else return {...item, visible: true}
-			}))
-		}
-	}
-
+const Categories = ({setActiveCategory, typeDropdown}) => {
 	return (
 		<Container>
-			<Button onClick={(e) => filterByCategory(e)}>All Categories</Button>
+			<Button onClick={(e) => setActiveCategory(e.target.innerHTML)}>All Categories</Button>
 			{typeDropdown.typeDropdownData.map((item, index) => {
 				return (
-					<Button key={index} onClick={(e) => filterByCategory(e, index)}>{item}</Button>
+					<Button key={index} onClick={(e) => setActiveCategory(e.target.innerHTML)}>{item}</Button>
 				)
 			})}
 		</Container>

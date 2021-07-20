@@ -13,20 +13,21 @@ import axios from 'axios';
 
 
 const Button = styled.button`
-	&:hover{
-		opacity: 0.7;
-	}
-	cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
+
+  cursor: pointer;
   vertical-align: super;
   color: #EB8383;
-	background-color: #F6F4F4;
+  background-color: #F6F4F4;
   border: 0;
-	font-size: 14px;
+  font-size: 14px;
   border-radius: 5px;
   width: 120px;
   height: 100%;
-  ${props => props.disabled && 
-				  `color: #a2a199;
+  ${props => props.disabled &&
+          `color: #a2a199;
 				  background-color: #F6F4F4;
 		 &:hover {
       opacity: 1;
@@ -36,7 +37,7 @@ const Button = styled.button`
 `
 
 const App = () => {
-	let currentDate = new Date().toJSON().slice(0,10)
+	let currentDate = new Date().toJSON().slice(0, 10)
 	const [list, setList] = useState([])
 	const [activePage, setActive] = useState(1)
 	const [itemsToShow, setItemsToShow] = useState(8)
@@ -45,9 +46,12 @@ const App = () => {
 	const filterDropdownBtn = useRef(null)
 	const [text, setText] = useState('')
 
+	const allCategories = 'All Categories'
+	const [activeCategory, setActiveCategory] = useState(allCategories)
+
 	const myStorage = window.localStorage
 
-	if(!myStorage.length) myStorage.setItem('typeDropdownData', JSON.stringify( ['University', 'Home', 'Work']))
+	if (!myStorage.length) myStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
 	const filterData = {
 		az: 'A-Z',
@@ -61,47 +65,48 @@ const App = () => {
 	}
 
 	let defaultFilterText = 'Sort By'
-	const [filterDropdown, setFilterDropdown] = useState({filterDropdownShow: false,
-																												filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
-																																							filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
-																												filterDropdownText: defaultFilterText})
+	const [filterDropdown, setFilterDropdown] = useState({
+		filterDropdownShow: false,
+		filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
+			filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
+		filterDropdownText: defaultFilterText
+	})
 	let defaultTypeText = 'University'
-	const [typeDropdown, setTypeDropdown] = useState({typeDropdownShow: false,
-																										typeDropdownData: [...JSON.parse(myStorage.getItem('typeDropdownData'))],
-																										typeDropdownInput: '',
-																										typeDropdownText: defaultTypeText})
+	const [typeDropdown, setTypeDropdown] = useState({
+		typeDropdownShow: false,
+		typeDropdownData: [...JSON.parse(myStorage.getItem('typeDropdownData'))],
+		typeDropdownInput: '',
+		typeDropdownText: defaultTypeText
+	})
 
 	let defaultPriorityText = 'Medium'
-	const [priorityDropdown, setPriorityDropdown] = useState({priorityDropdownShow: false,
-																														priorityDropdownData: ['Low', 'Medium', 'High'],
-																														priorityDropdownDataNumbers: [1, 2, 3],
-																														priorityDropdownText: defaultPriorityText})
-
+	const [priorityDropdown, setPriorityDropdown] = useState({
+		priorityDropdownShow: false,
+		priorityDropdownData: ['Low', 'Medium', 'High'],
+		priorityDropdownDataNumbers: [1, 2, 3],
+		priorityDropdownText: defaultPriorityText
+	})
+	let listCount = list.length
+	let pageCount = Math.ceil(listCount / itemsToShow)
 	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 
 	const [checkedAll, setCheckedAll] = useState(false)
-
-
-
-	let listCount = list.length
-	let pageCount = Math.ceil(listCount / itemsToShow)
 
 	let startIndex = (activePage - 1) * itemsToShow
 	let endIndex = startIndex + itemsToShow
 	let itemsArr = list.slice(startIndex, endIndex)
 
-	const url = 'http://localhost:3001/todos'
+	const url = 'http://localhost:3001/todo/todos'
 
 	const getList = async () => {
 		try {
 			const response = await fetch(url)
 			const data = await response.json()
 			setList(data)
-		}catch(e){
-			console.log(e)
+		} catch (e) {
+			throw new Error(e)
 		}
 	}
-
 
 	const showFilterDropDown = (e) => {
 		e.preventDefault();
@@ -110,8 +115,12 @@ const App = () => {
 
 	const choseFilterType = (e) => {
 		let tempArr = [...list]
-		setFilterDropdown({...filterDropdown, filterDropdownShow: !filterDropdown.filterDropdownShow, filterDropdownText: e.target.innerHTML})
-		switch(e.target.innerHTML) {
+		setFilterDropdown({
+			...filterDropdown,
+			filterDropdownShow: !filterDropdown.filterDropdownShow,
+			filterDropdownText: e.target.innerHTML
+		})
+		switch (e.target.innerHTML) {
 			case filterData.az:
 				tempArr = tempArr.sort((a, b) => a.text.localeCompare(b.text))
 				setList(tempArr)
@@ -121,27 +130,27 @@ const App = () => {
 				setList(tempArr)
 				break;
 			case filterData.oldest:
-				tempArr = tempArr.sort((a,b) => new Date(a.timeAdded) - new Date(b.timeAdded))
+				tempArr = tempArr.sort((a, b) => new Date(a.timeAdded) - new Date(b.timeAdded))
 				setList(tempArr)
 				break;
 			case filterData.newest:
-				tempArr = tempArr.sort((a,b) => new Date(b.timeAdded) - new Date(a.timeAdded))
+				tempArr = tempArr.sort((a, b) => new Date(b.timeAdded) - new Date(a.timeAdded))
 				setList(tempArr)
 				break;
 			case filterData.dueAsc:
-				tempArr = tempArr.sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate))
+				tempArr = tempArr.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
 				setList(tempArr)
 				break;
 			case filterData.dueDesc:
-				tempArr = tempArr.sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate))
+				tempArr = tempArr.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
 				setList(tempArr)
 				break;
 			case filterData.prioAsc:
-				tempArr = tempArr.sort((a,b) => a.priority - b.priority)
+				tempArr = tempArr.sort((a, b) => a.priority - b.priority)
 				setList(tempArr)
 				break;
 			case filterData.prioDesc:
-				tempArr = tempArr.sort((a,b) => b.priority - a.priority)
+				tempArr = tempArr.sort((a, b) => b.priority - a.priority)
 				setList(tempArr)
 				break;
 			default:
@@ -154,13 +163,14 @@ const App = () => {
 	}, [])
 
 	useEffect(() => {
-
+		let lastPage = pageCount > 6 ? 5: pageCount
+		setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: lastPage })
 		let counter = 0;
 		list.forEach(item => {
-			if(!item.done) setCheckedAll(false)
+			if (!item.done) setCheckedAll(false)
 			else counter++
 		})
-		if(counter === list.length && counter > 0) setCheckedAll(true)
+		if (counter === list.length && counter > 0) setCheckedAll(true)
 	}, [list])
 
 	const handleClickOutside = (e) => {
@@ -172,11 +182,11 @@ const App = () => {
 	document.addEventListener("mousedown", handleClickOutside);
 
 	const addData = async (data) => {
-		try{
+		try {
 			await axios.post(url, data)
 			getList()
-		}catch(e){
-			console.log(e)
+		} catch (e) {
+			throw new Error(e)
 		}
 	}
 
@@ -185,23 +195,22 @@ const App = () => {
 			let dateAdded = new Date()
 			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
 
-			let listData = {text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
-				priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false,
-				// id: new Date().getTime(),
-				visible: true}
+			let listData = {
+				text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
+				priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false
+			}
 
 			addData(listData)
 
 			let newArr = [...list, listData]
 
-			// setList(newArr)
+
 			setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
 			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultPriorityText})
 			setDueDate(currentDate)
 			let listCount = newArr.length
-			console.log(listCount)
 			let pageCount = Math.ceil(listCount / itemsToShow)
-			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
+			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
 			else if (listCount % itemsToShow === 1) {
 				setActive(pageCount)
 				if (pageCount > paginationInfo.endPage) {
@@ -211,23 +220,31 @@ const App = () => {
 						startPage: pageCount - paginationInfo.pagesToShow + 1,
 						pageNumbers: pageCount
 					})
-				}else{
+				} else {
 					setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 				}
 			}
 			setActive(pageCount)
-			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
+			setPaginationInfo({
+				...paginationInfo,
+				endPage: pageCount,
+				startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
+			})
 			setText('')
 		} else alert('Enter every value needed in form')
 	}
 
 	const changePage = (page) => {
 		setActive(page)
-		if(pageCount >= paginationInfo.pagesToShow){
+		if (pageCount >= paginationInfo.pagesToShow) {
 			if (page <= paginationInfo.pagesToShow) {
 				setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
 			} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
-				setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
+				setPaginationInfo({
+					...paginationInfo,
+					endPage: pageCount,
+					startPage: pageCount - paginationInfo.pagesToShow + 1
+				})
 			} else {
 				setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
 			}
@@ -240,38 +257,35 @@ const App = () => {
 	}
 
 	const deleteMethod = async (id) => {
-		const deleteUrl = `http://localhost:3001/todos/${id}`
-		await axios.delete(deleteUrl)
+		await axios.delete(`http://localhost:3001/todo/todos/${id}`)
+		getList()
 	}
 	const deleteSelected = async () => {
 		let newArr = [...list]
 		await list.forEach(item => item.done && deleteMethod(item._id))
 
-		getList()
-		// newArr = newArr.filter(item => {
-		// 	return !item.done
-		// })
 		listCount = newArr.length
 		pageCount = Math.ceil(listCount / itemsToShow)
 
-		// setList(newArr)
-
-		if(pageCount > activePage){
+		if (pageCount > activePage) {
 			setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
-		}
-		else if (!pageCount) {
+		} else if (!pageCount) {
 			setPaginationInfo({...paginationInfo, pageNumbers: 1})
 			setActive(1)
-		}
-		else {
+		} else {
 			setActive(pageCount)
-			setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
+			setPaginationInfo({
+				...paginationInfo,
+				pageNumbers: pageCount,
+				endPage: pageCount,
+				startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
+			})
 		}
 	}
 
 	let isAnyItemChecked = false;
 	list.forEach(item => {
-			if(item.done) isAnyItemChecked = true
+		if (item.done) isAnyItemChecked = true
 	})
 
 	return (
@@ -279,7 +293,7 @@ const App = () => {
 			<div id="checker">
 				<div className='select-delete-main-container'>
 					<div className="round">
-						<input type="checkbox" id="select-all" name="select-all" checked={checkedAll} readOnly />
+						<input type="checkbox" id="select-all" name="select-all" checked={checkedAll} readOnly/>
 						<label htmlFor="checkbox" onClick={tick}/>
 						<span>Select All</span>
 					</div>
@@ -288,18 +302,20 @@ const App = () => {
 					</div>
 				</div>
 
-				<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-				           listCount={listCount} pageCount={pageCount}
-				           setActive={setActive} itemsToShow={itemsToShow}
-				           setItemsToShow={setItemsToShow}/>
+				<Dropdown paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+				          listCount={listCount} pageCount={pageCount}
+				          setActive={setActive} itemsToShow={itemsToShow}
+				          setItemsToShow={setItemsToShow}/>
 
 				<div className="dropdown">
-					<button ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn" type="button"><GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span> </button>
-					<div ref={filterDropdownItemsRef} className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
+					<button ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn" type="button">
+						<GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span></button>
+					<div ref={filterDropdownItemsRef}
+					     className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 						<div className={"dropdown-items"}>
 							{filterDropdown.filterDropdownData.map(item => {
-								return(
-									<p onClick={(e)=>choseFilterType(e)} key={item}>{item}</p>
+								return (
+									<p onClick={(e) => choseFilterType(e)} key={item}>{item}</p>
 								)
 							})}
 						</div>
@@ -307,7 +323,7 @@ const App = () => {
 				</div>
 			</div>
 
-			<Categories typeDropdown={typeDropdown} list={list} setList={setList}/>
+			<Categories setActiveCategory={setActiveCategory} typeDropdown={typeDropdown}/>
 
 			<Form handleSubmit={handleSubmit}
 			      currentDate={currentDate}
@@ -317,16 +333,16 @@ const App = () => {
 			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 
 
-			<TasksList getList={getList}
-								 paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+			<TasksList allCategories={allCategories} activeCategory={activeCategory} getList={getList}
+			           paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			           activePage={activePage} setActive={setActive}
-			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr} priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
+			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>
 
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			            pageCount={pageCount} activePage={activePage} setActive={setActive}
 			            changePage={changePage}/>
 		</div>
-);
+	);
 }
 
 export default App;

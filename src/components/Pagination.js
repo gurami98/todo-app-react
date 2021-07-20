@@ -11,7 +11,7 @@ const CustomPagesDiv = styled.div`
 `
 
 const PageButton = styled.button`
-	text-align: center;
+  text-align: center;
   background-color: white;
   width: auto;
   cursor: pointer;
@@ -19,15 +19,17 @@ const PageButton = styled.button`
   border-width: 1px 1px 1px 0;
   border-color: lightgray;
   border-style: solid;
-	
-	&:nth-of-type(1){
-		border-left: 1px solid lightgray;
-	}
+
+  &:nth-of-type(1) {
+    border-left: 1px solid lightgray;
+  }
+
   &:hover {
     color: white;
     background-color: #409df5;
   }
-  &.active-page{
+
+  &.active-page {
     color: white;
     background-color: #409df5;
   }
@@ -45,10 +47,10 @@ const PageRight = styled(PageButton)`
 const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, setActive, changePage}) => {
 
 	const prevPage = (page) => {
-		if(page > 1) {
+		if (page > 1) {
 			setActive(page - 1)
 
-			if(page >= paginationInfo.pagesToShow) {
+			if (page >= paginationInfo.pagesToShow) {
 				if (page - 1 >= pageCount - paginationInfo.pagesToShow + 1 && page - 1 > paginationInfo.pagesToShow) {
 					setPaginationInfo({
 						...paginationInfo,
@@ -65,11 +67,11 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 	}
 
 	const nextPage = (page) => {
-		if(page < pageCount) {
+		if (page < pageCount) {
 			setActive(page + 1)
 
 
-			if(page >= paginationInfo.pagesToShow) {
+			if (page >= paginationInfo.pagesToShow) {
 				if (activePage + 1 >= pageCount - paginationInfo.pagesToShow + 1 && activePage + 1 > paginationInfo.pagesToShow) {
 					setPaginationInfo({
 						...paginationInfo,
@@ -84,33 +86,36 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 	}
 
 	let pageDecrementBtn = null
-	if(paginationInfo.startPage > 1 && pageCount > 6){
+	if (paginationInfo.startPage > 1 && pageCount > 6) {
 		pageDecrementBtn = <PageButton onClick={() => prevPage(activePage)}> &hellip; </PageButton>
 	}
 
 	let pageIncrementBtn = null
-	if(pageCount > paginationInfo.endPage && pageCount > 6){
+	if (pageCount > paginationInfo.endPage && pageCount > 6) {
 		pageIncrementBtn = <PageButton onClick={() => nextPage(activePage)}> &hellip; </PageButton>
 	}
 
 	let pagesArr = []
-	if(!pageCount) pagesArr.push(<PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
-	                                              key={1}>{1}</PageButton>)
-	else for(let i = paginationInfo.startPage; i <= paginationInfo.endPage; i++){
-			pagesArr.push(<PageButton onClick={() => changePage(i)} className={i === activePage ? "active-page" : ''}
-			                          key={i}>{i}</PageButton>)
+	if (!pageCount) pagesArr.push(<PageButton onClick={() => changePage(1)}
+	                                          className={1 === activePage ? "active-page" : ''}
+	                                          key={1}>{1}</PageButton>)
+	else for (let i = paginationInfo.startPage; i <= paginationInfo.endPage; i++) {
+		pagesArr.push(<PageButton onClick={() => changePage(i)} className={i === activePage ? "active-page" : ''}
+		                          key={i}>{i}</PageButton>)
 	}
 
 	return (
 		<CustomPagesDiv>
 			{pageCount > 1 && <PageLeft onClick={() => prevPage(activePage)}>Prev</PageLeft>}
-			{activePage > paginationInfo.pagesToShow && <PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
-			             key={1}>1</PageButton>}
+			{activePage > paginationInfo.pagesToShow &&
+			<PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
+			            key={1}>1</PageButton>}
 			{pageDecrementBtn}
 			{pagesArr}
 			{pageIncrementBtn}
-			{pageCount > paginationInfo.endPage && <PageButton onClick={() => changePage(pageCount)} className={pageCount === activePage ? "active-page" : ''}
-			                                                   key={pageCount}>{pageCount}</PageButton>}
+			{pageCount > paginationInfo.endPage &&
+			<PageButton onClick={() => changePage(pageCount)} className={pageCount === activePage ? "active-page" : ''}
+			            key={pageCount}>{pageCount}</PageButton>}
 			{pageCount > 1 && <PageRight onClick={() => nextPage(activePage)}>Next</PageRight>}
 		</CustomPagesDiv>
 	)
