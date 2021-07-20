@@ -15,13 +15,14 @@ const UnorderedList = styled.ul`
   }
 `
 
-const TasksList = ({paginationInfo, setPaginationInfo, list, setList, itemsArr, setActive, itemsToShow, activePage, priorityDropdown, setPriorityDropdown }) => {
+const TasksList = ({getList, paginationInfo, setPaginationInfo, list, setList, itemsArr, setActive, itemsToShow, activePage, priorityDropdown, setPriorityDropdown }) => {
 
 	let ItemsArray = []
 	itemsArr.map(item => item.visible && ItemsArray.push(
-		<Item paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+		<Item getList={getList}
+					paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 		      setActive={setActive} list={list}
-		      setList={setList} item={item} index={item.id} key={item.id} itemsToShow={itemsToShow}
+		      setList={setList} item={item} index={item._id} key={item._id} itemsToShow={itemsToShow}
 		      activePage={activePage}
 		      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 	))

@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { useState } from "react";
 import { MdArrowDropDown } from 'react-icons/md';
 
+import axios from 'axios';
+
 const ListItem = styled.li`
   display: flex;
   flex-direction: column;
@@ -137,21 +139,29 @@ const Button = styled.button`
   }
 `
 
-const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
+const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
+	const editItemInDB = async (index, e) => {
+		const editUrl = `http://localhost:3001/todos/${index}`
+		await axios.put(editUrl, {done: e.target.checked})
+	}
 	const markDone = (e, index) => {
-		setList([...list].map(item => item.id === index ? {...item, done: e.target.checked} : item))
+		editItemInDB(index, e)
+		setList([...list].map(item => item._id === index ? {...item, done: e.target.checked} : item))
 	}
 
-	const deleteItem = (index) => {
+	const deleteItem = async (index) => {
 		if (window.confirm('Are you sure you want to delete this item')) {
 			let newArr = [...list]
-				newArr = newArr.filter(item => {
-				return item.id !== index
+			newArr = newArr.filter(item => {
+				return item._id !== index
 			})
-			setList(newArr)
+			const deleteUrl = `http://localhost:3001/todos/${index}`
+			await axios.delete(deleteUrl)
+			getList()
+			// setList(newArr)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
@@ -164,16 +174,19 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		}
 	}
 
-	const editItem = (index) => {
+	const editItem = async (index) => {
 		setBeingEdited(!beingEdited)
 		if (beingEdited) {
 			if (editText.trim()) {
-				let newArr = [...list]
-				newArr = newArr.map(item => {
-					if (item.id === index) item.text = editText
-					return item
-				})
-				setList(newArr)
+				const editUrl = `http://localhost:3001/todos/${index}`
+				await axios.put(editUrl, {text: editText})
+				getList()
+				// let newArr = [...list]
+				// newArr = newArr.map(item => {
+				// 	if (item.id === index) item.text = editText
+				// 	return item
+				// })
+				// setList(newData.data)
 			} else {
 				setBeingEdited(true)
 				alert('Enter some text')
@@ -212,7 +225,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 			<CustomContentDiv status={detailsShow}>
 				<p className='task-type'>To do for: <span >{item.taskType}</span></p>
 				<div className='dates'>
-					<p>Added on: <span>{item.timeAdded.toUTCString()}</span></p>
+					<p>Added on: <span>{new Date(item.timeAdded).toUTCString()}</span></p>
 					<p>Due: <span>{item.dueDate}</span></p>
 				</div>
 				<div className='action-btns'>

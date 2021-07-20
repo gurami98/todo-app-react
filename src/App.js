@@ -9,6 +9,8 @@ import Categories from './components/Categories'
 import { MdArrowDropDown } from 'react-icons/md';
 import { GrSort } from 'react-icons/gr';
 
+import axios from 'axios';
+
 
 const Button = styled.button`
 	&:hover{
@@ -88,6 +90,17 @@ const App = () => {
 	let endIndex = startIndex + itemsToShow
 	let itemsArr = list.slice(startIndex, endIndex)
 
+	const url = 'http://localhost:3001/todos'
+
+	const getList = async () => {
+		try {
+			const response = await fetch(url)
+			const data = await response.json()
+			setList(data)
+		}catch(e){
+			console.log(e)
+		}
+	}
 
 
 	const showFilterDropDown = (e) => {
@@ -137,6 +150,11 @@ const App = () => {
 	}
 
 	useEffect(() => {
+		getList()
+	}, [])
+
+	useEffect(() => {
+
 		let counter = 0;
 		list.forEach(item => {
 			if(!item.done) setCheckedAll(false)
@@ -153,19 +171,35 @@ const App = () => {
 	}
 	document.addEventListener("mousedown", handleClickOutside);
 
+	const addData = async (data) => {
+		try{
+			await axios.post(url, data)
+			getList()
+		}catch(e){
+			console.log(e)
+		}
+	}
+
 	const handleSubmit = (text) => {
 		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
 			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
 
-			let newArr = [...list, {text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
-															priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false, id: new Date().getTime(), visible: true}]
+			let listData = {text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
+				priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false,
+				// id: new Date().getTime(),
+				visible: true}
 
-			setList(newArr)
+			addData(listData)
+
+			let newArr = [...list, listData]
+
+			// setList(newArr)
 			setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
 			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultPriorityText})
 			setDueDate(currentDate)
 			let listCount = newArr.length
+			console.log(listCount)
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
 			else if (listCount % itemsToShow === 1) {
@@ -205,14 +239,17 @@ const App = () => {
 		setList([...list].map(item => ({...item, done: !checkedAll})))
 	}
 
-	const deleteSelected = () => {
+	const deleteSelected = async () => {
 		let newArr = [...list]
 		newArr = newArr.filter(item => {
 			return !item.done
 		})
 		listCount = newArr.length
 		pageCount = Math.ceil(listCount / itemsToShow)
-		setList(newArr)
+		const deleteUrl = `http://localhost:3001/todos/`
+		await axios.delete(deleteUrl)
+		getList()
+		// setList(newArr)
 
 		if(pageCount > activePage){
 			setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
@@ -275,7 +312,8 @@ const App = () => {
 			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 
 
-			<TasksList paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
+			<TasksList getList={getList}
+								 paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			           activePage={activePage} setActive={setActive}
 			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr} priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 
