@@ -96,11 +96,11 @@ const App = () => {
 	let endIndex = startIndex + itemsToShow
 	let itemsArr = list.slice(startIndex, endIndex)
 
-	const url = 'http://localhost:3001/todo/todos'
+
 
 	const getList = async () => {
 		try {
-			const response = await fetch(url)
+			const response = await fetch('http://localhost:3001/todo/get-all')
 			const data = await response.json()
 			setList(data)
 		} catch (e) {
@@ -183,7 +183,7 @@ const App = () => {
 
 	const addData = async (data) => {
 		try {
-			await axios.post(url, data)
+			await axios.post('http://localhost:3001/todo/add', data)
 			getList()
 		} catch (e) {
 			throw new Error(e)
@@ -203,7 +203,6 @@ const App = () => {
 			addData(listData)
 
 			let newArr = [...list, listData]
-
 
 			setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
 			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultPriorityText})
@@ -257,13 +256,16 @@ const App = () => {
 	}
 
 	const deleteMethod = async (id) => {
-		await axios.delete(`http://localhost:3001/todo/todos/${id}`)
-		getList()
+		await axios.delete(`http://localhost:3001/todo/delete-item/${id}`)
 	}
-	const deleteSelected = async () => {
-		let newArr = [...list]
-		await list.forEach(item => item.done && deleteMethod(item._id))
 
+	const deleteSelected = async () => {
+		await list.forEach(item => item.done && deleteMethod(item._id))
+		let newArr = [...list]
+		newArr = newArr.filter(item => {
+			return !item.done
+		})
+		setList(newArr)
 		listCount = newArr.length
 		pageCount = Math.ceil(listCount / itemsToShow)
 
@@ -333,7 +335,7 @@ const App = () => {
 			      priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 
 
-			<TasksList allCategories={allCategories} activeCategory={activeCategory} getList={getList}
+			<TasksList allCategories={allCategories} activeCategory={activeCategory}
 			           paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			           activePage={activePage} setActive={setActive}
 			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>

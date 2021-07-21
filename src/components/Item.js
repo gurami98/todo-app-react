@@ -142,12 +142,12 @@ const Button = styled.button`
   }
 `
 
-const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
+const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
 	const editItemInDB = async (index, e) => {
-		await axios.put(`http://localhost:3001/todo/todos/${index}`, {done: e.target.checked})
+		await axios.put(`http://localhost:3001/todo/update-item/${index}`, {done: e.target.checked})
 	}
 	const markDone = (e, index) => {
 		editItemInDB(index, e)
@@ -160,8 +160,8 @@ const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, 
 			newArr = newArr.filter(item => {
 				return item._id !== index
 			})
-			await axios.delete(`http://localhost:3001/todo/todos/${index}`)
-			getList()
+			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
+			setList(newArr)
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
@@ -178,8 +178,13 @@ const Item = ({getList, paginationInfo, setPaginationInfo, list, setList, item, 
 		setBeingEdited(!beingEdited)
 		if (beingEdited) {
 			if (editText.trim()) {
-				await axios.put(`http://localhost:3001/todo/todos/${index}`, {text: editText})
-				getList()
+				await axios.put(`http://localhost:3001/todo/update-item/${index}`, {text: editText})
+				let newArr = [...list]
+				newArr = newArr.map(item => {
+					if (item._id === index) item.text = editText
+					return item
+				})
+				setList(newArr)
 			} else {
 				setBeingEdited(true)
 				alert('Enter some text')
