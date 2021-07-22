@@ -6,10 +6,12 @@ import Form from './components/Form'
 import Pagination from './components/Pagination'
 import Dropdown from './components/Dropdown'
 import Categories from './components/Categories'
+import CustomAlert from "./components/CustomAlert";
 import { MdArrowDropDown } from 'react-icons/md';
 import { GrSort } from 'react-icons/gr';
 
 import axios from 'axios';
+import { logDOM } from "@testing-library/react";
 
 
 const Button = styled.button`
@@ -46,12 +48,19 @@ const App = () => {
 	const filterDropdownBtn = useRef(null)
 	const [text, setText] = useState('')
 
+	const [alertText, setAlertText] = useState('')
+	const [alertVisible, setAlertVisible] = useState(false)
+	const [alertType, setAlertType] = useState('');
+
 	const allCategories = 'All Categories'
 	const [activeCategory, setActiveCategory] = useState(allCategories)
 
 	const myStorage = window.localStorage
 
 	if (!myStorage.length) myStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
+
+	const error = 'error'
+	const success = 'success'
 
 	const filterData = {
 		az: 'A-Z',
@@ -184,9 +193,17 @@ const App = () => {
 	const addData = async (data) => {
 		try {
 			await axios.post('http://localhost:3001/todo/add', data)
+			setAlertVisible(true)
+			setAlertText("Item Succesfully Added!")
+			setAlertType(success)
 			getList()
-		} catch (e) {
-			throw new Error(e)
+			return true
+		}
+		catch (e) {
+			setAlertVisible(true)
+			setAlertText(e.response.data.message)
+			setAlertType(error)
+			return false
 		}
 	}
 
@@ -200,34 +217,35 @@ const App = () => {
 				priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false
 			}
 
-			addData(listData)
-
-			let newArr = [...list, listData]
-
-			setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
-			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultPriorityText})
-			setDueDate(currentDate)
-			let listCount = newArr.length
-			let pageCount = Math.ceil(listCount / itemsToShow)
-			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
-			else if (listCount % itemsToShow === 1) {
-				setActive(pageCount)
-				if (pageCount > paginationInfo.endPage) {
+			addData(listData).then((result)=> {
+				if (result){
+					let newArr = [...list, listData]
+					setTypeDropdown({...typeDropdown, typeDropdownText: defaultTypeText})
+					setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultPriorityText})
+					setDueDate(currentDate)
+					let listCount = newArr.length
+					let pageCount = Math.ceil(listCount / itemsToShow)
+					if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
+					else if (listCount % itemsToShow === 1) {
+						setActive(pageCount)
+						if (pageCount > paginationInfo.endPage) {
+							setPaginationInfo({
+								...paginationInfo,
+								endPage: pageCount,
+								startPage: pageCount - paginationInfo.pagesToShow + 1,
+								pageNumbers: pageCount
+							})
+						} else {
+							setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
+						}
+					}
+					setActive(pageCount)
 					setPaginationInfo({
 						...paginationInfo,
 						endPage: pageCount,
-						startPage: pageCount - paginationInfo.pagesToShow + 1,
-						pageNumbers: pageCount
+						startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
 					})
-				} else {
-					setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
 				}
-			}
-			setActive(pageCount)
-			setPaginationInfo({
-				...paginationInfo,
-				endPage: pageCount,
-				startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
 			})
 			setText('')
 		} else alert('Enter every value needed in form')
@@ -290,6 +308,12 @@ const App = () => {
 		if (item.done) isAnyItemChecked = true
 	})
 
+	useEffect(() => {
+		setTimeout(() => {
+			setAlertVisible(false)
+		}, 3000)
+	}, [alertVisible])
+
 	return (
 		<div className="App">
 			<div id="checker">
@@ -325,6 +349,7 @@ const App = () => {
 				</div>
 			</div>
 
+
 			<Categories setActiveCategory={setActiveCategory} typeDropdown={typeDropdown}/>
 
 			<Form handleSubmit={handleSubmit}
@@ -343,6 +368,8 @@ const App = () => {
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			            pageCount={pageCount} activePage={activePage} setActive={setActive}
 			            changePage={changePage}/>
+
+			{alertVisible && <CustomAlert alertText={alertText} alertType={alertType}/>}
 		</div>
 	);
 }
