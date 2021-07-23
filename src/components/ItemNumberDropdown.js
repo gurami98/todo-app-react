@@ -15,7 +15,7 @@ const DropDownMenu = styled.select`
 
 `
 
-const Dropdown = ({
+const ItemNumberDropdown = ({
 	                  paginationInfo,
 	                  setPaginationInfo,
 	                  itemsToShow,
@@ -54,4 +54,4 @@ const Dropdown = ({
 	)
 }
 
-export default Dropdown
+export default ItemNumberDropdown

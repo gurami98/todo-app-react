@@ -220,7 +220,7 @@ ul li span{
   vertical-align: super;
 }
 
-/* Dropdown Button */
+/* ItemNumberDropdown Button */
 .dropbtn {
   font-size: 14px;
   border: none;
@@ -236,7 +236,7 @@ ul li span{
   float: right;
 }
 
-/* Dropdown button on hover & focus */
+/* ItemNumberDropdown button on hover & focus */
 .dropbtn:hover, .dropbtn:focus {
   opacity: 0.7;
 }
@@ -247,7 +247,7 @@ ul li span{
   display: inline-block;
 }
 
-/* Dropdown Content (Hidden by Default) */
+/* ItemNumberDropdown Content (Hidden by Default) */
 .dropdown-content {
   display: none;
   position: absolute;
