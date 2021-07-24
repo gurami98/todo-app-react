@@ -95,7 +95,8 @@ const App = () => {
 			<div id="checker">
 				<DeleteSelectedBtn list={list} setList={setList} setCheckedAll={setCheckedAll} checkedAll={checkedAll}
 				                   paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo} listCount={listCount}
-				                   pageCount={pageCount} activePage={activePage} setActive={setActive} itemsToShow={itemsToShow}/>
+				                   pageCount={pageCount} activePage={activePage} setActive={setActive} itemsToShow={itemsToShow}
+								   closeAlert={closeAlert} alertInfo={alertInfo} setAlertInfo={setAlertInfo}/>
 
 				<ItemNumberDropdown paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 				                    listCount={listCount} pageCount={pageCount}
@@ -115,7 +116,8 @@ const App = () => {
 			<TasksList allCategories={allCategories} activeCategory={activeCategory}
 			           paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			           activePage={activePage} setActive={setActive}
-			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>
+			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}
+					   closeAlert={closeAlert} alertInfo={alertInfo} setAlertInfo={setAlertInfo}/>
 
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
 			            pageCount={pageCount} activePage={activePage} setActive={setActive}

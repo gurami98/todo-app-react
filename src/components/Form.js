@@ -106,8 +106,8 @@ const Form = ({
 	              paginationInfo,
 	              setPaginationInfo,
 	              setActive,
-								itemsToShow,
-								closeAlert
+				  itemsToShow,
+				  closeAlert
               }) => {
 
 	const [priorityDropdown, setPriorityDropdown] = useState({

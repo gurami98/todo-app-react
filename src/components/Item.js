@@ -142,7 +142,7 @@ const Button = styled.button`
   }
 `
 
-const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage}) => {
+const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage, closeAlert, alertInfo, setAlertInfo}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
@@ -162,6 +162,8 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 			})
 			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
 			setList(newArr)
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Succesfully Removed', alertType: 'success'})
+			closeAlert()
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
@@ -185,6 +187,8 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 					return item
 				})
 				setList(newArr)
+				setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Items Succesfully Edited', alertType: 'success'})
+				closeAlert()
 			} else {
 				setBeingEdited(true)
 				alert('Enter some text')
