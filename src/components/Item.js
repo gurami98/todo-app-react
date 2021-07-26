@@ -147,7 +147,12 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
 	const editItemInDB = async (index, e) => {
-		await axios.put(`http://localhost:3001/todo/update-item/${index}`, {done: e.target.checked})
+		try {
+			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {done: e.target.checked})
+		}catch(e){
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+			closeAlert()
+		}
 	}
 	const markDone = (e, index) => {
 		editItemInDB(index, e)
@@ -160,10 +165,16 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 			newArr = newArr.filter(item => {
 				return item._id !== index
 			})
-			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
+			try{
+				await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
+				setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Succesfully Removed', alertType: 'success'})
+				closeAlert()
+			}catch(e){
+				setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+				closeAlert()
+			}
+
 			setList(newArr)
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Succesfully Removed', alertType: 'success'})
-			closeAlert()
 			let listCount = newArr.length
 			let pageCount = Math.ceil(listCount / itemsToShow)
 			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
@@ -180,15 +191,21 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		setBeingEdited(!beingEdited)
 		if (beingEdited) {
 			if (editText.trim()) {
-				await axios.put(`http://localhost:3001/todo/update-item/${index}`, {text: editText})
+				try {
+					await axios.put(`http://localhost:3001/todo/update-item/${index}`, {text: editText})
+					setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Edited', alertType: 'success'})
+					closeAlert()
+				}catch (e){
+					setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+					closeAlert()
+				}
+
 				let newArr = [...list]
 				newArr = newArr.map(item => {
 					if (item._id === index) item.text = editText
 					return item
 				})
 				setList(newArr)
-				setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Items Succesfully Edited', alertType: 'success'})
-				closeAlert()
 			} else {
 				setBeingEdited(true)
 				alert('Enter some text')

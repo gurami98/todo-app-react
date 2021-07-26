@@ -138,11 +138,7 @@ const Form = ({
 	document.addEventListener("mousedown", handleClickOutside);
 
 	const handleFormInputKeyPress = (e) => {
-		if (e.key === 'Enter') handleFormInput(e)
-	}
-	const handleFormInput = (e) => {
-		handleSubmit(text)
-		e.preventDefault()
+		if (e.key === 'Enter') handleSubmit(e,text)
 	}
 
 	const handleDate = (e) => {
@@ -153,21 +149,8 @@ const Form = ({
 		setWrapperVisible(!wrapperVisible)
 	}
 
-	const addData = async (data) => {
-		try {
-			const resp = await axios.post('http://localhost:3001/todo/add', data)
-			setList([...list, resp.data])
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Succesfully Added', alertType: success})
-			closeAlert()
-			return true
-		} catch (e) {
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: error})
-			closeAlert()
-			return false
-		}
-	}
-
-	const handleSubmit = (text) => {
+	const handleSubmit = async (e,text) => {
+		e.preventDefault()
 		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
 			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
@@ -177,37 +160,41 @@ const Form = ({
 				priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false
 			}
 
-			addData(listData).then((result) => {
-				console.log(result)
-				if (result) {
-					let newArr = [...list, listData]
-					setTypeDropdown({...typeDropdown, typeDropdownText: defaultFormData.defaultTypeText})
-					setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultFormData.defaultPriorityText})
-					setDueDate(currentDate)
-					let listCount = newArr.length
-					let pageCount = Math.ceil(listCount / itemsToShow)
-					if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
-					else if (listCount % itemsToShow === 1) {
-						setActive(pageCount)
-						if (pageCount > paginationInfo.endPage) {
-							setPaginationInfo({
-								...paginationInfo,
-								endPage: pageCount,
-								startPage: pageCount - paginationInfo.pagesToShow + 1,
-								pageNumbers: pageCount
-							})
-						} else {
-							setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
-						}
-					}
+			try {
+				const resp = await axios.post('http://localhost:3001/todo/add', listData)
+				setList([...list, resp.data])
+				setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Added', alertType: success})
+
+				let newArr = [...list, listData]
+				setTypeDropdown({...typeDropdown, typeDropdownText: defaultFormData.defaultTypeText})
+				setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultFormData.defaultPriorityText})
+				setDueDate(currentDate)
+				let listCount = newArr.length
+				let pageCount = Math.ceil(listCount / itemsToShow)
+				if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
+				else if (listCount % itemsToShow === 1) {
 					setActive(pageCount)
-					setPaginationInfo({
-						...paginationInfo,
-						endPage: pageCount,
-						startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
-					})
+					if (pageCount > paginationInfo.endPage) {
+						setPaginationInfo({
+							...paginationInfo,
+							endPage: pageCount,
+							startPage: pageCount - paginationInfo.pagesToShow + 1,
+							pageNumbers: pageCount
+						})
+					} else {
+						setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
+					}
 				}
-			})
+				setActive(pageCount)
+				setPaginationInfo({
+					...paginationInfo,
+					endPage: pageCount,
+					startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
+				})
+			} catch (e) {
+				setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: error})
+			}
+			closeAlert()
 			setText('')
 		} else alert('Enter every value needed in form')
 	}
@@ -219,7 +206,7 @@ const Form = ({
 				<Input onFocus={() => setWrapperVisible(true)} id='add-item' placeholder='Add a task' autoFocus type="text"
 				       value={text} onChange={e => setText(e.target.value)} onKeyDown={handleFormInputKeyPress}/>
 
-				<Button type='button' onClick={handleFormInput}>
+				<Button type='button' onClick={(e)=> handleSubmit(e,text)}>
 					Add Task
 				</Button>
 			</div>

@@ -37,7 +37,6 @@ const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {
 	}
 
 	const handleClickOutside = (e) => {
-		console.log("type click outside")
 		document.removeEventListener("mousedown", handleClickOutside);
 		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
 			setTypeDropdown({

@@ -25,13 +25,13 @@ const App = () => {
 	const allCategories = 'All Categories'
 	const [activeCategory, setActiveCategory] = useState(allCategories)
 
-	const myStorage = window.localStorage
-	if (!myStorage.length) myStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
+	const myStorage = window.localStorage.getItem('typeDropdownData')
+	if (!myStorage) window.localStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
 	// this one is being used by Category component
 	const [typeDropdown, setTypeDropdown] = useState({
 		typeDropdownShow: false,
-		typeDropdownData: [...JSON.parse(myStorage.getItem('typeDropdownData'))],
+		typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
 		typeDropdownInput: '',
 		typeDropdownText: defaultFormData.defaultTypeText
 	}) // form
