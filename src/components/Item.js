@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdArrowDropDown } from 'react-icons/md';
 import '../styles/Item.css'
 
@@ -83,6 +83,7 @@ const DetailsButton = styled.button`
   background-color: #F6F4F4;
   border: 0;
   font-size: 14px;
+  margin-left: 5px;
   border-radius: 5px;
   width: 100px;
   height: 100%;
@@ -140,6 +141,10 @@ const Button = styled.button`
 		  cursor: default
      }`
   }
+`
+
+const EditText = styled.textarea`
+	height: ${props => props.height};
 `
 
 const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage, closeAlert, alertInfo, setAlertInfo}) => {
@@ -206,6 +211,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 					return item
 				})
 				setList(newArr)
+				setEditText(editText.trim())
 			} else {
 				setBeingEdited(true)
 				alert('Enter some text')
@@ -224,6 +230,28 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		}
 	}
 
+	const defaultHeight = 31;
+	const [defaultLineCount, setDefaultLineCount] = useState(Math.ceil(editText.length / 29))
+	const [customHeight, setCustomHeight] = useState(((defaultLineCount - 1) * 19) + defaultHeight)
+
+	useEffect(()=>{
+		const lineCount = Math.ceil(editText.length / 29)
+		if(!lineCount){
+			setCustomHeight(defaultHeight)
+			setDefaultLineCount(1)
+		}
+		else if(lineCount !== defaultLineCount){
+			setCustomHeight(((lineCount - 1) * 19) + defaultHeight)
+			setDefaultLineCount(lineCount)
+		}
+	}, [editText])
+
+	const handleCursor = (e) => {
+		let val = e.target.value;
+		e.target.value = '';
+		e.target.value = val;
+	}
+
 	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
 	return (
 		<ListItem key={index} deadLine={hoursLeft < 48}>
@@ -233,8 +261,8 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 					<label htmlFor={index}/>
 				</div>
 				{
-					beingEdited ? <input onKeyDown={handleKeyPress} autoFocus type="text" id={'li-' + index} value={editText}
-					                     onChange={e => setEditText(e.target.value)}/>
+					beingEdited ? <EditText autoFocus height={customHeight + "px"} className={'editable-span'} onKeyDown={handleKeyPress} type="text" id={'li-' + index} value={editText}
+					                     onChange={e => setEditText(e.target.value)} onFocus={handleCursor}/>
 						:
 						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
 				}
