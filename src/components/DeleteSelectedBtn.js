@@ -1,5 +1,6 @@
 import axios from "axios";
 import styled from "styled-components";
+import '../styles/DeleteSelectedBtn.css'
 
 const Button = styled.button`
   &:hover {
@@ -56,7 +57,7 @@ const DeleteSelectedBtn = ({
 			closeAlert()
 		}
 		let newArr = [...list]
-		newArr = await newArr.map(item => {
+		newArr = newArr.map(item => {
 			item.done = !checkedAll
 			return item
 		})

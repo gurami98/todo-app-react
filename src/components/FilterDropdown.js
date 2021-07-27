@@ -1,6 +1,7 @@
 import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
 import { useRef, useState } from "react";
+import '../styles/FilterDropdown.css'
 
 
 const FilterDropdown = ({list, setList}) => {

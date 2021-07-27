@@ -1,0 +1,77 @@
+.input-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 5px;
+    position: relative;
+    background-color: #EBEBEB;
+    padding: 3px 5px;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.input-container label{
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    font-size: 18px;
+    color: #2794BD;
+    line-height: 18px;
+}
+
+.row1{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.row2{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.row2.dropbtn{
+    margin-left: 15px;
+}
+
+.row2 .second .dropbtn{
+    margin-left: 15px;
+}
+
+.calendar-container{
+    display: flex;
+    justify-content: center;
+}
+
+.row2 input[type="date"] {
+    color: #2794BD;
+    border: 0;
+    background-color: transparent;
+    outline: none;
+    position: relative;
+    width: 110px;
+}
+.row2 input[type="date"]::-webkit-calendar-picker-indicator {
+    margin-inline-start: unset;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    z-index: 1;
+    padding-left: 100%;
+}
+
+.row2 input[type="date"]:after {
+    content: '';
+    background-image: url('../icons/calendar.svg');
+    background-size: 20px 20px;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 0;
+}
+

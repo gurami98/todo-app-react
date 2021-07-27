@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import '../styles/TypeDropdown.css'
 
 
 const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {

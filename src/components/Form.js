@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import TypeDropdown from "./TypeDropdown";
 import PriorityDropdown from "./PriorityDropdown";
+import '../styles/Form.css'
 
 const StyledForm = styled.form`
   width: 522px;

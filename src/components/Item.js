@@ -1,7 +1,7 @@
-import '../App.css';
 import styled from 'styled-components'
 import { useState } from "react";
 import { MdArrowDropDown } from 'react-icons/md';
+import '../styles/Item.css'
 
 import axios from 'axios';
 

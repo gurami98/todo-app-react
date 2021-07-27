@@ -1,0 +1,17 @@
+#checker .dropdown{
+    height: 26px;
+}
+
+#checker .dropbtn svg{
+    float: left;
+}
+
+#checker .dropbtn{
+    vertical-align: super;
+    width: 145px;
+}
+
+#checker .dropdown-content{
+    width: 120px;
+    max-width: 120px;
+}

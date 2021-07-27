@@ -1,0 +1,73 @@
+ul li .round{
+    background-color: transparent;
+}
+
+ul li input[type=checkbox]{
+    margin: 0;
+    width: 20px;
+    height: 20px;
+}
+
+ul li input[type=text]{
+    margin: 0 0 0 0;
+    padding: 0;
+    width: 300px;
+    height: 26px;
+    outline: none;
+    box-sizing: border-box;
+    text-indent: 5px;
+}
+
+ul li span{
+    width: 300px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 26px;
+}
+
+.finished-item{
+    text-decoration: line-through;
+    color: #999999;
+    font-style: italic;
+}
+
+.task-type{
+    margin: 0;
+    padding: 0;
+}
+
+.task-type span{
+    color: #2794BD;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.dates{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.dates p{
+    margin: 0;
+    padding: 0;
+}
+
+.dates span{
+    color: #2794BD;
+    font-weight: bold;
+    margin-left: 0;
+    font-size: 16px;
+}
+
+.action-btns{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+}
+

@@ -1,0 +1,20 @@
+.add-new-item{
+    display: flex;
+}
+
+.add-new-item input{
+    width: 78px;
+    outline: none;
+}
+
+.add-new-item button{
+    background-color: #329ea8;
+    color: white;
+    border: 0;
+    border-radius: 1px;
+}
+
+.add-new-item button:hover{
+    opacity: 0.7;
+    cursor: pointer;
+}
