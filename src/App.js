@@ -168,7 +168,6 @@ const App = () => {
 		setList(newArr)
 	}
 
-
 	const markAsDoneDB = async (e, index) => {
 		try {
 			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {done: e.target.checked})
@@ -201,9 +200,14 @@ const App = () => {
 		setActivePage(activePage)
 	}
 
+	let isAnyItemChecked = false;
+	list.forEach(item => {
+		if (item.done) isAnyItemChecked = true
+	})
+
 	return (
 		<div className="App">
-			<FilterComponent list={list} tickHandler={tickHandler} deleteSelectedHandler={deleteSelectedHandler}  checkedAl={checkedAll}
+			<FilterComponent  isAnyItemChecked={isAnyItemChecked} tickHandler={tickHandler} deleteSelectedHandler={deleteSelectedHandler}  checkedAl={checkedAll}
 			                 itemsToShow={itemsToShow} setItemsToShow={setItemsToShow} setList={setList} setActiveCategory={setActiveCategory}/>
 
 			<Form submitHandler={submitHandler}/>

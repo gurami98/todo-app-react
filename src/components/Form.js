@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
-import axios from "axios";
 import TypeDropdown from "./TypeDropdown";
 import PriorityDropdown from "./PriorityDropdown";
+import CustomButton from "./UIKITS/CustomButton";
 import '../styles/Form.css'
 
 const StyledForm = styled.form`
@@ -47,21 +47,21 @@ const Input = styled.input`
   }
 `
 
-const Button = styled.button`
-  &:hover {
-    opacity: 0.8;
-  }
-
-  cursor: pointer;
-  border-radius: 5px;
-  height: 25px;
-  border: 0;
-  color: #2794BD;
-  background-color: #F6F4F4;
-  @media (max-width: 800px) {
-    margin-left: 0;
-  }
-`
+// const Button = styled.button`
+//   &:hover {
+//     opacity: 0.8;
+//   }
+//
+//   cursor: pointer;
+//   border-radius: 5px;
+//   height: 25px;
+//   border: 0;
+//   color: #2794BD;
+//   background-color: #F6F4F4;
+//   @media (max-width: 800px) {
+//     margin-left: 0;
+//   }
+// `
 
 const Wrapper = styled.div`
   flex-direction: column;
@@ -170,9 +170,9 @@ const Form = ({submitHandler}) => {
 				<Input onFocus={() => setWrapperVisible(true)} id='add-item' placeholder='Add a task' autoFocus type="text"
 				       value={text} onChange={e => setText(e.target.value)} onKeyDown={handleFormInputKeyPress}/>
 
-				<Button type='button' onClick={(e) => handleSubmit(e, text)}>
+				<CustomButton type='button' onClick={(e) => handleSubmit(e, text)}>
 					Add Task
-				</Button>
+				</CustomButton>
 			</div>
 			<Wrapper visible={wrapperVisible}>
 				<div className="row1">

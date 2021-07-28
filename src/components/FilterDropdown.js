@@ -2,6 +2,7 @@ import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
 import { useRef, useState } from "react";
 import '../styles/FilterDropdown.css'
+import CustomButton from "./UIKITS/CustomButton";
 
 
 const FilterDropdown = ({list, setList}) => {
@@ -86,8 +87,8 @@ const FilterDropdown = ({list, setList}) => {
 
 	return (
 		<div className="dropdown">
-			<button ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn" type="button">
-				<GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span></button>
+			<CustomButton filterBtn={true} ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn" type="button">
+				<GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span></CustomButton>
 			<div ref={filterDropdownItemsRef}
 			     className={filterDropdown.filterDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 				<div className={"dropdown-items"}>

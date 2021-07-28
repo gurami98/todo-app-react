@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import CustomButton from "./UIKITS/CustomButton";
 
 const Container = styled.div`  	
 	/* width */
@@ -41,30 +42,30 @@ const Container = styled.div`
   }
 `
 
-const Button = styled.button`
-	margin-top: 10px;
-  color: #2794BD;
-  border: 0;
-  font-size: 14px;
-	min-width: fit-content;
-	background-color: #F6F4F4;
-	padding: 5px 10px;
-	border-radius: 6px;
-	
-	&:hover{
-		cursor: pointer;
-		opacity: 0.7;
-	}
-`
+// const Button = styled.button`
+// 	margin-top: 10px;
+//   color: #2794BD;
+//   border: 0;
+//   font-size: 14px;
+// 	min-width: fit-content;
+// 	background-color: #F6F4F4;
+// 	padding: 5px 10px;
+// 	border-radius: 6px;
+//
+// 	&:hover{
+// 		cursor: pointer;
+// 		opacity: 0.7;
+// 	}
+// `
 
 const Categories = ({setActiveCategory}) => {
 	let typeDropdownItems = JSON.parse(window.localStorage.getItem('typeDropdownData'))
 	return (
 		<Container>
-			<Button onClick={(e) => setActiveCategory(e.target.innerHTML)}>All Categories</Button>
+			<CustomButton categoryBtn={true} onClick={(e) => setActiveCategory(e.target.innerHTML)}>All Categories</CustomButton>
 			{typeDropdownItems.map((item, index) => {
 				return (
-					<Button key={index} onClick={(e) => setActiveCategory(e.target.innerHTML)}>{item}</Button>
+					<CustomButton categoryBtn={true} key={index} onClick={(e) => setActiveCategory(e.target.innerHTML)}>{item}</CustomButton>
 				)
 			})}
 		</Container>

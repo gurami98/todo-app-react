@@ -3,13 +3,13 @@ import ItemNumberDropdown from "./ItemNumberDropdown";
 import FilterDropdown from "./FilterDropdown";
 import Categories from "./Categories";
 
-const FilterComponent = ({list, tickHandler, deleteSelectedHandler, checkedAll, itemsToShow, setItemsToShow, setList, setActiveCategory}) => {
+const FilterComponent = ({isAnyItemChecked, list, tickHandler, deleteSelectedHandler, checkedAll, itemsToShow, setItemsToShow, setList, setActiveCategory}) => {
 
 	return (
 		<>
 			<div id="filter-row1">
 				<DeleteSelectedBtn tickHandler={tickHandler} deleteSelectedHandler={deleteSelectedHandler}
-				                   list={list}  checkedAll={checkedAll}/>
+				                   isAnyItemChecked={isAnyItemChecked}  checkedAll={checkedAll}/>
 
 				<ItemNumberDropdown itemsToShow={itemsToShow} setItemsToShow={setItemsToShow}/>
 
