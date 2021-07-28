@@ -1,14 +1,14 @@
 /* ItemNumberDropdown Button */
-.dropbtn {
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    height: 25px;
-    width: 122px;
-    color: #2794BD;
-    background-color: #F6F4F4;
-}
+/*.dropbtn {*/
+/*    font-size: 14px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    border-radius: 6px;*/
+/*    height: 25px;*/
+/*    width: 122px;*/
+/*    color: #2794BD;*/
+/*    background-color: #F6F4F4;*/
+/*}*/
 
 .dropbtn span{
     float: right;

@@ -1,6 +1,6 @@
 import DeleteSelectedBtn from "./DeleteSelectedBtn";
-import ItemNumberDropdown from "./ItemNumberDropdown";
-import FilterDropdown from "./FilterDropdown";
+import ItemNumberDropdown from "../ItemNumberDropdown";
+import FilterDropdown from "../FilterDropdown";
 import Categories from "./Categories";
 
 const FilterComponent = ({isAnyItemChecked, list, tickHandler, deleteSelectedHandler, checkedAll, itemsToShow, setItemsToShow, setList, setActiveCategory}) => {

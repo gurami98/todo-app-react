@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import '../styles/DeleteSelectedBtn.css'
-import CustomButton from "./UIKITS/CustomButton";
+import '../../styles/DeleteSelectedBtn.css'
+import CustomButton from "../UIKITS/CustomButton";
 
 // const Button = styled.button`
 //   &:hover {

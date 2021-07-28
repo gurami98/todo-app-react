@@ -67,7 +67,7 @@
 
 .row2 input[type="date"]:after {
     content: '';
-    background-image: url('../icons/calendar.svg');
+    background-image: url('src/icons/calendar.svg');
     background-size: 20px 20px;
     width: 20px;
     height: 20px;

@@ -74,4 +74,12 @@ ul li span{
     justify-content: space-evenly;
     width: 100%;
 }
+@media (max-width: 800px){
+    .dates{
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 10px;
+    }
+}
 

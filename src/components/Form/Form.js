@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
-import TypeDropdown from "./TypeDropdown";
-import PriorityDropdown from "./PriorityDropdown";
-import CustomButton from "./UIKITS/CustomButton";
-import '../styles/Form.css'
+import TypeDropdown from "../TypeDropdown";
+import PriorityDropdown from "../PriorityDropdown";
+import CustomButton from "../UIKITS/CustomButton";
+import '../../styles/Form.css'
 
 const StyledForm = styled.form`
   width: 522px;

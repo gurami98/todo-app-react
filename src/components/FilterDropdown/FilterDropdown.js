@@ -1,8 +1,8 @@
 import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
 import { useRef, useState } from "react";
-import '../styles/FilterDropdown.css'
-import CustomButton from "./UIKITS/CustomButton";
+import '../../styles/FilterDropdown.css'
+import CustomButton from "../UIKITS/CustomButton";
 
 
 const FilterDropdown = ({list, setList}) => {

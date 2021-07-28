@@ -2,11 +2,11 @@ import './App.css';
 import './styles/shared/Dropdown.css'
 import './styles/shared/CustomCheckbox.css'
 import { useEffect, useState } from "react";
-import TasksList from './components/TasksList'
-import Form from './components/Form'
-import Pagination from './components/Pagination'
-import CustomAlert from "./components/CustomAlert";
-import FilterComponent from "./components/FilterComponent";
+import TasksList from './components/TasksList/TasksList.js'
+import Form from './components/Form/Form.js'
+import Pagination from './components/Pagination/Pagination.js'
+import CustomAlert from "./components/CustomAlert/CustomAlert";
+import FilterComponent from "./components/FilterComponent/FilterComponent";
 import axios from "axios";
 
 const App = () => {

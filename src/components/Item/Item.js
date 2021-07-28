@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import { useEffect, useState } from "react";
 import { MdArrowDropDown } from 'react-icons/md';
-import '../styles/Item.css'
+import CustomButton from "../UIKITS/CustomButton";
+import './Item.css'
 
 import axios from 'axios';
 
@@ -73,21 +74,21 @@ const CustomContentDiv = styled.div`
   }
 `
 
-const DetailsButton = styled.button`
-  &:hover{
-    opacity: 0.7;
-  }
-  cursor: pointer;
-  vertical-align: super;
-  color: #2794BD;
-  background-color: #F6F4F4;
-  border: 0;
-  font-size: 14px;
-  margin-left: 5px;
-  border-radius: 5px;
-  width: 100px;
-  height: 100%;
-`
+// const DetailsButton = styled.button`
+//   &:hover{
+//     opacity: 0.7;
+//   }
+//   cursor: pointer;
+//   vertical-align: super;
+//   color: #2794BD;
+//   background-color: #F6F4F4;
+//   border: 0;
+//   font-size: 14px;
+//   margin-left: 5px;
+//   border-radius: 5px;
+//   width: 100px;
+//   height: 100%;
+// `
 
 const PriorityContainer = styled.div`
 	height: 18.8px;
@@ -101,47 +102,45 @@ const PriorityContainer = styled.div`
   }
 `
 
-const editText = 'edit'
-const deleteText = 'delete'
 
-const Button = styled.button`
-  &:hover {
-    opacity: 0.7;
-  }
-  border-radius: 3px;
-  border: 0;
-  cursor: pointer;
-  height: 20px;
-	margin-left: auto;
-	background-color: #F6F4F4;
-	
-	@media (max-width: 800px){
-		margin-left: 0;
-	}
-  ${props => props.type === editText &&
-		`margin: 0 0 0 10px;
-		 color: #2794BD` 		
-	}
-  ${props => props.type === deleteText &&
-          `color: #EB8383`
-  }
-  ${props => props.type === editText && props.disabled  &&
-		`color: #a2a199;
-		 background-color: #c7c1c1;
-		 &:hover {
-      opacity: 1;
-		  cursor: default
-     }` 
-	}
-  ${props => props.disabled && props.type === deleteText &&
-          `color: #a2a199;
-		 background-color: #c7c1c1;
-		 &:hover {
-      opacity: 1;
-		  cursor: default
-     }`
-  }
-`
+// const Button = styled.button`
+  // &:hover {
+  //   opacity: 0.7;
+  // }
+  // border-radius: 3px;
+  // border: 0;
+  // cursor: pointer;
+  // height: 20px;
+	// margin-left: auto;
+	// background-color: #F6F4F4;
+	//
+	// @media (max-width: 800px){
+	// 	margin-left: 0;
+	// }
+  // ${props => props.type === editText &&
+	// 	`margin: 0 0 0 10px;
+	// 	 color: #2794BD` 		
+	// }
+  // ${props => props.type === deleteText &&
+  //         `color: #EB8383`
+  // }
+  // ${props => props.type === editText && props.disabled  &&
+	// 	`color: #a2a199;
+	// 	 background-color: #c7c1c1;
+	// 	 &:hover {
+  //     opacity: 1;
+	// 	  cursor: default
+  //    }` 
+	// }
+  // ${props => props.disabled && props.type === deleteText &&
+  //         `color: #a2a199;
+	// 	 background-color: #c7c1c1;
+	// 	 &:hover {
+  //     opacity: 1;
+	// 	  cursor: default
+  //    }`
+  // }
+// `
 
 const EditText = styled.textarea`
 	height: ${props => props.height};
@@ -216,7 +215,7 @@ const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, ind
 						:
 						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
 				}
-				<DetailsButton  onClick={() => setDetailsShow(!detailsShow)}>Details <MdArrowDropDown className='item-details-icon'/> </DetailsButton>
+				<CustomButton detailsBtn={true}  onClick={() => setDetailsShow(!detailsShow)}>Details <MdArrowDropDown className='item-details-icon'/> </CustomButton>
 				<PriorityContainer priority={item.priority}/>
 			</CustomDiv>
 			<CustomContentDiv status={detailsShow}>
@@ -226,8 +225,8 @@ const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, ind
 					<p>Due: <span>{item.dueDate}</span></p>
 				</div>
 				<div className='action-btns'>
-						<Button disabled={beingEdited} type={"delete"} onClick={() => deleteItem(index)}>Delete</Button>
-						<Button disabled={item.done} type={"edit"} onClick={() => editItem(index)}>Edit</Button>
+						<CustomButton disabled={beingEdited} type={"delete"} onClick={() => deleteItem(index)}>Delete</CustomButton>
+						<CustomButton disabled={item.done} type={"edit"} onClick={() => editItem(index)}>Edit</CustomButton>
 				</div>
 			</CustomContentDiv>
 		</ListItem>

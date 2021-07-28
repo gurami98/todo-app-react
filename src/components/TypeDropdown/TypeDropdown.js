@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import '../styles/TypeDropdown.css'
+import '../../styles/TypeDropdown.css'
+import CustomButton from "../UIKITS/CustomButton";
 
 
 const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {
@@ -53,8 +54,8 @@ const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {
 	return (
 		<div className="dropdown">
 			<label>To do for: </label>
-			<button ref={dropdownBtn} onClick={(e) => showDropDown(typeDropdown.typeDropdownText)} className="dropbtn"
-			        type="button">{typeDropdown.typeDropdownText} <span>▼</span></button>
+			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(typeDropdown.typeDropdownText)} className="dropbtn"
+			        type="button">{typeDropdown.typeDropdownText} <span>▼</span></CustomButton>
 			<div ref={dropdownItemsRef}
 			     className={typeDropdown.typeDropdownShow ? "dropdown-content show" : "dropdown-content"}>
 				<div className={"dropdown-items"}>
