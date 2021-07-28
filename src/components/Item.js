@@ -147,48 +147,17 @@ const EditText = styled.textarea`
 	height: ${props => props.height};
 `
 
-const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, itemsToShow, setActive, activePage, closeAlert, alertInfo, setAlertInfo}) => {
+const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, index}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
-	const editItemInDB = async (index, e) => {
-		try {
-			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {done: e.target.checked})
-		}catch(e){
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-			closeAlert()
-		}
-	}
-	const markDone = (e, index) => {
-		editItemInDB(index, e)
-		setList([...list].map(item => item._id === index ? {...item, done: e.target.checked} : item))
-	}
+	const defaultHeight = 31;
+	const [defaultLineCount, setDefaultLineCount] = useState(Math.ceil(editText.length / 29))
+	const [customHeight, setCustomHeight] = useState(((defaultLineCount - 1) * 19) + defaultHeight)
 
 	const deleteItem = async (index) => {
 		if (window.confirm('Are you sure you want to delete this item')) {
-			let newArr = [...list]
-			newArr = newArr.filter(item => {
-				return item._id !== index
-			})
-			try{
-				await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
-				setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Succesfully Removed', alertType: 'success'})
-				closeAlert()
-			}catch(e){
-				setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-				closeAlert()
-			}
-
-			setList(newArr)
-			let listCount = newArr.length
-			let pageCount = Math.ceil(listCount / itemsToShow)
-			if(!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
-			else if(!(listCount % itemsToShow) && activePage === paginationInfo.pageNumbers) {
-				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
-				setActive(pageCount)
-			}else if(!(listCount % itemsToShow) && activePage < paginationInfo.pageNumbers){
-				setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
-			}
+			deleteItemHandler(index)
 		}
 	}
 
@@ -196,21 +165,7 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		setBeingEdited(!beingEdited)
 		if (beingEdited) {
 			if (editText.trim()) {
-				try {
-					await axios.put(`http://localhost:3001/todo/update-item/${index}`, {text: editText})
-					setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Edited', alertType: 'success'})
-					closeAlert()
-				}catch (e){
-					setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-					closeAlert()
-				}
-
-				let newArr = [...list]
-				newArr = newArr.map(item => {
-					if (item._id === index) item.text = editText
-					return item
-				})
-				setList(newArr)
+				editItemHandler(index, editText)
 				setEditText(editText.trim())
 			} else {
 				setBeingEdited(true)
@@ -219,20 +174,13 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		}
 	}
 
-	const handleKeyPress = (e) => {
+	const handleKeyPress = (e, index) => {
 		if (e.key === 'Enter') editItem(index)
 		else if (e.key === 'Escape') {
-			setList(list)
 			setBeingEdited(false)
-			list.forEach(item => {
-				if(item.id === index) setEditText(item.text)
-			})
+			setEditText(item.text)
 		}
 	}
-
-	const defaultHeight = 31;
-	const [defaultLineCount, setDefaultLineCount] = useState(Math.ceil(editText.length / 29))
-	const [customHeight, setCustomHeight] = useState(((defaultLineCount - 1) * 19) + defaultHeight)
 
 	useEffect(()=>{
 		const lineCount = Math.ceil(editText.length / 29)
@@ -252,16 +200,18 @@ const Item = ({paginationInfo, setPaginationInfo, list, setList, item, index, it
 		e.target.value = val;
 	}
 
+
+
 	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
 	return (
 		<ListItem key={index} deadLine={hoursLeft < 48}>
 			<CustomDiv status={detailsShow}>
 				<div className="round">
-					<input type="checkbox" id={index} onChange={(e) => markDone(e, index)} checked={item.done}/>
+					<input type="checkbox" id={index} onChange={(e) => markAsDoneHandler(e, index)} checked={item.done}/>
 					<label htmlFor={index}/>
 				</div>
 				{
-					beingEdited ? <EditText autoFocus height={customHeight + "px"} className={'editable-span'} onKeyDown={handleKeyPress} type="text" id={'li-' + index} value={editText}
+					beingEdited ? <EditText autoFocus height={customHeight + "px"} className={'editable-span'} onKeyDown={(e, index) => handleKeyPress(e, index)} type="text" id={'li-' + index} value={editText}
 					                     onChange={e => setEditText(e.target.value)} onFocus={handleCursor}/>
 						:
 						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>

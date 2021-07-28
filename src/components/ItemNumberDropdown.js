@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { useEffect } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -15,34 +14,13 @@ const DropDownMenu = styled.select`
 
 `
 
-const ItemNumberDropdown = ({
-	                  paginationInfo,
-	                  setPaginationInfo,
-	                  itemsToShow,
-	                  setItemsToShow,
-	                  listCount,
-	                  pageCount,
-	                  setActive
-                  }) => {
+const ItemNumberDropdown = ({itemsToShow, setItemsToShow, }) => {
 
 	const itemNumbers = [2, 4, 5, 8]
 
 	const changeItemsToShow = (e) => {
 		setItemsToShow(parseInt(e.target.value))
 	}
-
-	useEffect(() => {
-		if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
-		else {
-			setPaginationInfo({
-				...paginationInfo,
-				pageNumbers: pageCount,
-				endPage: pageCount,
-				startPage: pageCount > 5 ? pageCount - 4 : 1
-			})
-			setActive(pageCount)
-		}
-	}, [itemsToShow])
 
 	return (
 		<Container>

@@ -14,14 +14,12 @@ const UnorderedList = styled.ul`
   }
 `
 
-const TasksList = ({activeCategory, allCategories, paginationInfo, setPaginationInfo, list, setList, itemsArr, setActive, itemsToShow, activePage, closeAlert, alertInfo, setAlertInfo}) => {
+const TasksList = ({markAsDoneHandler, deleteItemHandler, editItemHandler, activeCategory, allCategories, itemsArr}) => {
 
 	let ItemsArray = []
 	itemsArr.map(item => (item.taskType === activeCategory || activeCategory === allCategories) && ItemsArray.push(
-		<Item paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-		      setActive={setActive} list={list}
-		      setList={setList} item={item} index={item._id} key={item._id} itemsToShow={itemsToShow}
-		      activePage={activePage} closeAlert={closeAlert} alertInfo={alertInfo} setAlertInfo={setAlertInfo}/>
+		<Item  markAsDoneHandler={markAsDoneHandler} editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler}
+					 item={item} index={item._id} key={item._id} />
 	))
 	return (
 		<UnorderedList>

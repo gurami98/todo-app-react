@@ -95,27 +95,25 @@ const Wrapper = styled.div`
   }
 `
 
-const Form = ({
-	              typeDropdown,
-	              setTypeDropdown,
-	              currentDate,
-	              list,
-	              setList,
-	              defaultFormData,
-	              alertInfo,
-	              setAlertInfo,
-	              paginationInfo,
-	              setPaginationInfo,
-	              setActive,
-				  itemsToShow,
-				  closeAlert
-              }) => {
+const Form = ({submitHandler}) => {
+	let currentDate = new Date().toJSON().slice(0, 10)
 
+	const defaultFormData = {
+		defaultTypeText: 'University',
+		defaultPriorityText: 'Medium'
+	}
 	const [priorityDropdown, setPriorityDropdown] = useState({
 		priorityDropdownShow: false,
 		priorityDropdownData: ['Low', 'Medium', 'High'],
 		priorityDropdownDataNumbers: [1, 2, 3],
 		priorityDropdownText: defaultFormData.defaultPriorityText
+	})
+
+	const [typeDropdown, setTypeDropdown] = useState({
+		typeDropdownShow: false,
+		typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
+		typeDropdownInput: '',
+		typeDropdownText: defaultFormData.defaultTypeText
 	})
 
 	const formRef = useRef(null)
@@ -127,9 +125,6 @@ const Form = ({
 
 	const myStorage = window.localStorage
 
-	const error = 'error'
-	const success = 'success'
-
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 		if (!formRef.current?.contains(e.target)) {
@@ -139,7 +134,7 @@ const Form = ({
 	document.addEventListener("mousedown", handleClickOutside);
 
 	const handleFormInputKeyPress = (e) => {
-		if (e.key === 'Enter') handleSubmit(e,text)
+		if (e.key === 'Enter') handleSubmit(e, text)
 	}
 
 	const handleDate = (e) => {
@@ -150,7 +145,7 @@ const Form = ({
 		setWrapperVisible(!wrapperVisible)
 	}
 
-	const handleSubmit = async (e,text) => {
+	const handleSubmit = async (e, text) => {
 		e.preventDefault()
 		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
@@ -160,42 +155,10 @@ const Form = ({
 				text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
 				priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false
 			}
-
-			try {
-				const resp = await axios.post('http://localhost:3001/todo/add', listData)
-				setList([...list, resp.data])
-				setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Added', alertType: success})
-
-				let newArr = [...list, listData]
-				setTypeDropdown({...typeDropdown, typeDropdownText: defaultFormData.defaultTypeText})
-				setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultFormData.defaultPriorityText})
-				setDueDate(currentDate)
-				let listCount = newArr.length
-				let pageCount = Math.ceil(listCount / itemsToShow)
-				if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: 1})
-				else if (listCount % itemsToShow === 1) {
-					setActive(pageCount)
-					if (pageCount > paginationInfo.endPage) {
-						setPaginationInfo({
-							...paginationInfo,
-							endPage: pageCount,
-							startPage: pageCount - paginationInfo.pagesToShow + 1,
-							pageNumbers: pageCount
-						})
-					} else {
-						setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
-					}
-				}
-				setActive(pageCount)
-				setPaginationInfo({
-					...paginationInfo,
-					endPage: pageCount,
-					startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
-				})
-			} catch (e) {
-				setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: error})
-			}
-			closeAlert()
+			submitHandler(listData)
+			setTypeDropdown({...typeDropdown, typeDropdownText: defaultFormData.defaultTypeText})
+			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultFormData.defaultPriorityText})
+			setDueDate(currentDate)
 			setText('')
 		} else alert('Enter every value needed in form')
 	}
@@ -207,7 +170,7 @@ const Form = ({
 				<Input onFocus={() => setWrapperVisible(true)} id='add-item' placeholder='Add a task' autoFocus type="text"
 				       value={text} onChange={e => setText(e.target.value)} onKeyDown={handleFormInputKeyPress}/>
 
-				<Button type='button' onClick={(e)=> handleSubmit(e,text)}>
+				<Button type='button' onClick={(e) => handleSubmit(e, text)}>
 					Add Task
 				</Button>
 			</div>
@@ -217,7 +180,7 @@ const Form = ({
 				</div>
 
 				<div className="row2">
-					<PriorityDropdown priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}  />
+					<PriorityDropdown priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
 
 					<div className={"calendar-container"}>
 						<label htmlFor="due-date">Due:</label>

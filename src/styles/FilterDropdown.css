@@ -1,17 +1,17 @@
-#checker .dropdown{
+#filter-row1 .dropdown{
     height: 26px;
 }
 
-#checker .dropbtn svg{
+#filter-row1 .dropbtn svg{
     float: left;
 }
 
-#checker .dropbtn{
+#filter-row1 .dropbtn{
     vertical-align: super;
     width: 145px;
 }
 
-#checker .dropdown-content{
+#filter-row1 .dropdown-content{
     width: 120px;
     max-width: 120px;
 }

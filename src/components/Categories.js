@@ -57,11 +57,12 @@ const Button = styled.button`
 	}
 `
 
-const Categories = ({setActiveCategory, typeDropdown}) => {
+const Categories = ({setActiveCategory}) => {
+	let typeDropdownItems = JSON.parse(window.localStorage.getItem('typeDropdownData'))
 	return (
 		<Container>
 			<Button onClick={(e) => setActiveCategory(e.target.innerHTML)}>All Categories</Button>
-			{typeDropdown.typeDropdownData.map((item, index) => {
+			{typeDropdownItems.map((item, index) => {
 				return (
 					<Button key={index} onClick={(e) => setActiveCategory(e.target.innerHTML)}>{item}</Button>
 				)

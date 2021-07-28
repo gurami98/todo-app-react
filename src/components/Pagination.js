@@ -70,7 +70,6 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 		if (page < pageCount) {
 			setActive(page + 1)
 
-
 			if (page >= paginationInfo.pagesToShow) {
 				if (activePage + 1 >= pageCount - paginationInfo.pagesToShow + 1 && activePage + 1 > paginationInfo.pagesToShow) {
 					setPaginationInfo({

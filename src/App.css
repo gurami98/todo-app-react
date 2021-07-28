@@ -13,7 +13,7 @@
   margin-top: 50px;
 }
 
-#checker{
+#filter-row1{
   width: 522px;
   justify-content: space-between;
   display: flex;
@@ -29,7 +29,7 @@
   .App {
     width: 100%;
   }
-  #checker{
+  #filter-row1{
     max-width: 90%;
     height: 60px;
     flex-direction: column;

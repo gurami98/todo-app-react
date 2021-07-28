@@ -5,21 +5,13 @@ import { useEffect, useState } from "react";
 import TasksList from './components/TasksList'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
-import ItemNumberDropdown from './components/ItemNumberDropdown'
-import Categories from './components/Categories'
 import CustomAlert from "./components/CustomAlert";
-import DeleteSelectedBtn from "./components/DeleteSelectedBtn";
-import FilterDropdown from "./components/FilterDropdown";
-
-const defaultFormData = {
-	defaultTypeText: 	'University',
-	defaultPriorityText: 'Medium'
-}
+import FilterComponent from "./components/FilterComponent";
+import axios from "axios";
 
 const App = () => {
-	let currentDate = new Date().toJSON().slice(0, 10)
 	const [list, setList] = useState([])
-	const [activePage, setActive] = useState(1)
+	const [activePage, setActivePage] = useState(1)
 	const [itemsToShow, setItemsToShow] = useState(8)
 
 	const [alertInfo, setAlertInfo] = useState({alertText: '', alertVisible: false, alertType: ''})
@@ -30,16 +22,8 @@ const App = () => {
 	const myStorage = window.localStorage.getItem('typeDropdownData')
 	if (!myStorage) window.localStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
-	// this one is being used by Category component
-	const [typeDropdown, setTypeDropdown] = useState({
-		typeDropdownShow: false,
-		typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
-		typeDropdownInput: '',
-		typeDropdownText: defaultFormData.defaultTypeText
-	}) // form
-
 	let listCount = list.length
-	let pageCount = Math.ceil(listCount / itemsToShow)
+	let pageCount = Math.ceil(listCount / itemsToShow) || 1
 	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1}) // pagination
 
 	const [checkedAll, setCheckedAll] = useState(false)
@@ -52,17 +36,42 @@ const App = () => {
 		getList()
 	}, [])
 
-	useEffect(() => {
-		let lastPage = pageCount > 6 ? 5: pageCount
-		setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: lastPage })
+	useEffect(()=>{
 		setCheckedAll(list.every(item => item.done))
 	}, [list])
+
+	useEffect(() => {
+			setPaginationInfo({
+				...paginationInfo,
+				pageNumbers: pageCount,
+				endPage: pageCount,
+				startPage: pageCount > 5 ? pageCount - 4 : 1
+			})
+			setActivePage(pageCount)
+	}, [itemsToShow])
+
+	useEffect(() => {
+		let listCount = list.length
+		let pageCount = Math.ceil(listCount / itemsToShow)
+		setPaginationInfo({
+			...paginationInfo,
+			endPage: pageCount,
+			startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
+		})
+	}, [list.length])
 
 	const getList = async () => {
 		try {
 			const response = await fetch('http://localhost:3001/todo/get-all')
 			const data = await response.json()
 			setList(data)
+			listCount = data.length
+			pageCount = Math.ceil(listCount / itemsToShow)
+			setPaginationInfo({
+				...paginationInfo,
+				endPage: pageCount < 7 ? pageCount : 5,
+				startPage: 1
+			})
 		} catch (e) {
 			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
 			closeAlert()
@@ -76,7 +85,7 @@ const App = () => {
 	}
 
 	const changePage = (page) => {
-		setActive(page)
+		setActivePage(page)
 		if (pageCount >= paginationInfo.pagesToShow) {
 			if (page <= paginationInfo.pagesToShow) {
 				setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
@@ -92,37 +101,118 @@ const App = () => {
 		}
 	}
 
+	const submitHandler = async(listData) => {
+		try {
+			const resp = await axios.post('http://localhost:3001/todo/add', listData)
+			setList([...list, resp.data])
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Added', alertType: 'success'})
+			listCount = [...list, resp.data].length
+			pageCount = Math.ceil(listCount / itemsToShow)
+			setActivePage(pageCount)
+		} catch (e) {
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+		}
+		closeAlert()
+	}
+
+	const tickHandler = async () => {
+		setCheckedAll(!checkedAll)
+		try {
+			await axios.put(`http://localhost:3001/todo/update-item/all`, {done: !checkedAll})
+		} catch (e) {
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+			closeAlert()
+		}
+		let newArr = [...list]
+		newArr = newArr.map(item => {
+			item.done = !checkedAll
+			return item
+		})
+		setList(newArr)
+	}
+
+	const deleteSelectedHandler = async () => {
+		try {
+			await axios.delete(`http://localhost:3001/todo/delete-item/selected`)
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Items Succesfully Removed', alertType: 'success'})
+			closeAlert()
+		} catch (e) {
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+			closeAlert()
+		}
+		let newArr = [...list]
+		newArr = newArr.filter(item => {
+			return !item.done
+		})
+		setList(newArr)
+		listCount = newArr.length
+		pageCount = Math.ceil(listCount / itemsToShow)
+		setActivePage(pageCount)
+	}
+
+	const editItemHandler = async (index, editText) => {
+		try {
+			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {text: editText})
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Edited', alertType: 'success'})
+			closeAlert()
+		}catch (e){
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+			closeAlert()
+		}
+
+		let newArr = [...list]
+		newArr = newArr.map(item => {
+			if (item._id === index) item.text = editText
+			return item
+		})
+		setList(newArr)
+	}
+
+
+	const markAsDoneDB = async (e, index) => {
+		try {
+			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {done: e.target.checked})
+		}catch(e){
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+			closeAlert()
+		}
+	}
+
+	const markAsDoneHandler = (e, index) => {
+		markAsDoneDB(e, index)
+		setList([...list].map(item => item._id === index ? {...item, done: e.target.checked} : item))
+	}
+
+	const deleteItemHandler = async (index) => {
+		let newArr = [...list]
+		newArr = newArr.filter(item => {
+			return item._id !== index
+		})
+		try{
+			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Succesfully Removed', alertType: 'success'})
+			closeAlert()
+		}catch(e){
+			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+			closeAlert()
+		}
+
+		setList(newArr)
+		setActivePage(activePage)
+	}
+
 	return (
 		<div className="App">
-			<div id="checker">
-				<DeleteSelectedBtn list={list} setList={setList} setCheckedAll={setCheckedAll} checkedAll={checkedAll}
-				                   paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo} listCount={listCount}
-				                   pageCount={pageCount} activePage={activePage} setActive={setActive} itemsToShow={itemsToShow}
-								   closeAlert={closeAlert} alertInfo={alertInfo} setAlertInfo={setAlertInfo}/>
+			<FilterComponent list={list} tickHandler={tickHandler} deleteSelectedHandler={deleteSelectedHandler}  checkedAl={checkedAll}
+			                 itemsToShow={itemsToShow} setItemsToShow={setItemsToShow} setList={setList} setActiveCategory={setActiveCategory}/>
 
-				<ItemNumberDropdown paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-				                    listCount={listCount} pageCount={pageCount}
-				                    setActive={setActive} itemsToShow={itemsToShow}
-				                    setItemsToShow={setItemsToShow}/>
+			<Form submitHandler={submitHandler}/>
 
-				<FilterDropdown list={list} setList={setList}/>
-			</div>
-
-			<Categories setActiveCategory={setActiveCategory} typeDropdown={typeDropdown}/>
-
-			<Form defaultFormData={defaultFormData} setList={setList} list={list} alertInfo={alertInfo} setAlertInfo={setAlertInfo}
-			      paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo} closeAlert={closeAlert}
-			      currentDate={currentDate} typeDropdown={typeDropdown} setTypeDropdown={setTypeDropdown}
-			      setActive={setActive} itemsToShow={itemsToShow}/>
-
-			<TasksList allCategories={allCategories} activeCategory={activeCategory}
-			           paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-			           activePage={activePage} setActive={setActive}
-			           list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}
-					   closeAlert={closeAlert} alertInfo={alertInfo} setAlertInfo={setAlertInfo}/>
+			<TasksList editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler} markAsDoneHandler={markAsDoneHandler}
+			           allCategories={allCategories} activeCategory={activeCategory} itemsArr={itemsArr}/>
 
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-			            pageCount={pageCount} activePage={activePage} setActive={setActive}
+			            pageCount={pageCount} activePage={activePage} setActive={setActivePage}
 			            changePage={changePage}/>
 
 			{alertInfo.alertVisible && <CustomAlert {...alertInfo}/>}
