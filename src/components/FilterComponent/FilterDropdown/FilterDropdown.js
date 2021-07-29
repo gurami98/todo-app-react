@@ -18,7 +18,7 @@ const filterData = {
 
 let defaultFilterText = 'Sort By'
 
-const FilterDropdown = ({getTempList, setTempList}) => {
+const FilterDropdown = ({choseFilterType, getTempList, setTempList}) => {
 	const filterDropdownBtn = useRef(null)
 	const filterDropdownItemsRef = useRef(null)
 
@@ -41,7 +41,7 @@ const FilterDropdown = ({getTempList, setTempList}) => {
 			filterDropdownShow: !filterDropdown.filterDropdownShow,
 			filterDropdownText: e.target.innerHTML
 		})
-		switch (e.target.innerHTML) {
+		switch (e.target.innerHTML) {  // gadaitane marto switch
 			case filterData.az:
 				tempArr.sort((a, b) => a.text.localeCompare(b.text))
 				setTempList(tempArr)

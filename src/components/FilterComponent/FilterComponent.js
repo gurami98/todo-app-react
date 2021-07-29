@@ -4,7 +4,7 @@ import FilterDropdown from "./FilterDropdown/FilterDropdown";
 import Categories from "./Categories/Categories";
 import './FilterComponent.css'
 
-const FilterComponent = ({getTempList, setTempList, isAnyItemChecked, selectAllHandler, deleteSelectedHandler, isAllChecked, itemsToShowCount, setItemsToShowCount, setActiveCategory}) => {
+const FilterComponent = ({choseFilterType, getTempList, setTempList, isAnyItemChecked, selectAllHandler, deleteSelectedHandler, isAllChecked, itemsToShowCount, setItemsToShowCount, setActiveCategory}) => {
 
 	return (
 		<>
@@ -14,7 +14,7 @@ const FilterComponent = ({getTempList, setTempList, isAnyItemChecked, selectAllH
 
 				<ItemNumberDropdown itemsToShowCount={itemsToShowCount} setItemsToShowCount={setItemsToShowCount}/>
 
-				<FilterDropdown getTempList={getTempList} setTempList={setTempList}/>
+				<FilterDropdown getTempList={getTempList} setTempList={setTempList} choseFilterType={choseFilterType}/>
 			</div>
 
 			<Categories setActiveCategory={setActiveCategory}/>

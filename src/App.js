@@ -109,7 +109,7 @@ const App = () => {
 			const resp = await axios.post('http://localhost:3001/todo/add', listData)
 			setList([...list, resp.data])
 			alertHandler('Item Successfully Added', 'success')
-			listCount = [...list, resp.data].length
+			listCount++
 			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setActivePage(pageCount)
 		} catch (e) {
@@ -171,9 +171,55 @@ const App = () => {
 	const getTempList = () => [...list]
 	const setTempList = (tempArr) => setList(tempArr)
 
+	const choseFilterType = (e) => {
+		let tempArr = getTempList()
+		setFilterDropdown({
+			...filterDropdown,
+			filterDropdownShow: !filterDropdown.filterDropdownShow,
+			filterDropdownText: e.target.innerHTML
+		})
+		switch (e.target.innerHTML) {
+			case filterData.az:
+				tempArr.sort((a, b) => a.text.localeCompare(b.text))
+				setTempList(tempArr)
+				break;
+			case filterData.za:
+				tempArr.sort((a, b) => b.text.localeCompare(a.text))
+				setTempList(tempArr)
+				break;
+			case filterData.oldest:
+				tempArr.sort((a, b) => new Date(a.timeAdded) - new Date(b.timeAdded))
+				setTempList(tempArr)
+				break;
+			case filterData.newest:
+				tempArr.sort((a, b) => new Date(b.timeAdded) - new Date(a.timeAdded))
+				setTempList(tempArr)
+				break;
+			case filterData.dueAsc:
+				tempArr.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+				setTempList(tempArr)
+				break;
+			case filterData.dueDesc:
+				tempArr.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
+				setTempList(tempArr)
+				break;
+			case filterData.prioAsc:
+				tempArr.sort((a, b) => a.priority - b.priority)
+				setTempList(tempArr)
+				break;
+			case filterData.prioDesc:
+				tempArr.sort((a, b) => b.priority - a.priority)
+				setTempList(tempArr)
+				break;
+			default:
+				break;
+		}
+	}
+
 	return (
 		<div className="App">
-			<FilterComponent getTempList={getTempList} setTempList={setTempList} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
+			<FilterComponent choseFilterType={choseFilterType}
+																				getTempList={getTempList} setTempList={setTempList} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
 			                 deleteSelectedHandler={deleteSelectedHandler}  isAllChecked={isAllChecked} itemsToShowCount={itemsToShowCount}
 			                 setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
 
