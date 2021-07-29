@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import '../../styles/TypeDropdown.css'
-import CustomButton from "../UIKITS/CustomButton";
-
+import './TypeDropdown.css'
+import CustomButton from "../../UIKITS/CustomButton";
+import CustomDropdown from "../../UIKITS/CustomDropdown";
 
 const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {
 	const dropdownItemsRef = useRef(null)
@@ -40,7 +40,7 @@ const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
-		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
+		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target)  && dropdownItemsRef.current.classList.contains('show')) {
 			setTypeDropdown({
 				...typeDropdown,
 				typeDropdownData: [...JSON.parse(myStorage.getItem('typeDropdownData'))],
@@ -56,8 +56,7 @@ const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {
 			<label>To do for: </label>
 			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(typeDropdown.typeDropdownText)} className="dropbtn"
 			        type="button">{typeDropdown.typeDropdownText} <span>▼</span></CustomButton>
-			<div ref={dropdownItemsRef}
-			     className={typeDropdown.typeDropdownShow ? "dropdown-content show" : "dropdown-content"}>
+			<CustomDropdown ref={dropdownItemsRef} show={typeDropdown.typeDropdownShow} className={typeDropdown.typeDropdownShow ? 'show' : ''}>
 				<div className={"dropdown-items"}>
 					{typeDropdown.typeDropdownData.map(item => {
 						return (
@@ -70,7 +69,7 @@ const TypeDropdown = ({setTypeDropdown, typeDropdown, myStorage}) => {
 					       onChange={(e) => handleInputChange(e)}/>
 					<button type="button" autoFocus onClick={handleAddType}>Add</button>
 				</div>
-			</div>
+			</CustomDropdown>
 		</div>
 	)
 }

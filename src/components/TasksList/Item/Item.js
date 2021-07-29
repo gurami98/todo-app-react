@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { useEffect, useState } from "react";
 import { MdArrowDropDown } from 'react-icons/md';
-import CustomButton from "../UIKITS/CustomButton";
+import CustomButton from "../../UIKITS/CustomButton";
 import './Item.css'
-
-import axios from 'axios';
 
 const ListItem = styled.li`
   display: flex;
@@ -26,8 +24,7 @@ const ListItem = styled.li`
 	
   ${props => props.deadLine &&  
           `background-color: #FFE6E6`
-  }
-  
+  }  
 `
 
 const CustomDiv = styled.div`
@@ -74,22 +71,6 @@ const CustomContentDiv = styled.div`
   }
 `
 
-// const DetailsButton = styled.button`
-//   &:hover{
-//     opacity: 0.7;
-//   }
-//   cursor: pointer;
-//   vertical-align: super;
-//   color: #2794BD;
-//   background-color: #F6F4F4;
-//   border: 0;
-//   font-size: 14px;
-//   margin-left: 5px;
-//   border-radius: 5px;
-//   width: 100px;
-//   height: 100%;
-// `
-
 const PriorityContainer = styled.div`
 	height: 18.8px;
 	width: 10px;
@@ -102,55 +83,15 @@ const PriorityContainer = styled.div`
   }
 `
 
-
-// const Button = styled.button`
-  // &:hover {
-  //   opacity: 0.7;
-  // }
-  // border-radius: 3px;
-  // border: 0;
-  // cursor: pointer;
-  // height: 20px;
-	// margin-left: auto;
-	// background-color: #F6F4F4;
-	//
-	// @media (max-width: 800px){
-	// 	margin-left: 0;
-	// }
-  // ${props => props.type === editText &&
-	// 	`margin: 0 0 0 10px;
-	// 	 color: #2794BD` 		
-	// }
-  // ${props => props.type === deleteText &&
-  //         `color: #EB8383`
-  // }
-  // ${props => props.type === editText && props.disabled  &&
-	// 	`color: #a2a199;
-	// 	 background-color: #c7c1c1;
-	// 	 &:hover {
-  //     opacity: 1;
-	// 	  cursor: default
-  //    }` 
-	// }
-  // ${props => props.disabled && props.type === deleteText &&
-  //         `color: #a2a199;
-	// 	 background-color: #c7c1c1;
-	// 	 &:hover {
-  //     opacity: 1;
-	// 	  cursor: default
-  //    }`
-  // }
-// `
-
 const EditText = styled.textarea`
 	height: ${props => props.height};
 `
 
-const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, index}) => {
+const defaultHeight = 31;
+const Item = ({ deleteItemHandler, editItemHandler, item, index}) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
-	const defaultHeight = 31;
 	const [defaultLineCount, setDefaultLineCount] = useState(Math.ceil(editText.length / 29))
 	const [customHeight, setCustomHeight] = useState(((defaultLineCount - 1) * 19) + defaultHeight)
 
@@ -160,11 +101,11 @@ const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, ind
 		}
 	}
 
-	const editItem = async (index) => {
+	const editItem = async (index, params) => {
 		setBeingEdited(!beingEdited)
 		if (beingEdited) {
 			if (editText.trim()) {
-				editItemHandler(index, editText)
+				editItemHandler(index, params)
 				setEditText(editText.trim())
 			} else {
 				setBeingEdited(true)
@@ -174,7 +115,7 @@ const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, ind
 	}
 
 	const handleKeyPress = (e, index) => {
-		if (e.key === 'Enter') editItem(index)
+		if (e.key === 'Enter') editItem(index, {text: editText})
 		else if (e.key === 'Escape') {
 			setBeingEdited(false)
 			setEditText(item.text)
@@ -199,18 +140,17 @@ const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, ind
 		e.target.value = val;
 	}
 
-
-
 	let hoursLeft = (new Date(item.dueDate) - new Date()) / (1000 * 60 * 60)
+
 	return (
 		<ListItem key={index} deadLine={hoursLeft < 48}>
 			<CustomDiv status={detailsShow}>
 				<div className="round">
-					<input type="checkbox" id={index} onChange={(e) => markAsDoneHandler(e, index)} checked={item.done}/>
+					<input type="checkbox" id={index} onChange={(e) => editItemHandler(index, {done: e.target.checked})} checked={item.done}/>
 					<label htmlFor={index}/>
 				</div>
 				{
-					beingEdited ? <EditText autoFocus height={customHeight + "px"} className={'editable-span'} onKeyDown={(e, index) => handleKeyPress(e, index)} type="text" id={'li-' + index} value={editText}
+					beingEdited ? <EditText autoFocus height={customHeight + "px"} className={'editable-span'} onKeyDown={(e) => handleKeyPress(e, index)} type="text" id={'li-' + index} value={editText}
 					                     onChange={e => setEditText(e.target.value)} onFocus={handleCursor}/>
 						:
 						<span className={item.done ? 'finished-item' : ''} onDoubleClick={() => editItem(index)}>{item.text}</span>
@@ -226,7 +166,7 @@ const Item = ({ deleteItemHandler, editItemHandler, markAsDoneHandler, item, ind
 				</div>
 				<div className='action-btns'>
 						<CustomButton disabled={beingEdited} type={"delete"} onClick={() => deleteItem(index)}>Delete</CustomButton>
-						<CustomButton disabled={item.done} type={"edit"} onClick={() => editItem(index)}>Edit</CustomButton>
+						<CustomButton disabled={item.done} type={"edit"} onClick={() => editItem(index, {text: editText})}>Edit</CustomButton>
 				</div>
 			</CustomContentDiv>
 		</ListItem>

@@ -1,4 +1,4 @@
-import Item from '../Item/Item.js'
+import Item from './Item/Item.js'
 import styled from 'styled-components'
 
 const UnorderedList = styled.ul`
@@ -14,17 +14,25 @@ const UnorderedList = styled.ul`
   }
 `
 
-const TasksList = ({markAsDoneHandler, deleteItemHandler, editItemHandler, activeCategory, allCategories, itemsArr}) => {
+const TasksList = ({itemsToShow, deleteItemHandler, editItemHandler}) => {
 
-	let ItemsArray = []
-	itemsArr.map(item => (item.taskType === activeCategory || activeCategory === allCategories) && ItemsArray.push(
-		<Item  markAsDoneHandler={markAsDoneHandler} editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler}
-					 item={item} index={item._id} key={item._id} />
-	))
-	return (
-		<UnorderedList>
-			{ItemsArray}
-		</UnorderedList>
+	if(itemsToShow.length) {
+		return (
+			<UnorderedList>
+				{
+					itemsToShow.map(item => {
+						return (
+							<Item editItemHandler={editItemHandler}
+							      deleteItemHandler={deleteItemHandler}
+							      item={item} index={item._id} key={item._id}/>
+						)
+					})
+				}
+
+			</UnorderedList>
+		)
+	}else return(
+		<h1>There are no items to show</h1>
 	)
 }
 

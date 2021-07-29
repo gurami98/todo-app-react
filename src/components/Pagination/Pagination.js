@@ -44,11 +44,11 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, setActive, changePage}) => {
+const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, setActivePage, changePage}) => {
 
 	const prevPage = (page) => {
 		if (page > 1) {
-			setActive(page - 1)
+			setActivePage(page - 1)
 
 			if (page >= paginationInfo.pagesToShow) {
 				if (page - 1 >= pageCount - paginationInfo.pagesToShow + 1 && page - 1 > paginationInfo.pagesToShow) {
@@ -68,7 +68,7 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 
 	const nextPage = (page) => {
 		if (page < pageCount) {
-			setActive(page + 1)
+			setActivePage(page + 1)
 
 			if (page >= paginationInfo.pagesToShow) {
 				if (activePage + 1 >= pageCount - paginationInfo.pagesToShow + 1 && activePage + 1 > paginationInfo.pagesToShow) {

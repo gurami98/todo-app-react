@@ -9,36 +9,39 @@ import CustomAlert from "./components/CustomAlert/CustomAlert";
 import FilterComponent from "./components/FilterComponent/FilterComponent";
 import axios from "axios";
 
+const defaultCategory = 'All Categories'
 const App = () => {
 	const [list, setList] = useState([])
 	const [activePage, setActivePage] = useState(1)
-	const [itemsToShow, setItemsToShow] = useState(8)
-
+	const [itemsToShowCount, setItemsToShowCount] = useState(8)
 	const [alertInfo, setAlertInfo] = useState({alertText: '', alertVisible: false, alertType: ''})
-
-	const allCategories = 'All Categories'
-	const [activeCategory, setActiveCategory] = useState(allCategories)
+	const [activeCategory, setActiveCategory] = useState(defaultCategory)
+	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
+	const [isAllChecked, setIsAllChecked] = useState(false)
 
 	const myStorage = window.localStorage.getItem('typeDropdownData')
 	if (!myStorage) window.localStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
-	let listCount = list.length
-	let pageCount = Math.ceil(listCount / itemsToShow) || 1
-	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1}) // pagination
+	let startIndex = (activePage - 1) * itemsToShowCount
+	let endIndex = startIndex + itemsToShowCount
 
-	const [checkedAll, setCheckedAll] = useState(false)
+	let filteredArrByCategory = list.filter(item => (item.taskType === activeCategory || activeCategory === defaultCategory) && item)
+	let itemsToShow = filteredArrByCategory.slice(startIndex, endIndex)
 
-	let startIndex = (activePage - 1) * itemsToShow
-	let endIndex = startIndex + itemsToShow
-	let itemsArr = list.slice(startIndex, endIndex)
+	let listCount = filteredArrByCategory.length
+	let pageCount = Math.ceil(listCount / itemsToShowCount) || 1
 
 	useEffect(() => {
 		getList()
 	}, [])
 
 	useEffect(()=>{
-		setCheckedAll(list.every(item => item.done))
+		setIsAllChecked(list.every(item => item.done))
 	}, [list])
+
+	useState(() => {
+		setActivePage(1)
+	}, [activeCategory])
 
 	useEffect(() => {
 			setPaginationInfo({
@@ -48,17 +51,24 @@ const App = () => {
 				startPage: pageCount > 5 ? pageCount - 4 : 1
 			})
 			setActivePage(pageCount)
-	}, [itemsToShow])
+	}, [itemsToShowCount])
 
 	useEffect(() => {
-		let listCount = list.length
-		let pageCount = Math.ceil(listCount / itemsToShow)
+		let listCount = filteredArrByCategory.length
+		let pageCount = Math.ceil(listCount / itemsToShowCount)
 		setPaginationInfo({
 			...paginationInfo,
 			endPage: pageCount,
-			startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1
+			startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow  : 1
 		})
-	}, [list.length])
+	}, [listCount])
+
+	const alertHandler = (alertText, alertType) => {
+		setAlertInfo({...alertInfo, alertVisible: true, alertText, alertType})
+		setTimeout(() => {
+			setAlertInfo({...alertInfo, alertVisible: false})
+		}, 3000)
+	}
 
 	const getList = async () => {
 		try {
@@ -66,22 +76,15 @@ const App = () => {
 			const data = await response.json()
 			setList(data)
 			listCount = data.length
-			pageCount = Math.ceil(listCount / itemsToShow)
+			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setPaginationInfo({
 				...paginationInfo,
 				endPage: pageCount < 7 ? pageCount : 5,
 				startPage: 1
 			})
 		} catch (e) {
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-			closeAlert()
+			alertHandler(e.response.data.message, 'error')
 		}
-	}
-
-	const closeAlert = () => {
-		setTimeout(() => {
-			setAlertInfo({...alertInfo, alertVisible: false})
-		}, 3000)
 	}
 
 	const changePage = (page) => {
@@ -105,119 +108,81 @@ const App = () => {
 		try {
 			const resp = await axios.post('http://localhost:3001/todo/add', listData)
 			setList([...list, resp.data])
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Added', alertType: 'success'})
+			alertHandler('Item Successfully Added', 'success')
 			listCount = [...list, resp.data].length
-			pageCount = Math.ceil(listCount / itemsToShow)
+			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setActivePage(pageCount)
 		} catch (e) {
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
+			alertHandler(e.response.data.message, 'error')
 		}
-		closeAlert()
 	}
 
-	const tickHandler = async () => {
-		setCheckedAll(!checkedAll)
+	const selectAllHandler = async () => {
+		setIsAllChecked(!isAllChecked)
 		try {
-			await axios.put(`http://localhost:3001/todo/update-item/all`, {done: !checkedAll})
+			await axios.put(`http://localhost:3001/todo/update-item/all`, {done: !isAllChecked})
 		} catch (e) {
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-			closeAlert()
+			alertHandler(e.response.data.message, 'error')
 		}
-		let newArr = [...list]
-		newArr = newArr.map(item => {
-			item.done = !checkedAll
-			return item
-		})
-		setList(newArr)
+		setList(list.map(item =>( {
+			...item,
+			done: !isAllChecked,
+		})))
 	}
 
 	const deleteSelectedHandler = async () => {
 		try {
 			await axios.delete(`http://localhost:3001/todo/delete-item/selected`)
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Items Succesfully Removed', alertType: 'success'})
-			closeAlert()
+			alertHandler('Items Successfully Removed', 'success')
 		} catch (e) {
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-			closeAlert()
+			alertHandler(e.response.data.message, 'error')
 		}
-		let newArr = [...list]
-		newArr = newArr.filter(item => {
-			return !item.done
-		})
+		let newArr = list.filter(item => !item.done)
 		setList(newArr)
 		listCount = newArr.length
-		pageCount = Math.ceil(listCount / itemsToShow)
+		pageCount = Math.ceil(listCount / itemsToShowCount)
 		setActivePage(pageCount)
 	}
 
-	const editItemHandler = async (index, editText) => {
+	const editItemHandler = async (index, params) => {
 		try {
-			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {text: editText})
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Successfully Edited', alertType: 'success'})
-			closeAlert()
+			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {...params})
+			alertHandler('Item Successfully Edited', 'success')
+			setList(list.map(item => item._id === index ? {...item, ...params} : item))
 		}catch (e){
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-			closeAlert()
+			alertHandler(e.response.data.message, 'error')
 		}
-
-		let newArr = [...list]
-		newArr = newArr.map(item => {
-			if (item._id === index) item.text = editText
-			return item
-		})
-		setList(newArr)
-	}
-
-	const markAsDoneDB = async (e, index) => {
-		try {
-			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {done: e.target.checked})
-		}catch(e){
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-			closeAlert()
-		}
-	}
-
-	const markAsDoneHandler = (e, index) => {
-		markAsDoneDB(e, index)
-		setList([...list].map(item => item._id === index ? {...item, done: e.target.checked} : item))
 	}
 
 	const deleteItemHandler = async (index) => {
-		let newArr = [...list]
-		newArr = newArr.filter(item => {
-			return item._id !== index
-		})
 		try{
 			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: 'Item Succesfully Removed', alertType: 'success'})
-			closeAlert()
+			let newArr = list.filter(item => item._id !== index)
+			setList(newArr)
+			setActivePage(activePage)
+			alertHandler('Item Successfully Removed', 'success')
 		}catch(e){
-			setAlertInfo({...alertInfo, alertVisible: true, alertText: e.response.data.message, alertType: 'error'})
-			closeAlert()
+			alertHandler(e.response.data.message, 'error')
 		}
-
-		setList(newArr)
-		setActivePage(activePage)
 	}
 
-	let isAnyItemChecked = false;
-	list.forEach(item => {
-		if (item.done) isAnyItemChecked = true
-	})
+	let isAnyItemChecked = list.some(item => item.done)
+
+	const getTempList = () => [...list]
+	const setTempList = (tempArr) => setList(tempArr)
 
 	return (
 		<div className="App">
-			<FilterComponent  isAnyItemChecked={isAnyItemChecked} tickHandler={tickHandler} deleteSelectedHandler={deleteSelectedHandler}  checkedAl={checkedAll}
-			                 itemsToShow={itemsToShow} setItemsToShow={setItemsToShow} setList={setList} setActiveCategory={setActiveCategory}/>
+			<FilterComponent getTempList={getTempList} setTempList={setTempList} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
+			                 deleteSelectedHandler={deleteSelectedHandler}  isAllChecked={isAllChecked} itemsToShowCount={itemsToShowCount}
+			                 setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
 
 			<Form submitHandler={submitHandler}/>
 
-			<TasksList editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler} markAsDoneHandler={markAsDoneHandler}
-			           allCategories={allCategories} activeCategory={activeCategory} itemsArr={itemsArr}/>
+			<TasksList editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler} itemsToShow={itemsToShow}/>
 
-			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-			            pageCount={pageCount} activePage={activePage} setActive={setActivePage}
-			            changePage={changePage}/>
+			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo} changePage={changePage}
+			            pageCount={pageCount} activePage={activePage} setActivePage={setActivePage}/>
 
 			{alertInfo.alertVisible && <CustomAlert {...alertInfo}/>}
 		</div>

@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import CustomButton from "../UIKITS/CustomButton";
-
+import CustomButton from "../../UIKITS/CustomButton";
+import CustomDropdown from "../../UIKITS/CustomDropdown";
 
 const PriorityDropdown = ({priorityDropdown, setPriorityDropdown}) => {
 	const dropdownItemsRef = useRef(null)
@@ -31,9 +31,9 @@ const PriorityDropdown = ({priorityDropdown, setPriorityDropdown}) => {
 		<div className="dropdown second">
 			<label>Priority: </label>
 			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(priorityDropdown.priorityDropdownText)}
-			        className="dropbtn" type="button">{priorityDropdown.priorityDropdownText} <span>▼</span></CustomButton>
-			<div ref={dropdownItemsRef}
-			     className={priorityDropdown.priorityDropdownShow ? "dropdown-content show" : "dropdown-content"}>
+			        className="dropbtn" type="button">{priorityDropdown.priorityDropdownText} <span>▼</span>
+			</CustomButton>
+			<CustomDropdown ref={dropdownItemsRef} show={priorityDropdown.priorityDropdownShow} className={priorityDropdown.priorityDropdownShow ? 'show' : ''}>
 				<div className={"dropdown-items"}>
 					{priorityDropdown.priorityDropdownData.map(item => {
 						return (
@@ -41,7 +41,7 @@ const PriorityDropdown = ({priorityDropdown, setPriorityDropdown}) => {
 						)
 					})}
 				</div>
-			</div>
+			</CustomDropdown>
 		</div>
 	)
 }

@@ -1,73 +1,20 @@
-/* ItemNumberDropdown Button */
-/*.dropbtn {*/
-/*    font-size: 14px;*/
-/*    border: none;*/
-/*    cursor: pointer;*/
-/*    border-radius: 6px;*/
-/*    height: 25px;*/
-/*    width: 122px;*/
-/*    color: #2794BD;*/
-/*    background-color: #F6F4F4;*/
-/*}*/
-
-.dropbtn span{
-    float: right;
+.dropbtn span {
+ float: right;
 }
 
 /* ItemNumberDropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
-    opacity: 0.7;
+.dropbtn:hover,
+.dropbtn:focus {
+ opacity: 0.7;
 }
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-/* ItemNumberDropdown Content (Hidden by Default) */
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    max-width: 122px;
-    min-width: 122px;
-    right: 0;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-/* Links inside the dropdown */
-.dropdown-content p {
-    color: black;
-    padding: 6px 8px;
-    margin: 0;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-    overflow: hidden;
-    font-size: 14px;
-    text-overflow: ellipsis;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content p:hover {
-    background-color: #ddd;
-    cursor: pointer;
-}
-
-.dropdown-items{
-    overflow-y: auto;
-    height: 100px;
+ position: relative;
+ display: inline-block;
 }
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display:block;}
-
-@media (max-width: 800px){
-    .dropdown-content{
-        left: 50%;
-        transform: translateX(-22%);
-    }
+.show {
+ display: block;
 }
-

@@ -1,19 +1,20 @@
-import DeleteSelectedBtn from "./DeleteSelectedBtn";
-import ItemNumberDropdown from "../ItemNumberDropdown";
-import FilterDropdown from "../FilterDropdown";
-import Categories from "./Categories";
+import DeleteSelectedBtn from "./DeleteSelectedBtn/DeleteSelectedBtn";
+import ItemNumberDropdown from "./ItemNumberDropdown/ItemNumberDropdown";
+import FilterDropdown from "./FilterDropdown/FilterDropdown";
+import Categories from "./Categories/Categories";
+import './FilterComponent.css'
 
-const FilterComponent = ({isAnyItemChecked, list, tickHandler, deleteSelectedHandler, checkedAll, itemsToShow, setItemsToShow, setList, setActiveCategory}) => {
+const FilterComponent = ({getTempList, setTempList, isAnyItemChecked, selectAllHandler, deleteSelectedHandler, isAllChecked, itemsToShowCount, setItemsToShowCount, setActiveCategory}) => {
 
 	return (
 		<>
 			<div id="filter-row1">
-				<DeleteSelectedBtn tickHandler={tickHandler} deleteSelectedHandler={deleteSelectedHandler}
-				                   isAnyItemChecked={isAnyItemChecked}  checkedAll={checkedAll}/>
+				<DeleteSelectedBtn selectAllHandler={selectAllHandler} deleteSelectedHandler={deleteSelectedHandler}
+				                   isAnyItemChecked={isAnyItemChecked}  isAllChecked={isAllChecked}/>
 
-				<ItemNumberDropdown itemsToShow={itemsToShow} setItemsToShow={setItemsToShow}/>
+				<ItemNumberDropdown itemsToShowCount={itemsToShowCount} setItemsToShowCount={setItemsToShowCount}/>
 
-				<FilterDropdown list={list} setList={setList}/>
+				<FilterDropdown getTempList={getTempList} setTempList={setTempList}/>
 			</div>
 
 			<Categories setActiveCategory={setActiveCategory}/>
