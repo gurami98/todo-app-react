@@ -10,6 +10,17 @@ import FilterComponent from "./components/FilterComponent/FilterComponent";
 import axios from "axios";
 
 const defaultCategory = 'All Categories'
+
+const filterData = {
+	az: 'A-Z',
+	za: 'Z-A',
+	oldest: 'Oldest First',
+	newest: 'Newest First',
+	dueAsc: 'Due Ascending',
+	dueDesc: 'Due Descending',
+	prioAsc: 'Priority Asc',
+	prioDesc: 'Priority Desc',
+}
 const App = () => {
 	const [list, setList] = useState([])
 	const [activePage, setActivePage] = useState(1)
@@ -171,45 +182,40 @@ const App = () => {
 	const getTempList = () => [...list]
 	const setTempList = (tempArr) => setList(tempArr)
 
-	const choseFilterType = (e) => {
-		let tempArr = getTempList()
-		setFilterDropdown({
-			...filterDropdown,
-			filterDropdownShow: !filterDropdown.filterDropdownShow,
-			filterDropdownText: e.target.innerHTML
-		})
-		switch (e.target.innerHTML) {
+	const filterHandler = (e) => {
+		let tempArr = [...list]
+		switch (e) {  
 			case filterData.az:
 				tempArr.sort((a, b) => a.text.localeCompare(b.text))
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			case filterData.za:
 				tempArr.sort((a, b) => b.text.localeCompare(a.text))
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			case filterData.oldest:
 				tempArr.sort((a, b) => new Date(a.timeAdded) - new Date(b.timeAdded))
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			case filterData.newest:
 				tempArr.sort((a, b) => new Date(b.timeAdded) - new Date(a.timeAdded))
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			case filterData.dueAsc:
 				tempArr.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			case filterData.dueDesc:
 				tempArr.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			case filterData.prioAsc:
 				tempArr.sort((a, b) => a.priority - b.priority)
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			case filterData.prioDesc:
 				tempArr.sort((a, b) => b.priority - a.priority)
-				setTempList(tempArr)
+				setList(tempArr)
 				break;
 			default:
 				break;
@@ -218,8 +224,7 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<FilterComponent choseFilterType={choseFilterType}
-																				getTempList={getTempList} setTempList={setTempList} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
+			<FilterComponent filterHandler={filterHandler} filterData={filterData} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
 			                 deleteSelectedHandler={deleteSelectedHandler}  isAllChecked={isAllChecked} itemsToShowCount={itemsToShowCount}
 			                 setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
 
