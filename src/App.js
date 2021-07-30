@@ -7,6 +7,8 @@ import Form from './components/Form'
 import Pagination from './components/Pagination'
 import CustomAlert from "./components/CustomAlert";
 import FilterComponent, {filterData} from "./components/FilterComponent";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 
 const defaultCategory = 'All Categories'
@@ -19,6 +21,7 @@ const App = () => {
 	const [activeCategory, setActiveCategory] = useState(defaultCategory)
 	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 	const [isAllChecked, setIsAllChecked] = useState(false)
+	const [Loading, setLoading] = useState(true)
 
 	const myStorage = window.localStorage.getItem('typeDropdownData')
 	if (!myStorage) window.localStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
@@ -75,6 +78,7 @@ const App = () => {
 		try {
 			const response = await fetch('http://localhost:3001/todo/get-all')
 			const data = await response.json()
+			setLoading(false)
 			setList(data)
 			listCount = data.length
 			pageCount = Math.ceil(listCount / itemsToShowCount)
@@ -211,13 +215,18 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<FilterComponent filterHandler={filterHandler} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
-			                 deleteSelectedHandler={deleteSelectedHandler}  isAllChecked={isAllChecked} itemsToShowCount={itemsToShowCount}
+			<FilterComponent filterHandler={filterHandler} isAnyItemChecked={isAnyItemChecked}
+			                 selectAllHandler={selectAllHandler}
+			                 deleteSelectedHandler={deleteSelectedHandler} isAllChecked={isAllChecked}
+			                 itemsToShowCount={itemsToShowCount}
 			                 setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
 
 			<Form submitHandler={submitHandler}/>
 
-			<TasksList editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler} itemsToShow={itemsToShow}/>
+			{
+				!Loading ? <TasksList editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler} itemsToShow={itemsToShow}/> :
+										<FontAwesomeIcon className={'loading-icon'} icon={ faSpinner}/>
+			}
 
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo} changePage={changePage}
 			            pageCount={pageCount} activePage={activePage} setActivePage={setActivePage}/>

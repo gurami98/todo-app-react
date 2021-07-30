@@ -47,22 +47,6 @@ const Input = styled.input`
   }
 `
 
-// const Button = styled.button`
-//   &:hover {
-//     opacity: 0.8;
-//   }
-//
-//   cursor: pointer;
-//   border-radius: 5px;
-//   height: 25px;
-//   border: 0;
-//   color: #2794BD;
-//   background-color: #F6F4F4;
-//   @media (max-width: 800px) {
-//     margin-left: 0;
-//   }
-// `
-
 const Wrapper = styled.div`
   flex-direction: column;
   padding: 10px 10px 10px 50px;
