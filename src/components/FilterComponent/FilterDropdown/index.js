@@ -1,13 +1,13 @@
 import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
 import { useRef, useState } from "react";
-import './FilterDropdown.css'
+import './FilterDropdown.css';
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
-
+import {filterData} from '..';
 let defaultFilterText = 'Sort By'
 
-const FilterDropdown = ({filterHandler, filterData}) => {
+const FilterDropdown = ({filterHandler}) => {
 	const filterDropdownBtn = useRef(null)
 	const filterDropdownItemsRef = useRef(null)
 
@@ -58,4 +58,4 @@ const FilterDropdown = ({filterHandler, filterData}) => {
 	)
 }
 
-export default FilterDropdown
+export default FilterDropdown;

@@ -1,4 +1,4 @@
-import Item from './Item/Item.js'
+import Item from './Item'
 import styled from 'styled-components'
 
 const UnorderedList = styled.ul`

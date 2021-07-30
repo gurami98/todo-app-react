@@ -2,25 +2,15 @@ import './App.css';
 import './styles/shared/Dropdown.css'
 import './styles/shared/CustomCheckbox.css'
 import { useEffect, useState } from "react";
-import TasksList from './components/TasksList/TasksList.js'
-import Form from './components/Form/Form.js'
-import Pagination from './components/Pagination/Pagination.js'
-import CustomAlert from "./components/CustomAlert/CustomAlert";
-import FilterComponent from "./components/FilterComponent/FilterComponent";
+import TasksList from './components/TasksList'
+import Form from './components/Form'
+import Pagination from './components/Pagination'
+import CustomAlert from "./components/CustomAlert";
+import FilterComponent, {filterData} from "./components/FilterComponent";
 import axios from "axios";
 
 const defaultCategory = 'All Categories'
 
-const filterData = {
-	az: 'A-Z',
-	za: 'Z-A',
-	oldest: 'Oldest First',
-	newest: 'Newest First',
-	dueAsc: 'Due Ascending',
-	dueDesc: 'Due Descending',
-	prioAsc: 'Priority Asc',
-	prioDesc: 'Priority Desc',
-}
 const App = () => {
 	const [list, setList] = useState([])
 	const [activePage, setActivePage] = useState(1)
@@ -179,9 +169,6 @@ const App = () => {
 
 	let isAnyItemChecked = list.some(item => item.done)
 
-	const getTempList = () => [...list]
-	const setTempList = (tempArr) => setList(tempArr)
-
 	const filterHandler = (e) => {
 		let tempArr = [...list]
 		switch (e) {  
@@ -224,7 +211,7 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<FilterComponent filterHandler={filterHandler} filterData={filterData} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
+			<FilterComponent filterHandler={filterHandler} isAnyItemChecked={isAnyItemChecked} selectAllHandler={selectAllHandler}
 			                 deleteSelectedHandler={deleteSelectedHandler}  isAllChecked={isAllChecked} itemsToShowCount={itemsToShowCount}
 			                 setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
 
