@@ -103,10 +103,11 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 		                          key={i}>{i}</PageButton>)
 	}
 
+	console.log(activePage)
 	return (
 		<CustomPagesDiv>
 			{pageCount > 1 && <PageLeft onClick={() => prevPage(activePage)}>Prev</PageLeft>}
-			{activePage > paginationInfo.pagesToShow &&
+			{activePage >= paginationInfo.pagesToShow + 1 &&
 			<PageButton onClick={() => changePage(1)} className={1 === activePage ? "active-page" : ''}
 			            key={1}>1</PageButton>}
 			{pageDecrementBtn}

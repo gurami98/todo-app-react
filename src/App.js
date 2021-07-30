@@ -34,9 +34,11 @@ const App = () => {
 
 	let listCount = filteredArrByCategory.length
 	let pageCount = Math.ceil(listCount / itemsToShowCount) || 1
+	console.log(pageCount)
 
 	useEffect(() => {
 		getList()
+		console.log("useeffect ---- > initial render")
 	}, [])
 
 	useEffect(()=>{
@@ -47,25 +49,30 @@ const App = () => {
 		setActivePage(1)
 	}, [activeCategory])
 
+	// useEffect(() => {
+	// 	console.log("useeffect ---- > listCount rerender")
+	// 	let listCount = filteredArrByCategory.length
+	// 	let pageCount = Math.ceil(listCount / itemsToShowCount)
+	// 	console.log(pageCount)
+	// 	setPaginationInfo({
+	// 		...paginationInfo,
+	// 		pageNumbers: pageCount,
+	// 		startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+	// 		endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+	// 	})
+	// 	// setActivePage(pageCount)
+	// }, [listCount])
+
 	useEffect(() => {
+		console.log("useeffect ---- > itemsToShowCount rerender")
 			setPaginationInfo({
 				...paginationInfo,
 				pageNumbers: pageCount,
+				startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1  : 1,
 				endPage: pageCount,
-				startPage: pageCount > 5 ? pageCount - 4 : 1
 			})
 			setActivePage(pageCount)
 	}, [itemsToShowCount])
-
-	useEffect(() => {
-		let listCount = filteredArrByCategory.length
-		let pageCount = Math.ceil(listCount / itemsToShowCount)
-		setPaginationInfo({
-			...paginationInfo,
-			endPage: pageCount,
-			startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow  : 1
-		})
-	}, [listCount])
 
 	const alertHandler = (alertText, alertType) => {
 		setAlertInfo({...alertInfo, alertVisible: true, alertText, alertType})
@@ -87,6 +94,7 @@ const App = () => {
 				endPage: pageCount < 7 ? pageCount : 5,
 				startPage: 1
 			})
+			setActivePage(1)
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
@@ -117,6 +125,12 @@ const App = () => {
 			listCount++
 			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setActivePage(pageCount)
+			setPaginationInfo({
+				...paginationInfo,
+				pageNumbers: pageCount,
+				startPage: pageCount > 6 ? pageCount - 4 : 1,
+				endPage: pageCount,
+			})
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
@@ -146,7 +160,13 @@ const App = () => {
 		setList(newArr)
 		listCount = newArr.length
 		pageCount = Math.ceil(listCount / itemsToShowCount)
-		setActivePage(pageCount)
+		setActivePage((pageCount >= activePage && pageCount > 0) ? activePage : pageCount === 0 ? 1 : pageCount)
+		setPaginationInfo({
+			...paginationInfo,
+			pageNumbers: pageCount,
+			startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+			endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+		})
 	}
 
 	const editItemHandler = async (index, params) => {
@@ -164,7 +184,15 @@ const App = () => {
 			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
 			let newArr = list.filter(item => item._id !== index)
 			setList(newArr)
-			setActivePage(activePage)
+			listCount = newArr.length
+			pageCount = Math.ceil(listCount / itemsToShowCount)
+			setActivePage(activePage > pageCount ? pageCount : activePage)
+			setPaginationInfo({
+				...paginationInfo,
+				pageNumbers: pageCount,
+				startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+				endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+			})
 			alertHandler('Item Successfully Removed', 'success')
 		}catch(e){
 			alertHandler(e.response.data.message, 'error')
