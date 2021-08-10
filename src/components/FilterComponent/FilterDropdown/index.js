@@ -1,41 +1,45 @@
 import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import './FilterDropdown.css';
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import {filterData} from '..';
+import { useSelector, useDispatch } from 'react-redux'
+import { chooseFilter, hideFilter, renderFilterDropdown, showFilter } from "../../../store/actionCreators";
+
 let defaultFilterText = 'Sort By'
 
 const FilterDropdown = ({filterHandler}) => {
 	const filterDropdownBtn = useRef(null)
 	const filterDropdownItemsRef = useRef(null)
 
-	const [filterDropdown, setFilterDropdown] = useState({
-		filterDropdownShow: false,
-		filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
-			filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
-		filterDropdownText: defaultFilterText
-	})
+	const filterDropdownSelector = useSelector(({filterDropdown}) => filterDropdown)
+	const dispatch = useDispatch()
+
+	useEffect(()=>{
+		dispatch(renderFilterDropdown({
+			filterDropdownShow: false,
+			filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
+				filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
+			filterDropdownText: defaultFilterText
+		}))
+	}, [])
 
 	const showFilterDropDown = (e) => {
 		e.preventDefault();
-		setFilterDropdown({...filterDropdown, filterDropdownShow: !filterDropdown.filterDropdownShow})
+		dispatch(showFilter())
 	}
 
 	const choseFilterType = (e) => {
-		setFilterDropdown({
-			...filterDropdown,
-			filterDropdownShow: !filterDropdown.filterDropdownShow,
-			filterDropdownText: e
-		})
+		dispatch(chooseFilter(e))
 		filterHandler(e)
 	}
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 		if (filterDropdownItemsRef.current && !filterDropdownBtn.current.contains(e.target) && !filterDropdownItemsRef.current.contains(e.target) && filterDropdownItemsRef.current.classList.contains('show')) {
-			setFilterDropdown({...filterDropdown, filterDropdownShow: false})
+			dispatch(hideFilter())
 		}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
@@ -43,11 +47,11 @@ const FilterDropdown = ({filterHandler}) => {
 	return (
 		<div className="dropdown">
 			<CustomButton filterBtn={true} ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn" type="button">
-				<GrSort/>{filterDropdown.filterDropdownText} <span><MdArrowDropDown/></span>
+				<GrSort/>{filterDropdownSelector.filterDropdownText} <span><MdArrowDropDown/></span>
 			</CustomButton>
-			<CustomDropdown ref={filterDropdownItemsRef} show={filterDropdown.filterDropdownShow} className={filterDropdown.filterDropdownShow ? 'show' : ''}>
+			<CustomDropdown ref={filterDropdownItemsRef} show={filterDropdownSelector.filterDropdownShow} className={filterDropdownSelector.filterDropdownShow ? 'show' : ''}>
 				<div className={"dropdown-items"}>
-					{filterDropdown.filterDropdownData.map(item => {
+					{filterDropdownSelector?.filterDropdownData?.map(item => {
 						return (
 							<p onClick={(e) => choseFilterType(e.target.innerHTML)} key={item}>{item}</p>
 						)

@@ -6,15 +6,26 @@ import TasksList from './components/TasksList'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
 import CustomAlert from "./components/CustomAlert";
-import FilterComponent, {filterData} from "./components/FilterComponent";
+import FilterComponent, { filterData } from "./components/FilterComponent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
+import { useSelector, useDispatch } from 'react-redux'
+import {
+	addTodo,
+	deleteSelected,
+	deleteTodo,
+	filterTodos,
+	markAllDone,
+	markDone,
+	renderTodos
+} from "./store/actionCreators";
 
 const defaultCategory = 'All Categories'
 
 const App = () => {
-	const [list, setList] = useState([])
+	const todosList = useSelector(({todos}) => todos)
+	const dispatch = useDispatch()
 	const [activePage, setActivePage] = useState(1)
 	const [itemsToShowCount, setItemsToShowCount] = useState(8)
 	const [alertInfo, setAlertInfo] = useState({alertText: '', alertVisible: false, alertType: ''})
@@ -29,49 +40,45 @@ const App = () => {
 	let startIndex = (activePage - 1) * itemsToShowCount
 	let endIndex = startIndex + itemsToShowCount
 
-	let filteredArrByCategory = list.filter(item => (item.taskType === activeCategory || activeCategory === defaultCategory) && item)
+	let filteredArrByCategory = todosList.filter(item => (item.taskType === activeCategory || activeCategory === defaultCategory) && item)
 	let itemsToShow = filteredArrByCategory.slice(startIndex, endIndex)
+
 
 	let listCount = filteredArrByCategory.length
 	let pageCount = Math.ceil(listCount / itemsToShowCount) || 1
-	console.log(pageCount)
 
 	useEffect(() => {
 		getList()
-		console.log("useeffect ---- > initial render")
 	}, [])
 
-	useEffect(()=>{
-		setIsAllChecked(list.every(item => item.done))
-	}, [list])
+	useEffect(() => {
+		setIsAllChecked(todosList.every(item => item.done))
+	}, [todosList])
 
 	useState(() => {
 		setActivePage(1)
 	}, [activeCategory])
 
-	// useEffect(() => {
-	// 	console.log("useeffect ---- > listCount rerender")
-	// 	let listCount = filteredArrByCategory.length
-	// 	let pageCount = Math.ceil(listCount / itemsToShowCount)
-	// 	console.log(pageCount)
-	// 	setPaginationInfo({
-	// 		...paginationInfo,
-	// 		pageNumbers: pageCount,
-	// 		startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
-	// 		endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
-	// 	})
-	// 	// setActivePage(pageCount)
-	// }, [listCount])
+	useEffect(() => {
+		let listCount = filteredArrByCategory.length
+		let pageCount = Math.ceil(listCount / itemsToShowCount)
+		setPaginationInfo({
+			...paginationInfo,
+			pageNumbers: pageCount,
+			startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+			endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+		})
+		// setActivePage(pageCount)
+	}, [listCount])
 
 	useEffect(() => {
-		console.log("useeffect ---- > itemsToShowCount rerender")
-			setPaginationInfo({
-				...paginationInfo,
-				pageNumbers: pageCount,
-				startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1  : 1,
-				endPage: pageCount,
-			})
-			setActivePage(pageCount)
+		setPaginationInfo({
+			...paginationInfo,
+			pageNumbers: pageCount,
+			startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1,
+			endPage: pageCount,
+		})
+		setActivePage(pageCount)
 	}, [itemsToShowCount])
 
 	const alertHandler = (alertText, alertType) => {
@@ -86,7 +93,7 @@ const App = () => {
 			const response = await fetch('http://localhost:3001/todo/get-all')
 			const data = await response.json()
 			setLoading(false)
-			setList(data)
+			dispatch(renderTodos(data))
 			listCount = data.length
 			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setPaginationInfo({
@@ -117,10 +124,10 @@ const App = () => {
 		}
 	}
 
-	const submitHandler = async(listData) => {
+	const submitHandler = async (listData) => {
 		try {
 			const resp = await axios.post('http://localhost:3001/todo/add', listData)
-			setList([...list, resp.data])
+			dispatch(addTodo(resp.data))
 			alertHandler('Item Successfully Added', 'success')
 			listCount++
 			pageCount = Math.ceil(listCount / itemsToShowCount)
@@ -140,24 +147,21 @@ const App = () => {
 		setIsAllChecked(!isAllChecked)
 		try {
 			await axios.put(`http://localhost:3001/todo/update-item/all`, {done: !isAllChecked})
+			dispatch(markAllDone(!isAllChecked))
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
-		setList(list.map(item =>( {
-			...item,
-			done: !isAllChecked,
-		})))
 	}
 
 	const deleteSelectedHandler = async () => {
 		try {
 			await axios.delete(`http://localhost:3001/todo/delete-item/selected`)
 			alertHandler('Items Successfully Removed', 'success')
+			dispatch(deleteSelected())
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
-		let newArr = list.filter(item => !item.done)
-		setList(newArr)
+		let newArr = todosList.filter(item => !item.done) // needs to be fixed ? ?
 		listCount = newArr.length
 		pageCount = Math.ceil(listCount / itemsToShowCount)
 		setActivePage((pageCount >= activePage && pageCount > 0) ? activePage : pageCount === 0 ? 1 : pageCount)
@@ -173,17 +177,17 @@ const App = () => {
 		try {
 			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {...params})
 			alertHandler('Item Successfully Edited', 'success')
-			setList(list.map(item => item._id === index ? {...item, ...params} : item))
-		}catch (e){
+			dispatch(markDone(index, params))
+		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
 	}
 
 	const deleteItemHandler = async (index) => {
-		try{
+		try {
 			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
-			let newArr = list.filter(item => item._id !== index)
-			setList(newArr)
+			dispatch(deleteTodo(index))
+			let newArr = todosList.filter(item => item._id !== index) // do I still need it ?
 			listCount = newArr.length
 			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setActivePage(activePage > pageCount ? pageCount : activePage)
@@ -194,66 +198,34 @@ const App = () => {
 				endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
 			})
 			alertHandler('Item Successfully Removed', 'success')
-		}catch(e){
+		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
 	}
 
-	let isAnyItemChecked = list.some(item => item.done)
+	let isAnyItemChecked = todosList.some(item => item.done)
 
-	const filterHandler = (e) => {
-		let tempArr = [...list]
-		switch (e) {  
-			case filterData.az:
-				tempArr.sort((a, b) => a.text.localeCompare(b.text))
-				setList(tempArr)
-				break;
-			case filterData.za:
-				tempArr.sort((a, b) => b.text.localeCompare(a.text))
-				setList(tempArr)
-				break;
-			case filterData.oldest:
-				tempArr.sort((a, b) => new Date(a.timeAdded) - new Date(b.timeAdded))
-				setList(tempArr)
-				break;
-			case filterData.newest:
-				tempArr.sort((a, b) => new Date(b.timeAdded) - new Date(a.timeAdded))
-				setList(tempArr)
-				break;
-			case filterData.dueAsc:
-				tempArr.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-				setList(tempArr)
-				break;
-			case filterData.dueDesc:
-				tempArr.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
-				setList(tempArr)
-				break;
-			case filterData.prioAsc:
-				tempArr.sort((a, b) => a.priority - b.priority)
-				setList(tempArr)
-				break;
-			case filterData.prioDesc:
-				tempArr.sort((a, b) => b.priority - a.priority)
-				setList(tempArr)
-				break;
-			default:
-				break;
-		}
-	}
+	const filterHandler = (e) => dispatch(filterTodos(e))
 
 	return (
 		<div className="App">
-			<FilterComponent filterHandler={filterHandler} isAnyItemChecked={isAnyItemChecked}
-			                 selectAllHandler={selectAllHandler}
-			                 deleteSelectedHandler={deleteSelectedHandler} isAllChecked={isAllChecked}
-			                 itemsToShowCount={itemsToShowCount}
-			                 setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
+			<FilterComponent
+				filterHandler={filterHandler}
+				isAnyItemChecked={isAnyItemChecked}
+				selectAllHandler={selectAllHandler}
+				deleteSelectedHandler={deleteSelectedHandler}
+				isAllChecked={isAllChecked}
+				itemsToShowCount={itemsToShowCount}
+				setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
 
 			<Form submitHandler={submitHandler}/>
 
 			{
-				!Loading ? <TasksList editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler} itemsToShow={itemsToShow}/> :
-										<FontAwesomeIcon className={'loading-icon'} icon={ faSpinner}/>
+				!Loading ? <TasksList
+						editItemHandler={editItemHandler}
+						deleteItemHandler={deleteItemHandler}
+						itemsToShow={itemsToShow}/> :
+					<FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
 			}
 
 			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo} changePage={changePage}

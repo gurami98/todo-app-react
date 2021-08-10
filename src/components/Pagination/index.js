@@ -103,7 +103,6 @@ const Pagination = ({paginationInfo, setPaginationInfo, pageCount, activePage, s
 		                          key={i}>{i}</PageButton>)
 	}
 
-	console.log(activePage)
 	return (
 		<CustomPagesDiv>
 			{pageCount > 1 && <PageLeft onClick={() => prevPage(activePage)}>Prev</PageLeft>}
