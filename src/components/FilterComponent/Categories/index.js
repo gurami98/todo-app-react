@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import CustomButton from "../../UIKITS/CustomButton";
-
+import { useSelector } from "react-redux";
 const Container = styled.div`  	
 	/* width */
   &::-webkit-scrollbar {
@@ -43,11 +43,11 @@ const Container = styled.div`
 `
 
 const Categories = ({setActiveCategory}) => {
-	let typeDropdownItems = JSON.parse(window.localStorage.getItem('typeDropdownData'))
+	const typeDropdownItemsSelector = useSelector((state) => state.typeDropdown.typeDropdownData)
 	return (
 		<Container>
 			<CustomButton categoryBtn={true} onClick={(e) => setActiveCategory(e.target.innerHTML)}>All Categories</CustomButton>
-			{typeDropdownItems.map((item, index) => {
+			{typeDropdownItemsSelector?.map((item, index) => {
 				return (
 					<CustomButton categoryBtn={true} key={index} onClick={(e) => setActiveCategory(e.target.innerHTML)}>{item}</CustomButton>
 				)

@@ -1,9 +1,17 @@
 import styled from "styled-components";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TypeDropdown from "./TypeDropdown";
 import PriorityDropdown from "./PriorityDropdown";
 import CustomButton from "../UIKITS/CustomButton";
 import './Form.css'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+	choosePriority,
+	chooseType,
+	renderPriorityDropdown,
+	renderTypeDropdown, resetPriority,
+	resetType
+} from "../../store/actionCreators";
 
 const StyledForm = styled.form`
   width: 522px;
@@ -86,19 +94,38 @@ const Form = ({submitHandler}) => {
 		defaultTypeText: 'University',
 		defaultPriorityText: 'Medium'
 	}
-	const [priorityDropdown, setPriorityDropdown] = useState({
-		priorityDropdownShow: false,
-		priorityDropdownData: ['Low', 'Medium', 'High'],
-		priorityDropdownDataNumbers: [1, 2, 3],
-		priorityDropdownText: defaultFormData.defaultPriorityText
-	})
+	const priorityDropdownSelector = useSelector(({priorityDropdown}) => priorityDropdown)
+	const typeDropdownSelector = useSelector(({typeDropdown}) => typeDropdown)
+	const dispatch = useDispatch()
 
-	const [typeDropdown, setTypeDropdown] = useState({
-		typeDropdownShow: false,
-		typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
-		typeDropdownInput: '',
-		typeDropdownText: defaultFormData.defaultTypeText
-	})
+	useEffect(() => {
+		dispatch(renderPriorityDropdown({
+			priorityDropdownShow: false,
+			priorityDropdownData: ['Low', 'Medium', 'High'],
+			priorityDropdownDataNumbers: [1, 2, 3],
+			priorityDropdownText: defaultFormData.defaultPriorityText
+		}))
+		dispatch(renderTypeDropdown({
+			typeDropdownShow: false,
+			typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
+			// typeDropdownInput: '',
+			typeDropdownText: defaultFormData.defaultTypeText
+		}))
+	}, [])
+
+	// const [priorityDropdown, setPriorityDropdown] = useState({
+	// 	priorityDropdownShow: false,
+	// 	priorityDropdownData: ['Low', 'Medium', 'High'],
+	// 	priorityDropdownDataNumbers: [1, 2, 3],
+	// 	priorityDropdownText: defaultFormData.defaultPriorityText
+	// })
+	//
+	// const [typeDropdown, setTypeDropdown] = useState({
+	// 	typeDropdownShow: false,
+	// 	typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
+	// 	typeDropdownInput: '',
+	// 	typeDropdownText: defaultFormData.defaultTypeText
+	// })
 
 	const formRef = useRef(null)
 
@@ -133,15 +160,17 @@ const Form = ({submitHandler}) => {
 		e.preventDefault()
 		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
-			let priorityIndex = priorityDropdown.priorityDropdownData.indexOf(priorityDropdown.priorityDropdownText)
+			let priorityIndex = priorityDropdownSelector.priorityDropdownData.indexOf(priorityDropdownSelector.priorityDropdownText)
 
 			let listData = {
-				text, taskType: typeDropdown.typeDropdownText, dueDate, timeAdded: dateAdded,
-				priority: priorityDropdown.priorityDropdownDataNumbers[priorityIndex], done: false
+				text, taskType: typeDropdownSelector.typeDropdownText, dueDate, timeAdded: dateAdded,
+				priority: priorityDropdownSelector.priorityDropdownDataNumbers[priorityIndex], done: false
 			}
 			submitHandler(listData)
-			setTypeDropdown({...typeDropdown, typeDropdownText: defaultFormData.defaultTypeText})
-			setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultFormData.defaultPriorityText})
+			dispatch(resetType(defaultFormData.defaultTypeText))
+			dispatch(resetPriority(defaultFormData.defaultPriorityText))
+			// setTypeDropdown({...typeDropdown, typeDropdownText: defaultFormData.defaultTypeText})
+			// setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultFormData.defaultPriorityText})
 			setDueDate(currentDate)
 			setText('')
 		} else alert('Enter every value needed in form')
@@ -160,11 +189,15 @@ const Form = ({submitHandler}) => {
 			</div>
 			<Wrapper visible={wrapperVisible}>
 				<div className="row1">
-					<TypeDropdown setTypeDropdown={setTypeDropdown} typeDropdown={typeDropdown} myStorage={myStorage}/>
+					<TypeDropdown typeDropdown={typeDropdownSelector} myStorage={myStorage}
+					              // setTypeDropdown={setTypeDropdown}
+					/>
 				</div>
 
 				<div className="row2">
-					<PriorityDropdown priorityDropdown={priorityDropdown} setPriorityDropdown={setPriorityDropdown}/>
+					<PriorityDropdown priorityDropdown={priorityDropdownSelector}
+					                  // setPriorityDropdown={setPriorityDropdown}
+					/>
 
 					<div className={"calendar-container"}>
 						<label htmlFor="due-date">Due:</label>
