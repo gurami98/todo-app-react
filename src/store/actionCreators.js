@@ -19,7 +19,7 @@ import {
 	CHOOSE_TYPE_DROPDOWN,
 	HIDE_TYPE_DROPDOWN,
 	ADD_TYPE_DROPDOWN,
-	RESET_PRIORITY_DROPDOWN, RESET_TYPE_DROPDOWN
+	RESET_PRIORITY_DROPDOWN, RESET_TYPE_DROPDOWN, RENDER_PAGINATION, CHANGE_PAGINATION
 } from "./actionTypes";
 
 export const renderTodos = (todoArr) => {
@@ -172,6 +172,20 @@ export const resetType = (text) => {
 	return{
 		type: RESET_TYPE_DROPDOWN,
 		payload: text
+	}
+}
+
+export const renderPagination = (paginationInfo) => {
+	return {
+		type: RENDER_PAGINATION,
+		payload: paginationInfo
+	}
+}
+
+export const changePagination = (paginationInfo) => {
+	return {
+		type: CHANGE_PAGINATION,
+		payload: paginationInfo
 	}
 }
 

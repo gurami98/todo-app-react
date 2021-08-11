@@ -19,7 +19,7 @@ import {
 	CHOOSE_TYPE_DROPDOWN,
 	HIDE_TYPE_DROPDOWN,
 	ADD_TYPE_DROPDOWN,
-	RESET_PRIORITY_DROPDOWN, RESET_TYPE_DROPDOWN
+	RESET_PRIORITY_DROPDOWN, RESET_TYPE_DROPDOWN, RENDER_PAGINATION, CHANGE_PAGINATION
 } from "./actionTypes";
 import filterTodosHandler from "../helpers/filterHelper";
 
@@ -27,7 +27,8 @@ const initialState = {
 	todos: [],
 	filterDropdown: {},
 	priorityDropdown: {},
-	typeDropdown: {}
+	typeDropdown: {},
+	paginationInfo: {}
 }
 
 const reducer = (state = initialState, action) => {
@@ -95,6 +96,11 @@ const reducer = (state = initialState, action) => {
 			return {...state, typeDropdown: {...state.typeDropdown, typeDropdownData: [...state.typeDropdown.typeDropdownData, action.payload]}}
 		case RESET_TYPE_DROPDOWN:
 			return {...state, typeDropdown: {...state.typeDropdown, typeDropdownText: action.payload}}
+			// pagination
+		case RENDER_PAGINATION:
+			return {...state, paginationInfo: action.payload}
+		case CHANGE_PAGINATION:
+			return {...state, paginationInfo: {...state.paginationInfo, ...action.payload}}
 		default:
 			return state
 	}

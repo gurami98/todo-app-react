@@ -12,12 +12,12 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux'
 import {
-	addTodo,
+	addTodo, changePagination,
 	deleteSelected,
 	deleteTodo,
 	filterTodos,
 	markAllDone,
-	markDone,
+	markDone, renderPagination,
 	renderTodos
 } from "./store/actionCreators";
 
@@ -30,9 +30,11 @@ const App = () => {
 	const [itemsToShowCount, setItemsToShowCount] = useState(8)
 	const [alertInfo, setAlertInfo] = useState({alertText: '', alertVisible: false, alertType: ''})
 	const [activeCategory, setActiveCategory] = useState(defaultCategory)
-	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 	const [isAllChecked, setIsAllChecked] = useState(false)
 	const [Loading, setLoading] = useState(true)
+
+	const paginationInfoSelector = useSelector(({paginationInfo}) => paginationInfo)
+	// const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 
 	const myStorage = window.localStorage.getItem('typeDropdownData')
 	if (!myStorage) window.localStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
@@ -49,6 +51,7 @@ const App = () => {
 
 	useEffect(() => {
 		getList()
+		dispatch(renderPagination({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1}))
 	}, [])
 
 	useEffect(() => {
@@ -62,22 +65,32 @@ const App = () => {
 	useEffect(() => {
 		let listCount = filteredArrByCategory.length
 		let pageCount = Math.ceil(listCount / itemsToShowCount)
-		setPaginationInfo({
-			...paginationInfo,
+		dispatch(changePagination({
 			pageNumbers: pageCount,
 			startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
 			endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
-		})
+		}))
+		// setPaginationInfo({
+		// 	...paginationInfo,
+		// 	pageNumbers: pageCount,
+		// 	startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+		// 	endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+		// })
 		// setActivePage(pageCount)
 	}, [listCount])
 
 	useEffect(() => {
-		setPaginationInfo({
-			...paginationInfo,
+		dispatch(changePagination({
 			pageNumbers: pageCount,
-			startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1,
+			startPage: pageCount > 5 ? pageCount - paginationInfoSelector.pagesToShow + 1 : 1,
 			endPage: pageCount,
-		})
+		}))
+		// setPaginationInfo({
+		// 	...paginationInfo,
+		// 	pageNumbers: pageCount,
+		// 	startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1,
+		// 	endPage: pageCount,
+		// })
 		setActivePage(pageCount)
 	}, [itemsToShowCount])
 
@@ -96,11 +109,15 @@ const App = () => {
 			dispatch(renderTodos(data))
 			listCount = data.length
 			pageCount = Math.ceil(listCount / itemsToShowCount)
-			setPaginationInfo({
-				...paginationInfo,
+			dispatch(changePagination({
 				endPage: pageCount < 7 ? pageCount : 5,
 				startPage: 1
-			})
+			}))
+			// setPaginationInfo({
+			// 	...paginationInfo,
+			// 	endPage: pageCount < 7 ? pageCount : 5,
+			// 	startPage: 1
+			// })
 			setActivePage(1)
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
@@ -109,17 +126,23 @@ const App = () => {
 
 	const changePage = (page) => {
 		setActivePage(page)
-		if (pageCount >= paginationInfo.pagesToShow) {
-			if (page <= paginationInfo.pagesToShow) {
-				setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
-			} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
-				setPaginationInfo({
-					...paginationInfo,
+		if (pageCount >= paginationInfoSelector.pagesToShow) {
+			if (page <= paginationInfoSelector.pagesToShow) {
+				dispatch(changePagination({endPage: paginationInfoSelector.pagesToShow, startPage: 1}))
+				// setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
+			} else if (page >= pageCount - paginationInfoSelector.pagesToShow + 1) {
+				dispatch(changePagination({
 					endPage: pageCount,
-					startPage: pageCount - paginationInfo.pagesToShow + 1
-				})
+					startPage: pageCount - paginationInfoSelector.pagesToShow + 1
+				}))
+				// setPaginationInfo({
+				// 	...paginationInfo,
+				// 	endPage: pageCount,
+				// 	startPage: pageCount - paginationInfo.pagesToShow + 1
+				// })
 			} else {
-				setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
+				dispatch(changePagination({endPage: page + 2, startPage: page - 2}))
+				// setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
 			}
 		}
 	}
@@ -132,12 +155,17 @@ const App = () => {
 			listCount++
 			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setActivePage(pageCount)
-			setPaginationInfo({
-				...paginationInfo,
+			dispatch(changePagination({
 				pageNumbers: pageCount,
 				startPage: pageCount > 6 ? pageCount - 4 : 1,
 				endPage: pageCount,
-			})
+			}))
+			// setPaginationInfo({
+			// 	...paginationInfo,
+			// 	pageNumbers: pageCount,
+			// 	startPage: pageCount > 6 ? pageCount - 4 : 1,
+			// 	endPage: pageCount,
+			// })
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
@@ -165,12 +193,17 @@ const App = () => {
 		listCount = newArr.length
 		pageCount = Math.ceil(listCount / itemsToShowCount)
 		setActivePage((pageCount >= activePage && pageCount > 0) ? activePage : pageCount === 0 ? 1 : pageCount)
-		setPaginationInfo({
-			...paginationInfo,
+		dispatch(changePagination({
 			pageNumbers: pageCount,
 			startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
 			endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
-		})
+		}))
+		// setPaginationInfo({
+		// 	...paginationInfo,
+		// 	pageNumbers: pageCount,
+		// 	startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+		// 	endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+		// })
 	}
 
 	const editItemHandler = async (index, params) => {
@@ -191,12 +224,17 @@ const App = () => {
 			listCount = newArr.length
 			pageCount = Math.ceil(listCount / itemsToShowCount)
 			setActivePage(activePage > pageCount ? pageCount : activePage)
-			setPaginationInfo({
-				...paginationInfo,
+			dispatch(changePagination({
 				pageNumbers: pageCount,
 				startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
 				endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
-			})
+			}))
+			// setPaginationInfo({
+			// 	...paginationInfo,
+			// 	pageNumbers: pageCount,
+			// 	startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+			// 	endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+			// })
 			alertHandler('Item Successfully Removed', 'success')
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
@@ -228,7 +266,7 @@ const App = () => {
 					<FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
 			}
 
-			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo} changePage={changePage}
+			<Pagination paginationInfo={paginationInfoSelector} changePage={changePage}
 			            pageCount={pageCount} activePage={activePage} setActivePage={setActivePage}/>
 
 			{alertInfo.alertVisible && <CustomAlert {...alertInfo}/>}
