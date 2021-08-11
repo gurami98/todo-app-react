@@ -1,12 +1,12 @@
 import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import './FilterDropdown.css';
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import {filterData} from '..';
 import { useSelector, useDispatch } from 'react-redux'
-import { chooseFilter, hideFilter, renderFilterDropdown, showFilter } from "../../../store/actionCreators";
+import { chooseFilter, filterTodos, hideFilter, renderFilterDropdown, showFilter } from "../../../store/actionCreators";
 
 let defaultFilterText = 'Sort By'
 
@@ -33,7 +33,7 @@ const FilterDropdown = ({filterHandler}) => {
 
 	const choseFilterType = (e) => {
 		dispatch(chooseFilter(e))
-		filterHandler(e)
+		dispatch(filterTodos(e))
 	}
 
 	const handleClickOutside = (e) => {

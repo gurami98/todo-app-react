@@ -19,20 +19,29 @@ import {
 	CHOOSE_TYPE_DROPDOWN,
 	HIDE_TYPE_DROPDOWN,
 	ADD_TYPE_DROPDOWN,
-	RESET_PRIORITY_DROPDOWN, RESET_TYPE_DROPDOWN, RENDER_PAGINATION, CHANGE_PAGINATION
+	RESET_PRIORITY_DROPDOWN,
+	RESET_TYPE_DROPDOWN,
+	RENDER_PAGINATION,
+	CHANGE_PAGINATION,
+	SET_ACTIVE_PAGE,
+	SET_ITEMS_TO_SHOW_COUNT, SHOW_ALERT, CLOSE_ALERT, CHO0SE_ACTIVE_CATEGORY, TOGGLE_IS_ALL_CHECKED, TOGGLE_LOADING
 } from "./actionTypes";
 
 export const renderTodos = (todoArr) => {
 	return {
 		type: RENDER_TODOS,
-		payload: todoArr
+		payload: {
+			todoArr
+		}
 	}
 }
 
 export const addTodo = (item) => {
 	return {
 		type: ADD_TODO,
-		payload: item
+		payload: {
+			item
+		}
 	}
 }
 
@@ -49,14 +58,18 @@ export const markDone = (id, params) => {
 export const markAllDone = (updateQuery) => {
 	return {
 		type: MARK_ALL_DONE,
-		payload: updateQuery
+		payload: {
+			updateQuery
+		}
 	}
 }
 
 export const deleteTodo = (id) => {
 	return {
 		type: DELETE_TODO,
-		payload: id
+		payload: {
+			id
+		}
 	}
 }
 
@@ -69,14 +82,18 @@ export const deleteSelected = () => {
 export const filterTodos = (filterQuery) => {
 	return {
 		type: FILTER_TODOS,
-		payload: filterQuery
+		payload: {
+			filterQuery
+		}
 	}
 }
 // Filter Dropdown
 export const renderFilterDropdown = (dropdownObj) => {
 	return {
 		type: RENDER_FILTER_DROPDOWN,
-		payload: dropdownObj
+		payload: {
+			dropdownObj
+		}
 	}
 }
 
@@ -89,7 +106,9 @@ export const showFilter = () => {
 export const chooseFilter = (text) => {
 	return {
 		type: CHOOSE_FILTER_DROPDOWN,
-		payload: text
+		payload: {
+			text
+		}
 	}
 }
 
@@ -103,7 +122,9 @@ export const hideFilter = () => {
 export const renderPriorityDropdown = (dropdownObj) => {
 	return {
 		type: RENDER_PRIORITY_DROPDOWN,
-		payload: dropdownObj
+		payload: {
+			dropdownObj
+		}
 	}
 }
 
@@ -116,7 +137,9 @@ export const showPriority = () => {
 export const choosePriority = (text) => {
 	return {
 		type: CHOOSE_PRIORITY_DROPDOWN,
-		payload: text
+		payload: {
+			text
+		}
 	}
 }
 
@@ -129,7 +152,9 @@ export const hidePriority = () => {
 export const resetPriority = (text) => {
 	return{
 		type: RESET_PRIORITY_DROPDOWN,
-		payload: text
+		payload: {
+			text
+		}
 	}
 }
 
@@ -137,7 +162,9 @@ export const resetPriority = (text) => {
 export const renderTypeDropdown = (dropdownObj) => {
 	return {
 		type: RENDER_TYPE_DROPDOWN,
-		payload: dropdownObj
+		payload: {
+			dropdownObj
+		}
 	}
 }
 
@@ -150,42 +177,115 @@ export const showType = () => {
 export const chooseType = (text) => {
 	return {
 		type: CHOOSE_TYPE_DROPDOWN,
-		payload: text
+		payload: {
+			text
+		}
 	}
 }
 
 export const hideType = (dataArr) => {
 	return{
 		type: HIDE_TYPE_DROPDOWN,
-		payload: dataArr
+		payload: {
+			dataArr
+		}
 	}
 }
 
 export const addType = (typeText) => {
 	return {
 		type: ADD_TYPE_DROPDOWN,
-		payload: typeText
+		payload: {
+			typeText
+		}
 	}
 }
 
 export const resetType = (text) => {
 	return{
 		type: RESET_TYPE_DROPDOWN,
-		payload: text
+		payload: {
+			text
+		}
 	}
 }
 
 export const renderPagination = (paginationInfo) => {
 	return {
 		type: RENDER_PAGINATION,
-		payload: paginationInfo
+		payload: {
+			paginationInfo
+		}
 	}
 }
 
 export const changePagination = (paginationInfo) => {
 	return {
 		type: CHANGE_PAGINATION,
-		payload: paginationInfo
+		payload: {
+			paginationInfo
+		}
+	}
+}
+
+export const setActivePage = (page) => {
+	return {
+		type: SET_ACTIVE_PAGE,
+		payload: {
+			page
+		}
+	}
+}
+
+export const setItemsToShowCount = (count) => {
+	return {
+		type: SET_ITEMS_TO_SHOW_COUNT,
+		payload: {
+			count
+		}
+	}
+}
+
+export const showAlert = (alertText, alertType) => {
+	return {
+		type: SHOW_ALERT,
+		payload: {
+			alertText,
+			alertType
+		}
+	}
+}
+
+export const closeAlert = () => {
+	return {
+		type: CLOSE_ALERT
+	}
+}
+
+export const chooseActiveCategory = (category) => {
+	return {
+		type: CHO0SE_ACTIVE_CATEGORY,
+		payload: {
+			category
+		}
+	}
+}
+
+export const toggleIsAllChecked = (status) => {
+	return{
+		type: TOGGLE_IS_ALL_CHECKED,
+		payload: {
+			status
+		}
+	}
+}
+
+export const toggleLoading = (status) => {
+	return {
+		type: TOGGLE_LOADING,
+		payload: {
+			status
+		}
 	}
 }
 

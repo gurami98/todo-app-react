@@ -2,52 +2,58 @@ import './App.css';
 import './styles/shared/Dropdown.css'
 import './styles/shared/CustomCheckbox.css'
 import { useEffect, useState } from "react";
+import {
+	addTodoItem,
+	deleteSelectedTodos,
+	deleteTodoItem,
+	getAllTodoItems,
+	toggleAllTodosDone,
+	updateTodoItem
+} from "./API/todoAPI";
 import TasksList from './components/TasksList'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
 import CustomAlert from "./components/CustomAlert";
-import FilterComponent, { filterData } from "./components/FilterComponent";
+import FilterComponent from "./components/FilterComponent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import axios from "axios";
+
 import { useSelector, useDispatch } from 'react-redux'
 import {
-	addTodo, changePagination,
+	addTodo, changePagination, closeAlert,
 	deleteSelected,
 	deleteTodo,
-	filterTodos,
 	markAllDone,
 	markDone, renderPagination,
-	renderTodos
+	renderTodos,
+	setActivePage, showAlert, toggleIsAllChecked, toggleLoading
 } from "./store/actionCreators";
 
 const defaultCategory = 'All Categories'
 
 const App = () => {
-	const todosList = useSelector(({todos}) => todos)
 	const dispatch = useDispatch()
-	const [activePage, setActivePage] = useState(1)
-	const [itemsToShowCount, setItemsToShowCount] = useState(8)
-	const [alertInfo, setAlertInfo] = useState({alertText: '', alertVisible: false, alertType: ''})
-	const [activeCategory, setActiveCategory] = useState(defaultCategory)
-	const [isAllChecked, setIsAllChecked] = useState(false)
-	const [Loading, setLoading] = useState(true)
-
-	const paginationInfoSelector = useSelector(({paginationInfo}) => paginationInfo)
-	// const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
+	const todosList = useSelector(({todos}) => todos)
+	const activePageSelector = useSelector(({activePage}) => activePage)
+	const itemsToShowCountSelector = useSelector(({itemsToShowCount}) => itemsToShowCount)
+	const alertInfoSelector = useSelector(({alertInfo}) => alertInfo)
+	const activeCategorySelector = useSelector(({activeCategory}) => activeCategory)
+	const isAllCheckedSelector = useSelector(({isAllChecked}) => isAllChecked)
+	const loadingSelector = useSelector(({loading}) => loading)
+	const pagesToShowSelector = useSelector(({paginationInfo}) => paginationInfo.pagesToShow)
 
 	const myStorage = window.localStorage.getItem('typeDropdownData')
 	if (!myStorage) window.localStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
-	let startIndex = (activePage - 1) * itemsToShowCount
-	let endIndex = startIndex + itemsToShowCount
+	let startIndex = (activePageSelector - 1) * itemsToShowCountSelector
+	let endIndex = startIndex + itemsToShowCountSelector
 
-	let filteredArrByCategory = todosList.filter(item => (item.taskType === activeCategory || activeCategory === defaultCategory) && item)
+	let filteredArrByCategory = todosList.filter(item => (item.taskType === activeCategorySelector || activeCategorySelector === defaultCategory) && item)
 	let itemsToShow = filteredArrByCategory.slice(startIndex, endIndex)
 
 
 	let listCount = filteredArrByCategory.length
-	let pageCount = Math.ceil(listCount / itemsToShowCount) || 1
+	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
 
 	useEffect(() => {
 		getList()
@@ -55,127 +61,96 @@ const App = () => {
 	}, [])
 
 	useEffect(() => {
-		setIsAllChecked(todosList.every(item => item.done))
+		dispatch(toggleIsAllChecked(todosList.every(item => item.done)))
 	}, [todosList])
 
 	useState(() => {
-		setActivePage(1)
-	}, [activeCategory])
+		dispatch(setActivePage(1))
+	}, [activeCategorySelector])
 
 	useEffect(() => {
 		let listCount = filteredArrByCategory.length
-		let pageCount = Math.ceil(listCount / itemsToShowCount)
+		let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
 		dispatch(changePagination({
 			pageNumbers: pageCount,
-			startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
-			endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+			startPage: (activePageSelector >= pageCount - 4 && activePageSelector > 5) ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
+			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
 		}))
-		// setPaginationInfo({
-		// 	...paginationInfo,
-		// 	pageNumbers: pageCount,
-		// 	startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
-		// 	endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
-		// })
-		// setActivePage(pageCount)
 	}, [listCount])
 
 	useEffect(() => {
 		dispatch(changePagination({
 			pageNumbers: pageCount,
-			startPage: pageCount > 5 ? pageCount - paginationInfoSelector.pagesToShow + 1 : 1,
+			startPage: pageCount > 5 ? pageCount - pagesToShowSelector + 1 : 1,
 			endPage: pageCount,
 		}))
-		// setPaginationInfo({
-		// 	...paginationInfo,
-		// 	pageNumbers: pageCount,
-		// 	startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1,
-		// 	endPage: pageCount,
-		// })
-		setActivePage(pageCount)
-	}, [itemsToShowCount])
+		dispatch(setActivePage(pageCount))
+	}, [itemsToShowCountSelector])
 
 	const alertHandler = (alertText, alertType) => {
-		setAlertInfo({...alertInfo, alertVisible: true, alertText, alertType})
+		dispatch(showAlert(alertText, alertType))
 		setTimeout(() => {
-			setAlertInfo({...alertInfo, alertVisible: false})
+			dispatch(closeAlert())
 		}, 3000)
 	}
 
 	const getList = async () => {
 		try {
-			const response = await fetch('http://localhost:3001/todo/get-all')
+			const response = await getAllTodoItems()
 			const data = await response.json()
-			setLoading(false)
+			dispatch(toggleLoading(false))
 			dispatch(renderTodos(data))
 			listCount = data.length
-			pageCount = Math.ceil(listCount / itemsToShowCount)
+			pageCount = Math.ceil(listCount / itemsToShowCountSelector)
 			dispatch(changePagination({
 				endPage: pageCount < 7 ? pageCount : 5,
 				startPage: 1
 			}))
-			// setPaginationInfo({
-			// 	...paginationInfo,
-			// 	endPage: pageCount < 7 ? pageCount : 5,
-			// 	startPage: 1
-			// })
-			setActivePage(1)
+			dispatch(setActivePage(1))
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
 	}
 
 	const changePage = (page) => {
-		setActivePage(page)
-		if (pageCount >= paginationInfoSelector.pagesToShow) {
-			if (page <= paginationInfoSelector.pagesToShow) {
-				dispatch(changePagination({endPage: paginationInfoSelector.pagesToShow, startPage: 1}))
-				// setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
-			} else if (page >= pageCount - paginationInfoSelector.pagesToShow + 1) {
+		dispatch(setActivePage(page))
+		if (pageCount >= pagesToShowSelector) {
+			if (page <= pagesToShowSelector) {
+				dispatch(changePagination({endPage: pagesToShowSelector, startPage: 1}))
+			} else if (page >= pageCount - pagesToShowSelector + 1) {
 				dispatch(changePagination({
 					endPage: pageCount,
-					startPage: pageCount - paginationInfoSelector.pagesToShow + 1
+					startPage: pageCount - pagesToShowSelector + 1
 				}))
-				// setPaginationInfo({
-				// 	...paginationInfo,
-				// 	endPage: pageCount,
-				// 	startPage: pageCount - paginationInfo.pagesToShow + 1
-				// })
 			} else {
 				dispatch(changePagination({endPage: page + 2, startPage: page - 2}))
-				// setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
 			}
 		}
 	}
 
 	const submitHandler = async (listData) => {
 		try {
-			const resp = await axios.post('http://localhost:3001/todo/add', listData)
+			const resp = await addTodoItem(listData)
 			dispatch(addTodo(resp.data))
 			alertHandler('Item Successfully Added', 'success')
 			listCount++
-			pageCount = Math.ceil(listCount / itemsToShowCount)
-			setActivePage(pageCount)
+			pageCount = Math.ceil(listCount / itemsToShowCountSelector)
+			dispatch(setActivePage(pageCount))
 			dispatch(changePagination({
 				pageNumbers: pageCount,
 				startPage: pageCount > 6 ? pageCount - 4 : 1,
 				endPage: pageCount,
 			}))
-			// setPaginationInfo({
-			// 	...paginationInfo,
-			// 	pageNumbers: pageCount,
-			// 	startPage: pageCount > 6 ? pageCount - 4 : 1,
-			// 	endPage: pageCount,
-			// })
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
 	}
 
 	const selectAllHandler = async () => {
-		setIsAllChecked(!isAllChecked)
+		dispatch(toggleIsAllChecked(!isAllCheckedSelector))
 		try {
-			await axios.put(`http://localhost:3001/todo/update-item/all`, {done: !isAllChecked})
-			dispatch(markAllDone(!isAllChecked))
+			await toggleAllTodosDone({done: !isAllCheckedSelector})
+			dispatch(markAllDone(!isAllCheckedSelector))
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
@@ -183,32 +158,26 @@ const App = () => {
 
 	const deleteSelectedHandler = async () => {
 		try {
-			await axios.delete(`http://localhost:3001/todo/delete-item/selected`)
+			await deleteSelectedTodos()
 			alertHandler('Items Successfully Removed', 'success')
 			dispatch(deleteSelected())
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
-		let newArr = todosList.filter(item => !item.done) // needs to be fixed ? ?
+		let newArr = todosList.filter(item => !item.done)
 		listCount = newArr.length
-		pageCount = Math.ceil(listCount / itemsToShowCount)
-		setActivePage((pageCount >= activePage && pageCount > 0) ? activePage : pageCount === 0 ? 1 : pageCount)
+		pageCount = Math.ceil(listCount / itemsToShowCountSelector)
+		dispatch(setActivePage((pageCount >= activePageSelector && pageCount > 0) ? activePageSelector : pageCount === 0 ? 1 : pageCount))
 		dispatch(changePagination({
 			pageNumbers: pageCount,
-			startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
-			endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+			startPage: activePageSelector >= pageCount - 4 ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
+			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
 		}))
-		// setPaginationInfo({
-		// 	...paginationInfo,
-		// 	pageNumbers: pageCount,
-		// 	startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
-		// 	endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
-		// })
 	}
 
 	const editItemHandler = async (index, params) => {
 		try {
-			await axios.put(`http://localhost:3001/todo/update-item/${index}`, {...params})
+			await updateTodoItem(index, params)
 			alertHandler('Item Successfully Edited', 'success')
 			dispatch(markDone(index, params))
 		} catch (e) {
@@ -218,23 +187,17 @@ const App = () => {
 
 	const deleteItemHandler = async (index) => {
 		try {
-			await axios.delete(`http://localhost:3001/todo/delete-item/${index}`)
+			await deleteTodoItem(index)
 			dispatch(deleteTodo(index))
-			let newArr = todosList.filter(item => item._id !== index) // do I still need it ?
+			let newArr = todosList.filter(item => item._id !== index)
 			listCount = newArr.length
-			pageCount = Math.ceil(listCount / itemsToShowCount)
-			setActivePage(activePage > pageCount ? pageCount : activePage)
+			pageCount = Math.ceil(listCount / itemsToShowCountSelector)
+			dispatch(setActivePage(activePageSelector > pageCount ? pageCount : activePageSelector))
 			dispatch(changePagination({
 				pageNumbers: pageCount,
-				startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
-				endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
+				startPage: activePageSelector >= pageCount - 4 ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
+				endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
 			}))
-			// setPaginationInfo({
-			// 	...paginationInfo,
-			// 	pageNumbers: pageCount,
-			// 	startPage: activePage >= pageCount - 4 ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
-			// 	endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
-			// })
 			alertHandler('Item Successfully Removed', 'success')
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
@@ -243,33 +206,24 @@ const App = () => {
 
 	let isAnyItemChecked = todosList.some(item => item.done)
 
-	const filterHandler = (e) => dispatch(filterTodos(e))
-
 	return (
 		<div className="App">
 			<FilterComponent
-				filterHandler={filterHandler}
 				isAnyItemChecked={isAnyItemChecked}
 				selectAllHandler={selectAllHandler}
-				deleteSelectedHandler={deleteSelectedHandler}
-				isAllChecked={isAllChecked}
-				itemsToShowCount={itemsToShowCount}
-				setItemsToShowCount={setItemsToShowCount} setActiveCategory={setActiveCategory}/>
+				deleteSelectedHandler={deleteSelectedHandler}/>
 
 			<Form submitHandler={submitHandler}/>
 
 			{
-				!Loading ? <TasksList
-						editItemHandler={editItemHandler}
-						deleteItemHandler={deleteItemHandler}
-						itemsToShow={itemsToShow}/> :
-					<FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
+				!loadingSelector ?
+					<TasksList editItemHandler={editItemHandler} deleteItemHandler={deleteItemHandler} itemsToShow={itemsToShow}/>
+					: <FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
 			}
 
-			<Pagination paginationInfo={paginationInfoSelector} changePage={changePage}
-			            pageCount={pageCount} activePage={activePage} setActivePage={setActivePage}/>
+			<Pagination changePage={changePage} pageCount={pageCount}/>
 
-			{alertInfo.alertVisible && <CustomAlert {...alertInfo}/>}
+			{alertInfoSelector.alertVisible && <CustomAlert/>}
 		</div>
 	);
 }

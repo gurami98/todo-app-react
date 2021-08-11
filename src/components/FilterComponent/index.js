@@ -15,20 +15,20 @@ export const filterData = {
 	prioDesc: 'Priority Desc',
 }
 
-const FilterComponent = ({filterHandler, isAnyItemChecked, selectAllHandler, deleteSelectedHandler, isAllChecked, itemsToShowCount, setItemsToShowCount, setActiveCategory}) => {
+const FilterComponent = ({ isAnyItemChecked, selectAllHandler, deleteSelectedHandler}) => {
 
 	return (
 		<>
 			<div id="filter-row1">
 				<DeleteSelectedBtn selectAllHandler={selectAllHandler} deleteSelectedHandler={deleteSelectedHandler}
-				                   isAnyItemChecked={isAnyItemChecked}  isAllChecked={isAllChecked}/>
+				                   isAnyItemChecked={isAnyItemChecked} />
 
-				<ItemNumberDropdown itemsToShowCount={itemsToShowCount} setItemsToShowCount={setItemsToShowCount}/>
+				<ItemNumberDropdown/>
 
-				<FilterDropdown filterHandler={filterHandler}/>
+				<FilterDropdown/>
 			</div>
 
-			<Categories setActiveCategory={setActiveCategory}/>
+			<Categories/>
 		</>
 	)
 }

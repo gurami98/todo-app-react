@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {BsCheckCircle} from 'react-icons/bs'
 import {AiOutlineInfoCircle} from 'react-icons/ai'
+import { useSelector } from "react-redux";
 
 const error = 'error'
 const CustomAlertContainer = styled.div`
@@ -30,7 +31,9 @@ const CustomAlertContainer = styled.div`
 	}
 `
 
-const CustomAlert = ({alertText, alertType}) => {
+const CustomAlert = () => {
+	const alertInfoSelector = useSelector(({alertInfo}) => alertInfo)
+	const {alertType, alertText} = alertInfoSelector
 	return (
 		<CustomAlertContainer alertType={alertType}>
 			{alertType === error ? <AiOutlineInfoCircle/> : <BsCheckCircle/>}
