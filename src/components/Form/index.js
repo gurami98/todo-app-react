@@ -7,6 +7,7 @@ import './Form.css'
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../../store/actionCreators";
+import { renderTypeDropdown } from "../../store/actionCreators";
 export const defaultFormData = {
 	defaultTypeText: 'University',
 	defaultPriorityText: 'Medium'
@@ -90,6 +91,7 @@ const Form = ({
 	              priorityDropdownSelector,
 	              typeDropdownSelector,
 	              resetPriority,
+	              renderTypeDropdown,
 	              resetType
               }) => {
 	let currentDate = new Date().toJSON().slice(0, 10)
@@ -101,6 +103,14 @@ const Form = ({
 	const [wrapperVisible, setWrapperVisible] = useState(false)
 
 	const myStorage = window.localStorage
+
+	useEffect(() => {
+		renderTypeDropdown({
+			typeDropdownShow: false,
+			typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
+			typeDropdownText: defaultFormData.defaultTypeText
+		})
+	}, [])
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);

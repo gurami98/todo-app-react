@@ -1,31 +1,8 @@
-import {
-	ADD_TODO,
-	RENDER_TODOS,
-	MARK_ALL_DONE,
-	DELETE_SELECTED,
-	MARK_DONE,
-	DELETE_TODO,
-	FILTER_TODOS,
-	SHOW_FILTER_DROPDOWN,
-	CHOOSE_FILTER_DROPDOWN,
-	HIDE_FILTER_DROPDOWN,
-	SHOW_PRIORITY_DROPDOWN,
-	CHOOSE_PRIORITY_DROPDOWN,
-	HIDE_PRIORITY_DROPDOWN,
-	SHOW_TYPE_DROPDOWN,
-	CHOOSE_TYPE_DROPDOWN,
-	HIDE_TYPE_DROPDOWN,
-	ADD_TYPE_DROPDOWN,
-	RESET_PRIORITY_DROPDOWN,
-	RESET_TYPE_DROPDOWN,
-	CHANGE_PAGINATION,
-	SET_ACTIVE_PAGE,
-	SET_ITEMS_TO_SHOW_COUNT, SHOW_ALERT, CLOSE_ALERT, CHO0SE_ACTIVE_CATEGORY, TOGGLE_IS_ALL_CHECKED, TOGGLE_LOADING
-} from "./actionTypes";
+import * as actions from "./actionTypes";
 
 export const renderTodos = (todoArr) => {
 	return {
-		type: RENDER_TODOS,
+		type: actions.RENDER_TODOS,
 		payload: {
 			todoArr
 		}
@@ -34,7 +11,7 @@ export const renderTodos = (todoArr) => {
 
 export const addTodo = (item) => {
 	return {
-		type: ADD_TODO,
+		type: actions.ADD_TODO,
 		payload: {
 			item
 		}
@@ -43,7 +20,7 @@ export const addTodo = (item) => {
 
 export const markDone = (id, params) => {
 	return {
-		type: MARK_DONE,
+		type: actions.MARK_DONE,
 		payload: {
 			id,
 			params
@@ -53,7 +30,7 @@ export const markDone = (id, params) => {
 
 export const markAllDone = (updateQuery) => {
 	return {
-		type: MARK_ALL_DONE,
+		type: actions.MARK_ALL_DONE,
 		payload: {
 			updateQuery
 		}
@@ -62,7 +39,7 @@ export const markAllDone = (updateQuery) => {
 
 export const deleteTodo = (id) => {
 	return {
-		type: DELETE_TODO,
+		type: actions.DELETE_TODO,
 		payload: {
 			id
 		}
@@ -71,13 +48,13 @@ export const deleteTodo = (id) => {
 
 export const deleteSelected = () => {
 	return {
-		type: DELETE_SELECTED
+		type: actions.DELETE_SELECTED
 	}
 }
 
 export const filterTodos = (filterQuery) => {
 	return {
-		type: FILTER_TODOS,
+		type: actions.FILTER_TODOS,
 		payload: {
 			filterQuery
 		}
@@ -87,13 +64,13 @@ export const filterTodos = (filterQuery) => {
 
 export const showFilter = () => {
 	return {
-		type: SHOW_FILTER_DROPDOWN
+		type: actions.SHOW_FILTER_DROPDOWN
 	}
 }
 
 export const chooseFilter = (text) => {
 	return {
-		type: CHOOSE_FILTER_DROPDOWN,
+		type: actions.CHOOSE_FILTER_DROPDOWN,
 		payload: {
 			text
 		}
@@ -102,7 +79,7 @@ export const chooseFilter = (text) => {
 
 export const hideFilter = () => {
 	return{
-		type: HIDE_FILTER_DROPDOWN
+		type: actions.HIDE_FILTER_DROPDOWN
 	}
 }
 
@@ -110,13 +87,13 @@ export const hideFilter = () => {
 
 export const showPriority = () => {
 	return {
-		type: SHOW_PRIORITY_DROPDOWN
+		type: actions.SHOW_PRIORITY_DROPDOWN
 	}
 }
 
 export const choosePriority = (text) => {
 	return {
-		type: CHOOSE_PRIORITY_DROPDOWN,
+		type: actions.CHOOSE_PRIORITY_DROPDOWN,
 		payload: {
 			text
 		}
@@ -125,28 +102,37 @@ export const choosePriority = (text) => {
 
 export const hidePriority = () => {
 	return{
-		type: HIDE_PRIORITY_DROPDOWN
+		type: actions.HIDE_PRIORITY_DROPDOWN
 	}
 }
 
 export const resetPriority = (text) => {
 	return{
-		type: RESET_PRIORITY_DROPDOWN,
+		type: actions.RESET_PRIORITY_DROPDOWN,
 		payload: {
 			text
+		}
+	}
+}
+// type dropdown
+export const renderTypeDropdown = (typeObj) => {
+	return {
+		type: actions.RENDER_TYPE_DROPDOWN,
+		payload: {
+			typeObj
 		}
 	}
 }
 
 export const showType = () => {
 	return {
-		type: SHOW_TYPE_DROPDOWN
+		type: actions.SHOW_TYPE_DROPDOWN
 	}
 }
 
 export const chooseType = (text) => {
 	return {
-		type: CHOOSE_TYPE_DROPDOWN,
+		type: actions.CHOOSE_TYPE_DROPDOWN,
 		payload: {
 			text
 		}
@@ -155,7 +141,7 @@ export const chooseType = (text) => {
 
 export const hideType = (dataArr) => {
 	return{
-		type: HIDE_TYPE_DROPDOWN,
+		type: actions.HIDE_TYPE_DROPDOWN,
 		payload: {
 			dataArr
 		}
@@ -164,7 +150,7 @@ export const hideType = (dataArr) => {
 
 export const addType = (typeText) => {
 	return {
-		type: ADD_TYPE_DROPDOWN,
+		type: actions.ADD_TYPE_DROPDOWN,
 		payload: {
 			typeText
 		}
@@ -173,7 +159,7 @@ export const addType = (typeText) => {
 
 export const resetType = (text) => {
 	return{
-		type: RESET_TYPE_DROPDOWN,
+		type: actions.RESET_TYPE_DROPDOWN,
 		payload: {
 			text
 		}
@@ -182,7 +168,7 @@ export const resetType = (text) => {
 
 export const changePagination = (paginationInfo) => {
 	return {
-		type: CHANGE_PAGINATION,
+		type: actions.CHANGE_PAGINATION,
 		payload: {
 			paginationInfo
 		}
@@ -191,7 +177,7 @@ export const changePagination = (paginationInfo) => {
 
 export const setActivePage = (page) => {
 	return {
-		type: SET_ACTIVE_PAGE,
+		type: actions.SET_ACTIVE_PAGE,
 		payload: {
 			page
 		}
@@ -200,7 +186,7 @@ export const setActivePage = (page) => {
 
 export const setItemsToShowCount = (count) => {
 	return {
-		type: SET_ITEMS_TO_SHOW_COUNT,
+		type: actions.SET_ITEMS_TO_SHOW_COUNT,
 		payload: {
 			count
 		}
@@ -209,7 +195,7 @@ export const setItemsToShowCount = (count) => {
 
 export const showAlert = (alertText, alertType) => {
 	return {
-		type: SHOW_ALERT,
+		type: actions.SHOW_ALERT,
 		payload: {
 			alertText,
 			alertType
@@ -219,13 +205,13 @@ export const showAlert = (alertText, alertType) => {
 
 export const closeAlert = () => {
 	return {
-		type: CLOSE_ALERT
+		type: actions.CLOSE_ALERT
 	}
 }
 
 export const chooseActiveCategory = (category) => {
 	return {
-		type: CHO0SE_ACTIVE_CATEGORY,
+		type: actions.CHO0SE_ACTIVE_CATEGORY,
 		payload: {
 			category
 		}
@@ -234,7 +220,7 @@ export const chooseActiveCategory = (category) => {
 
 export const toggleIsAllChecked = (status) => {
 	return{
-		type: TOGGLE_IS_ALL_CHECKED,
+		type: actions.TOGGLE_IS_ALL_CHECKED,
 		payload: {
 			status
 		}
@@ -243,7 +229,7 @@ export const toggleIsAllChecked = (status) => {
 
 export const toggleLoading = (status) => {
 	return {
-		type: TOGGLE_LOADING,
+		type: actions.TOGGLE_LOADING,
 		payload: {
 			status
 		}
