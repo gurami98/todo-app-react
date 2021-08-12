@@ -1,4 +1,13 @@
-import { filterData } from "../components/FilterComponent";
+export const filterData = {
+	az: 'A-Z',
+	za: 'Z-A',
+	oldest: 'Oldest First',
+	newest: 'Newest First',
+	dueAsc: 'Due Ascending',
+	dueDesc: 'Due Descending',
+	prioAsc: 'Priority Asc',
+	prioDesc: 'Priority Desc',
+}
 
 const filterTodosHandler = (filterQuery, state) => {
 	let filteredTodoArr

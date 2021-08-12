@@ -41,7 +41,6 @@ const App = ({
 	             deleteTodo,
 	             markAllDone,
 	             markDone,
-	             renderPagination,
 	             renderTodos,
 	             setActivePage,
 	             showAlert,
@@ -64,7 +63,6 @@ const App = ({
 
 	useEffect(() => {
 		getList()
-		renderPagination({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
 	}, [])
 
 	useEffect(() => {
@@ -251,11 +249,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-	const boundActionCreators = bindActionCreators({
-		...actionCreators
-	}, dispatch)
 	return {
-		...boundActionCreators
+		...bindActionCreators({
+			...actionCreators
+		}, dispatch)
 	}
 }
 

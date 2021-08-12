@@ -39,11 +39,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-	const boundActionCreators = bindActionCreators({
-		...actionCreators
-	}, dispatch)
 	return {
-		...boundActionCreators
+		...bindActionCreators({
+			...actionCreators
+		}, dispatch)
 	}
 }
 

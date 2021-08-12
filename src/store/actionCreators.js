@@ -6,22 +6,18 @@ import {
 	MARK_DONE,
 	DELETE_TODO,
 	FILTER_TODOS,
-	RENDER_FILTER_DROPDOWN,
 	SHOW_FILTER_DROPDOWN,
 	CHOOSE_FILTER_DROPDOWN,
 	HIDE_FILTER_DROPDOWN,
-	RENDER_PRIORITY_DROPDOWN,
 	SHOW_PRIORITY_DROPDOWN,
 	CHOOSE_PRIORITY_DROPDOWN,
 	HIDE_PRIORITY_DROPDOWN,
-	RENDER_TYPE_DROPDOWN,
 	SHOW_TYPE_DROPDOWN,
 	CHOOSE_TYPE_DROPDOWN,
 	HIDE_TYPE_DROPDOWN,
 	ADD_TYPE_DROPDOWN,
 	RESET_PRIORITY_DROPDOWN,
 	RESET_TYPE_DROPDOWN,
-	RENDER_PAGINATION,
 	CHANGE_PAGINATION,
 	SET_ACTIVE_PAGE,
 	SET_ITEMS_TO_SHOW_COUNT, SHOW_ALERT, CLOSE_ALERT, CHO0SE_ACTIVE_CATEGORY, TOGGLE_IS_ALL_CHECKED, TOGGLE_LOADING
@@ -88,14 +84,6 @@ export const filterTodos = (filterQuery) => {
 	}
 }
 // Filter Dropdown
-export const renderFilterDropdown = (dropdownObj) => {
-	return {
-		type: RENDER_FILTER_DROPDOWN,
-		payload: {
-			dropdownObj
-		}
-	}
-}
 
 export const showFilter = () => {
 	return {
@@ -119,14 +107,6 @@ export const hideFilter = () => {
 }
 
 // Priority Dropdown
-export const renderPriorityDropdown = (dropdownObj) => {
-	return {
-		type: RENDER_PRIORITY_DROPDOWN,
-		payload: {
-			dropdownObj
-		}
-	}
-}
 
 export const showPriority = () => {
 	return {
@@ -154,16 +134,6 @@ export const resetPriority = (text) => {
 		type: RESET_PRIORITY_DROPDOWN,
 		payload: {
 			text
-		}
-	}
-}
-
-// Type Dropdown
-export const renderTypeDropdown = (dropdownObj) => {
-	return {
-		type: RENDER_TYPE_DROPDOWN,
-		payload: {
-			dropdownObj
 		}
 	}
 }
@@ -206,15 +176,6 @@ export const resetType = (text) => {
 		type: RESET_TYPE_DROPDOWN,
 		payload: {
 			text
-		}
-	}
-}
-
-export const renderPagination = (paginationInfo) => {
-	return {
-		type: RENDER_PAGINATION,
-		payload: {
-			paginationInfo
 		}
 	}
 }

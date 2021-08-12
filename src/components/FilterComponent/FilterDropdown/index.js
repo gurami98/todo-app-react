@@ -1,35 +1,22 @@
 import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import './FilterDropdown.css';
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
-import { filterData } from '..';
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../../../store/actionCreators";
-
-let defaultFilterText = 'Sort By'
 
 const FilterDropdown = ({
 	                        filterDropdownSelector,
 	                        chooseFilter,
 	                        filterTodos,
 	                        hideFilter,
-	                        renderFilterDropdown,
 	                        showFilter
                         }) => {
 	const filterDropdownBtn = useRef(null)
 	const filterDropdownItemsRef = useRef(null)
-
-	useEffect(() => {
-		renderFilterDropdown({
-			filterDropdownShow: false,
-			filterDropdownData: [filterData.az, filterData.za, filterData.oldest, filterData.newest, filterData.dueAsc,
-				filterData.dueDesc, filterData.prioAsc, filterData.prioDesc],
-			filterDropdownText: defaultFilterText
-		})
-	}, [])
 
 	const showFilterDropDown = (e) => {
 		e.preventDefault();
@@ -76,11 +63,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-	const boundActionCreators = bindActionCreators({
-		...actionCreators
-	}, dispatch)
 	return {
-		...boundActionCreators
+		...bindActionCreators({
+			...actionCreators
+		}, dispatch)
 	}
 }
 

@@ -7,7 +7,10 @@ import './Form.css'
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../../store/actionCreators";
-
+export const defaultFormData = {
+	defaultTypeText: 'University',
+	defaultPriorityText: 'Medium'
+}
 const StyledForm = styled.form`
   width: 522px;
   display: flex;
@@ -86,37 +89,15 @@ const Form = ({
 	              submitHandler,
 	              priorityDropdownSelector,
 	              typeDropdownSelector,
-	              renderPriorityDropdown,
-	              renderTypeDropdown,
 	              resetPriority,
 	              resetType
               }) => {
 	let currentDate = new Date().toJSON().slice(0, 10)
 
-	const defaultFormData = {
-		defaultTypeText: 'University',
-		defaultPriorityText: 'Medium'
-	}
-
-	useEffect(() => {
-		renderPriorityDropdown({
-			priorityDropdownShow: false,
-			priorityDropdownData: ['Low', 'Medium', 'High'],
-			priorityDropdownDataNumbers: [1, 2, 3],
-			priorityDropdownText: defaultFormData.defaultPriorityText
-		})
-		renderTypeDropdown({
-			typeDropdownShow: false,
-			typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
-			typeDropdownText: defaultFormData.defaultTypeText
-		})
-	}, [])
-
 	const formRef = useRef(null)
 
 	const [dueDate, setDueDate] = useState(currentDate)
 	const [text, setText] = useState('')
-
 	const [wrapperVisible, setWrapperVisible] = useState(false)
 
 	const myStorage = window.localStorage
@@ -197,11 +178,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-	const boundActionCreators = bindActionCreators({
-		...actionCreators
-	}, dispatch)
 	return {
-		...boundActionCreators
+		...bindActionCreators({
+			...actionCreators
+		}, dispatch)
 	}
 }
 

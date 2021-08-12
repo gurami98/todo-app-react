@@ -4,17 +4,6 @@ import FilterDropdown from "./FilterDropdown";
 import Categories from "./Categories";
 import './FilterComponent.css'
 
-export const filterData = {
-	az: 'A-Z',
-	za: 'Z-A',
-	oldest: 'Oldest First',
-	newest: 'Newest First',
-	dueAsc: 'Due Ascending',
-	dueDesc: 'Due Descending',
-	prioAsc: 'Priority Asc',
-	prioDesc: 'Priority Desc',
-}
-
 const FilterComponent = ({ isAnyItemChecked, selectAllHandler, deleteSelectedHandler}) => {
 
 	return (
