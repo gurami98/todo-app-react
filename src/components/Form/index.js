@@ -4,14 +4,9 @@ import TypeDropdown from "./TypeDropdown";
 import PriorityDropdown from "./PriorityDropdown";
 import CustomButton from "../UIKITS/CustomButton";
 import './Form.css'
-import { useSelector, useDispatch } from 'react-redux'
-import {
-	choosePriority,
-	chooseType,
-	renderPriorityDropdown,
-	renderTypeDropdown, resetPriority,
-	resetType
-} from "../../store/actionCreators";
+import { connect } from 'react-redux'
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../../store/actionCreators";
 
 const StyledForm = styled.form`
   width: 522px;
@@ -87,45 +82,35 @@ const Wrapper = styled.div`
   }
 `
 
-const Form = ({submitHandler}) => {
+const Form = ({
+	              submitHandler,
+	              priorityDropdownSelector,
+	              typeDropdownSelector,
+	              renderPriorityDropdown,
+	              renderTypeDropdown,
+	              resetPriority,
+	              resetType
+              }) => {
 	let currentDate = new Date().toJSON().slice(0, 10)
 
 	const defaultFormData = {
 		defaultTypeText: 'University',
 		defaultPriorityText: 'Medium'
 	}
-	const priorityDropdownSelector = useSelector(({priorityDropdown}) => priorityDropdown)
-	const typeDropdownSelector = useSelector(({typeDropdown}) => typeDropdown)
-	const dispatch = useDispatch()
 
 	useEffect(() => {
-		dispatch(renderPriorityDropdown({
+		renderPriorityDropdown({
 			priorityDropdownShow: false,
 			priorityDropdownData: ['Low', 'Medium', 'High'],
 			priorityDropdownDataNumbers: [1, 2, 3],
 			priorityDropdownText: defaultFormData.defaultPriorityText
-		}))
-		dispatch(renderTypeDropdown({
+		})
+		renderTypeDropdown({
 			typeDropdownShow: false,
 			typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
-			// typeDropdownInput: '',
 			typeDropdownText: defaultFormData.defaultTypeText
-		}))
+		})
 	}, [])
-
-	// const [priorityDropdown, setPriorityDropdown] = useState({
-	// 	priorityDropdownShow: false,
-	// 	priorityDropdownData: ['Low', 'Medium', 'High'],
-	// 	priorityDropdownDataNumbers: [1, 2, 3],
-	// 	priorityDropdownText: defaultFormData.defaultPriorityText
-	// })
-	//
-	// const [typeDropdown, setTypeDropdown] = useState({
-	// 	typeDropdownShow: false,
-	// 	typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
-	// 	typeDropdownInput: '',
-	// 	typeDropdownText: defaultFormData.defaultTypeText
-	// })
 
 	const formRef = useRef(null)
 
@@ -167,10 +152,8 @@ const Form = ({submitHandler}) => {
 				priority: priorityDropdownSelector.priorityDropdownDataNumbers[priorityIndex], done: false
 			}
 			submitHandler(listData)
-			dispatch(resetType(defaultFormData.defaultTypeText))
-			dispatch(resetPriority(defaultFormData.defaultPriorityText))
-			// setTypeDropdown({...typeDropdown, typeDropdownText: defaultFormData.defaultTypeText})
-			// setPriorityDropdown({...priorityDropdown, priorityDropdownText: defaultFormData.defaultPriorityText})
+			resetType(defaultFormData.defaultTypeText)
+			resetPriority(defaultFormData.defaultPriorityText)
 			setDueDate(currentDate)
 			setText('')
 		} else alert('Enter every value needed in form')
@@ -189,15 +172,11 @@ const Form = ({submitHandler}) => {
 			</div>
 			<Wrapper visible={wrapperVisible}>
 				<div className="row1">
-					<TypeDropdown typeDropdown={typeDropdownSelector} myStorage={myStorage}
-					              // setTypeDropdown={setTypeDropdown}
-					/>
+					<TypeDropdown myStorage={myStorage}/>
 				</div>
 
 				<div className="row2">
-					<PriorityDropdown priorityDropdown={priorityDropdownSelector}
-					                  // setPriorityDropdown={setPriorityDropdown}
-					/>
+					<PriorityDropdown/>
 
 					<div className={"calendar-container"}>
 						<label htmlFor="due-date">Due:</label>
@@ -210,4 +189,20 @@ const Form = ({submitHandler}) => {
 	)
 }
 
-export default Form;
+const mapStateToProps = (state) => {
+	return {
+		priorityDropdownSelector: state.priorityDropdown,
+		typeDropdownSelector: state.typeDropdown
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	const boundActionCreators = bindActionCreators({
+		...actionCreators
+	}, dispatch)
+	return {
+		...boundActionCreators
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form);

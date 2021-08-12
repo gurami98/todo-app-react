@@ -1,34 +1,27 @@
 import { useRef } from "react";
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
-import { useDispatch } from 'react-redux'
-import { choosePriority, hidePriority, showPriority } from "../../../store/actionCreators";
+import { connect } from 'react-redux'
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../../../store/actionCreators";
 
-const PriorityDropdown = ({priorityDropdown}) => {
+const PriorityDropdown = ({priorityDropdown, choosePriority, hidePriority, showPriority}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
-	const dispatch = useDispatch()
 	const showDropDown = (a) => {
 		if (a.includes(priorityDropdown.priorityDropdownText)) {
-			dispatch(showPriority())
-			// setPriorityDropdown({...priorityDropdown, priorityDropdownShow: !priorityDropdown.priorityDropdownShow})
+			showPriority()
 		}
 	}
 
 	const choosePriorityDropdown = (e) => {
-		dispatch(choosePriority(e.target.innerHTML))
-		// setPriorityDropdown({
-		// 	...priorityDropdown,
-		// 	priorityDropdownText: e.target.innerHTML,
-		// 	priorityDropdownShow: !priorityDropdown.priorityDropdownShow
-		// })
+		choosePriority(e.target.innerHTML)
 	}
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 			if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
-				dispatch(hidePriority())
-				// setPriorityDropdown({...priorityDropdown, priorityDropdownShow: false})
+				hidePriority()
 			}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
@@ -52,4 +45,19 @@ const PriorityDropdown = ({priorityDropdown}) => {
 	)
 }
 
-export default PriorityDropdown
+const mapStateToProps = (state) => {
+	return {
+		priorityDropdown: state.priorityDropdown,
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	const boundActionCreators = bindActionCreators({
+		...actionCreators
+	}, dispatch)
+	return {
+		...boundActionCreators
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PriorityDropdown)

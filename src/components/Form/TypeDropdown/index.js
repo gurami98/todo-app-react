@@ -2,29 +2,23 @@ import { useRef, useState } from "react";
 import './TypeDropdown.css'
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
-import { useDispatch } from 'react-redux'
-import { addType, chooseType, hideType, showType } from "../../../store/actionCreators";
+import { connect } from 'react-redux'
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../../../store/actionCreators";
 
 
-const TypeDropdown = ({typeDropdown, myStorage}) => {
+const TypeDropdown = ({typeDropdown, myStorage, addType, chooseType, hideType, showType}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
-	const dispatch = useDispatch()
 	const [typeDropdownInput, setTypeDropdownInput] = useState('')
 	const showDropDown = (a) => {
 		if (a.includes(typeDropdown.typeDropdownText)) {
-			dispatch(showType())
-			// setTypeDropdown({...typeDropdown, typeDropdownShow: !typeDropdown.typeDropdownShow})
+			showType()
 		}
 	}
 
 	const chooseTypeDropdown = (e) => {
-		dispatch(chooseType(e.target.innerHTML))
-		// setTypeDropdown({
-		// 	...typeDropdown,
-		// 	typeDropdownText: e.target.innerHTML,
-		// 	typeDropdownShow: !typeDropdown.typeDropdownShow
-		// })
+		chooseType(e.target.innerHTML)
 	}
 
 	const handleInputChange = (e) => {
@@ -37,12 +31,7 @@ const TypeDropdown = ({typeDropdown, myStorage}) => {
 		e.preventDefault();
 		if (typeDropdownInput.trim()) {
 			setTypeDropdownInput('')
-			dispatch(addType(typeDropdownInput))
-			// setTypeDropdown({
-			// 	...typeDropdown,
-			// 	typeDropdownInput: '',
-			// 	typeDropdownData: [...typeDropdown.typeDropdownData, typeDropdown.typeDropdownInput]
-			// })
+			addType(typeDropdownInput)
 			myStorage.setItem('typeDropdownData', JSON.stringify([...typeDropdown.typeDropdownData, typeDropdownInput]))
 		}
 	}
@@ -51,14 +40,8 @@ const TypeDropdown = ({typeDropdown, myStorage}) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target)  && dropdownItemsRef.current.classList.contains('show')) {
 			let dropdownDataArr = [...JSON.parse(myStorage.getItem('typeDropdownData'))]
-			dispatch(hideType(dropdownDataArr))
+			hideType(dropdownDataArr)
 			setTypeDropdownInput('')
-			// setTypeDropdown({
-			// 	...typeDropdown,
-			// 	typeDropdownData: [...JSON.parse(myStorage.getItem('typeDropdownData'))],
-			// 	typeDropdownInput: '',
-			// 	typeDropdownShow: false
-			// })
 		}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
@@ -86,4 +69,19 @@ const TypeDropdown = ({typeDropdown, myStorage}) => {
 	)
 }
 
-export default TypeDropdown
+const mapStateToProps = (state) => {
+	return {
+		typeDropdown: state.typeDropdown
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	const boundActionCreators = bindActionCreators({
+		...actionCreators
+	}, dispatch)
+	return {
+		...boundActionCreators
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TypeDropdown)

@@ -1,6 +1,8 @@
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { changePagination, setActivePage } from "../../store/actionCreators";
+import { connect } from "react-redux";
+// import { changePagination, setActivePage } from "../../store/actionCreators";
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../../store/actionCreators";
 
 const CustomPagesDiv = styled.div`
   max-width: 522px;
@@ -46,24 +48,21 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({pageCount, changePage}) => {
-	const paginationInfo = useSelector(({paginationInfo}) => paginationInfo)
-	const activePage = useSelector(({activePage}) => activePage)
-	const dispatch = useDispatch()
+const Pagination = ({pageCount, changePage, paginationInfo, activePage, changePagination, setActivePage,}) => {
 	const prevPage = (page) => {
 		if (page > 1) {
-			dispatch(setActivePage(page - 1))
+			setActivePage(page - 1)
 
 			if (page >= paginationInfo.pagesToShow) {
 				if (page - 1 >= pageCount - paginationInfo.pagesToShow + 1 && page - 1 > paginationInfo.pagesToShow) {
-					dispatch(changePagination({
+					changePagination({
 						endPage: pageCount,
 						startPage: pageCount - paginationInfo.pagesToShow + 1
-					}))
+					})
 				} else if (activePage > paginationInfo.pagesToShow + 1) {
-					dispatch(changePagination({endPage: page + 1, startPage: page - 3}))
+					changePagination({endPage: page + 1, startPage: page - 3})
 				} else {
-					dispatch(changePagination({endPage: paginationInfo.pagesToShow, startPage: 1}))
+					changePagination({endPage: paginationInfo.pagesToShow, startPage: 1})
 				}
 			}
 		}
@@ -71,16 +70,16 @@ const Pagination = ({pageCount, changePage}) => {
 
 	const nextPage = (page) => {
 		if (page < pageCount) {
-			dispatch(setActivePage(page + 1))
+			setActivePage(page + 1)
 
 			if (page >= paginationInfo.pagesToShow) {
 				if (activePage + 1 >= pageCount - paginationInfo.pagesToShow + 1 && activePage + 1 > paginationInfo.pagesToShow) {
-					dispatch(changePagination({
+					changePagination({
 						endPage: pageCount,
 						startPage: pageCount - paginationInfo.pagesToShow + 1
-					}))
+					})
 				} else if (activePage + 1 > paginationInfo.endPage - 2 && activePage + 1 > 5) {
-					dispatch(changePagination({endPage: page + 3, startPage: page - 1}))
+					changePagination({endPage: page + 3, startPage: page - 1})
 				}
 			}
 		}
@@ -122,4 +121,20 @@ const Pagination = ({pageCount, changePage}) => {
 	)
 }
 
-export default Pagination
+const mapStateToProps = (state) => {
+	return {
+		paginationInfo: state.paginationInfo,
+		activePage: state.activePage
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	const boundActionCreators = bindActionCreators({
+		...actionCreators
+	}, dispatch)
+	return {
+		...boundActionCreators
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Pagination)

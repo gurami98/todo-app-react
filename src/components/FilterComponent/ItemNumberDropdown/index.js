@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { setItemsToShowCount } from "../../../store/actionCreators";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../../../store/actionCreators";
 
 const Container = styled.div`
   display: flex;
@@ -16,11 +17,9 @@ const DropDownMenu = styled.select`
 `
 const itemNumbers = [2, 4, 5, 8]
 
-const ItemNumberDropdown = () => {
-	const itemsToShowCountSelector = useSelector(({itemsToShowCount}) => itemsToShowCount)
-	const dispatch = useDispatch()
+const ItemNumberDropdown = ({setItemsToShowCount, itemsToShowCountSelector}) => {
 	const changeItemsToShow = (e) => {
-		dispatch(setItemsToShowCount(parseInt(e.target.value)))
+		setItemsToShowCount(parseInt(e.target.value))
 	}
 
 	return (
@@ -33,4 +32,19 @@ const ItemNumberDropdown = () => {
 	)
 }
 
-export default ItemNumberDropdown
+const mapStateToProps = (state) => {
+	return {
+		itemsToShowCountSelector: state.itemsToShowCount,
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	const boundActionCreators = bindActionCreators({
+		...actionCreators
+	}, dispatch)
+	return {
+		...boundActionCreators
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemNumberDropdown)

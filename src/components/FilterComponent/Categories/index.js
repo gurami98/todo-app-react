@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import CustomButton from "../../UIKITS/CustomButton";
-import { useSelector, useDispatch } from "react-redux";
-import { chooseActiveCategory } from "../../../store/actionCreators";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../../../store/actionCreators";
 const Container = styled.div`  	
 	/* width */
   &::-webkit-scrollbar {
@@ -43,19 +44,32 @@ const Container = styled.div`
   }
 `
 
-const Categories = () => {
-	const typeDropdownItemsSelector = useSelector((state) => state.typeDropdown.typeDropdownData)
-	const dispatch = useDispatch()
+const Categories = ({chooseActiveCategory, typeDropdownItemsSelector}) => {
 	return (
 		<Container>
-			<CustomButton categoryBtn={true} onClick={(e) => dispatch(chooseActiveCategory(e.target.innerHTML))}>All Categories</CustomButton>
+			<CustomButton categoryBtn={true} onClick={(e) => chooseActiveCategory(e.target.innerHTML)}>All Categories</CustomButton>
 			{typeDropdownItemsSelector?.map((item, index) => {
 				return (
-					<CustomButton categoryBtn={true} key={index} onClick={(e) => dispatch(chooseActiveCategory(e.target.innerHTML))}>{item}</CustomButton>
+					<CustomButton categoryBtn={true} key={index} onClick={(e) => chooseActiveCategory(e.target.innerHTML)}>{item}</CustomButton>
 				)
 			})}
 		</Container>
 	)
 }
 
-export default Categories
+const mapStateToProps = (state) => {
+	return {
+		typeDropdownItemsSelector: state.typeDropdown.typeDropdownData
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	const boundActionCreators = bindActionCreators({
+		...actionCreators
+	}, dispatch)
+	return {
+		...boundActionCreators
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Categories)
