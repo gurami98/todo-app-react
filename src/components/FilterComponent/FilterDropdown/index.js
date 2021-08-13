@@ -1,37 +1,37 @@
 import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import './FilterDropdown.css';
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux";
-import * as actionCreators from "../../../store/actionCreators";
+import {chooseFilter, filterTodos} from "../../../store/actionCreators";
 
 const FilterDropdown = ({
 	                        filterDropdownSelector,
 	                        chooseFilter,
 	                        filterTodos,
-	                        hideFilter,
-	                        showFilter
                         }) => {
 	const filterDropdownBtn = useRef(null)
 	const filterDropdownItemsRef = useRef(null)
+	const [filterDropdownShow, setFilterDropdownShow] = useState(false)
 
 	const showFilterDropDown = (e) => {
 		e.preventDefault();
-		showFilter()
+		setFilterDropdownShow(!filterDropdownShow)
 	}
 
 	const choseFilterType = (e) => {
 		chooseFilter(e)
 		filterTodos(e)
+		setFilterDropdownShow(false)
 	}
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 		if (filterDropdownItemsRef.current && !filterDropdownBtn.current.contains(e.target) && !filterDropdownItemsRef.current.contains(e.target) && filterDropdownItemsRef.current.classList.contains('show')) {
-			hideFilter()
+			setFilterDropdownShow(false)
 		}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
@@ -40,12 +40,12 @@ const FilterDropdown = ({
 		<div className="dropdown">
 			<CustomButton filterBtn={true} ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn"
 			              type="button">
-				<GrSort/>{filterDropdownSelector.filterDropdownText} <span><MdArrowDropDown/></span>
+				<GrSort/>{filterDropdownSelector.currentChoice} <span><MdArrowDropDown/></span>
 			</CustomButton>
-			<CustomDropdown ref={filterDropdownItemsRef} show={filterDropdownSelector.filterDropdownShow}
-			                className={filterDropdownSelector.filterDropdownShow ? 'show' : ''}>
+			<CustomDropdown ref={filterDropdownItemsRef} show={filterDropdownShow}
+			                className={filterDropdownShow ? 'show' : ''}>
 				<div className={"dropdown-items"}>
-					{filterDropdownSelector?.filterDropdownData?.map(item => {
+					{filterDropdownSelector?.options?.map(item => {
 						return (
 							<p onClick={(e) => choseFilterType(e.target.innerHTML)} key={item}>{item}</p>
 						)
@@ -58,16 +58,13 @@ const FilterDropdown = ({
 
 const mapStateToProps = (state) => {
 	return {
-		filterDropdownSelector: state.filterDropdown
+		filterDropdownSelector: state.filterData.sort
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+		filterTodos,
+		chooseFilter
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterDropdown);

@@ -3,7 +3,6 @@ import './styles/shared/Dropdown.css'
 import './styles/shared/CustomCheckbox.css'
 import { useEffect, useState } from "react";
 import {
-	addTodoItem,
 	deleteSelectedTodos,
 	deleteTodoItem,
 	getAllTodoItems,
@@ -18,8 +17,19 @@ import FilterComponent from "./components/FilterComponent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux'
-import * as actionCreators from "./store/actionCreators";
-import { bindActionCreators } from "redux";
+import {
+	changePagination,
+	closeAlert,
+	deleteSelected,
+	deleteTodo,
+	markAllDone,
+	markDone,
+	renderTodos,
+	setActivePage,
+	showAlert,
+	toggleIsAllChecked,
+	toggleLoading
+} from "./store/actionCreators";
 
 const defaultCategory = 'All Categories'
 
@@ -34,7 +44,6 @@ const App = ({
 	             loadingSelector,
 	             pagesToShowSelector,
 	             // actions
-	             addTodo,
 	             changePagination,
 	             closeAlert,
 	             deleteSelected,
@@ -104,7 +113,6 @@ const App = ({
 		try {
 			const response = await getAllTodoItems()
 			const data = await response.json()
-			console.log(data)
 			toggleLoading(false)
 			renderTodos(data)
 			listCount = data.length
@@ -132,24 +140,6 @@ const App = ({
 			} else {
 				changePagination({endPage: page + 2, startPage: page - 2})
 			}
-		}
-	}
-
-	const submitHandler = async (listData) => {
-		try {
-			const resp = await addTodoItem(listData)
-			addTodo(resp.data)
-			alertHandler('Item Successfully Added', 'success')
-			listCount++
-			pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-			setActivePage(pageCount)
-			changePagination({
-				pageNumbers: pageCount,
-				startPage: pageCount > 6 ? pageCount - 4 : 1,
-				endPage: pageCount,
-			})
-		} catch (e) {
-			alertHandler(e.response.data.message, 'error')
 		}
 	}
 
@@ -220,7 +210,7 @@ const App = ({
 				selectAllHandler={selectAllHandler}
 				deleteSelectedHandler={deleteSelectedHandler}/>
 
-			<Form submitHandler={submitHandler}/>
+			<Form listCount={listCount} alertHandler={alertHandler}/>
 
 			{
 				!loadingSelector ?
@@ -238,22 +228,28 @@ const App = ({
 const mapStateToProps = (state) => {
 	return {
 		todosList: state.todos,
-		activePageSelector: state.activePage,
+		activePageSelector: state.paginationInfo.activePage,
 		itemsToShowCountSelector: state.itemsToShowCount,
 		alertInfoSelector: state.alertInfo,
 		activeCategorySelector: state.activeCategory,
-		isAllCheckedSelector: state.isAllChecked,
+		isAllCheckedSelector: state.filterData.isAllChecked,
 		loadingSelector: state.loading,
 		pagesToShowSelector: state.paginationInfo.pagesToShow
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+	changePagination,
+	closeAlert,
+	deleteSelected,
+	deleteTodo,
+	markAllDone,
+	markDone,
+	renderTodos,
+	setActivePage,
+	showAlert,
+	toggleIsAllChecked,
+	toggleLoading
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

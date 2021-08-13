@@ -4,21 +4,25 @@ import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux";
-import * as actionCreators from "../../../store/actionCreators";
+import {chooseType, addType} from "../../../store/actionCreators";
 
 
-const TypeDropdown = ({typeDropdown, myStorage, addType, chooseType, hideType, showType}) => {
+const TypeDropdown = ({typeDropdown, myStorage, addType, chooseType}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
 	const [typeDropdownInput, setTypeDropdownInput] = useState('')
+	const [typeDropdownShow, setTypeDropdownShow] = useState(false)
 	const showDropDown = (a) => {
-		if (a.includes(typeDropdown.typeDropdownText)) {
-			showType()
+		if (a.includes(typeDropdown.currentChoice)) {
+			// showType()
+			console.log(a)
+			setTypeDropdownShow(!typeDropdownShow)
 		}
 	}
 
 	const chooseTypeDropdown = (e) => {
 		chooseType(e.target.innerHTML)
+		setTypeDropdownShow(false)
 	}
 
 	const handleInputChange = (e) => {
@@ -32,15 +36,14 @@ const TypeDropdown = ({typeDropdown, myStorage, addType, chooseType, hideType, s
 		if (typeDropdownInput.trim()) {
 			setTypeDropdownInput('')
 			addType(typeDropdownInput)
-			myStorage.setItem('typeDropdownData', JSON.stringify([...typeDropdown.typeDropdownData, typeDropdownInput]))
+			myStorage.setItem('typeDropdownData', JSON.stringify([...typeDropdown.options, typeDropdownInput]))
 		}
 	}
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target)  && dropdownItemsRef.current.classList.contains('show')) {
-			let dropdownDataArr = [...JSON.parse(myStorage.getItem('typeDropdownData'))]
-			hideType(dropdownDataArr)
+			setTypeDropdownShow(false)
 			setTypeDropdownInput('')
 		}
 	}
@@ -49,11 +52,11 @@ const TypeDropdown = ({typeDropdown, myStorage, addType, chooseType, hideType, s
 	return (
 		<div className="dropdown">
 			<label>To do for: </label>
-			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(typeDropdown.typeDropdownText)} className="dropbtn"
-			        type="button">{typeDropdown.typeDropdownText} <span>▼</span></CustomButton>
-			<CustomDropdown ref={dropdownItemsRef} show={typeDropdown.typeDropdownShow} className={typeDropdown.typeDropdownShow ? 'show' : ''}>
+			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(typeDropdown.currentChoice)} className="dropbtn"
+			        type="button">{typeDropdown.currentChoice} <span>▼</span></CustomButton>
+			<CustomDropdown ref={dropdownItemsRef} show={typeDropdownShow} className={typeDropdownShow ? 'show' : ''}>
 				<div className={"dropdown-items"}>
-					{typeDropdown.typeDropdownData?.map(item => {
+					{typeDropdown.options?.map(item => {
 						return (
 							<p onClick={chooseTypeDropdown} key={item}>{item}</p>
 						)
@@ -71,16 +74,13 @@ const TypeDropdown = ({typeDropdown, myStorage, addType, chooseType, hideType, s
 
 const mapStateToProps = (state) => {
 	return {
-		typeDropdown: state.typeDropdown
+		typeDropdown: state.filterData.type
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+	chooseType,
+	addType
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TypeDropdown)

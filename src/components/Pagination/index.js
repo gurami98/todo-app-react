@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 // import { changePagination, setActivePage } from "../../store/actionCreators";
 import { bindActionCreators } from "redux";
-import * as actionCreators from "../../store/actionCreators";
+import {setActivePage, changePagination} from "../../store/actionCreators";
 
 const CustomPagesDiv = styled.div`
   max-width: 522px;
@@ -48,7 +48,7 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({pageCount, changePage, paginationInfo, activePage, changePagination, setActivePage,}) => {
+const Pagination = ({pageCount, changePage, paginationInfo, activePage, changePagination, setActivePage}) => {
 	const prevPage = (page) => {
 		if (page > 1) {
 			setActivePage(page - 1)
@@ -124,16 +124,13 @@ const Pagination = ({pageCount, changePage, paginationInfo, activePage, changePa
 const mapStateToProps = (state) => {
 	return {
 		paginationInfo: state.paginationInfo,
-		activePage: state.activePage
+		activePage: state.paginationInfo.activePage
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+	setActivePage,
+	changePagination
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Pagination)

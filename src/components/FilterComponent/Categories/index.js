@@ -2,7 +2,7 @@ import styled from "styled-components";
 import CustomButton from "../../UIKITS/CustomButton";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as actionCreators from "../../../store/actionCreators";
+import {chooseActiveCategory} from "../../../store/actionCreators";
 const Container = styled.div`  	
 	/* width */
   &::-webkit-scrollbar {
@@ -59,16 +59,12 @@ const Categories = ({chooseActiveCategory, typeDropdownItemsSelector}) => {
 
 const mapStateToProps = (state) => {
 	return {
-		typeDropdownItemsSelector: state.typeDropdown.typeDropdownData
+		typeDropdownItemsSelector: state.filterData.type.options
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+	chooseActiveCategory
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Categories)

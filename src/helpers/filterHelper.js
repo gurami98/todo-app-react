@@ -9,7 +9,7 @@ export const filterData = {
 	prioDesc: 'Priority Desc',
 }
 
-const filterTodosHandler = (filterQuery, state) => {
+const getFilteredData = (filterQuery, state) => {
 	let filteredTodoArr
 	switch (filterQuery) {
 		case filterData.az:
@@ -33,4 +33,4 @@ const filterTodosHandler = (filterQuery, state) => {
 	}
 }
 
-export default filterTodosHandler
+export default getFilteredData

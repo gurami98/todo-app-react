@@ -28,11 +28,11 @@ export const markDone = (id, params) => {
 	}
 }
 
-export const markAllDone = (updateQuery) => {
+export const markAllDone = (shouldSelectAll) => {
 	return {
 		type: actions.MARK_ALL_DONE,
 		payload: {
-			updateQuery
+			shouldSelectAll
 		}
 	}
 }
@@ -52,21 +52,15 @@ export const deleteSelected = () => {
 	}
 }
 
-export const filterTodos = (filterQuery) => {
+export const filterTodos = (filterBy) => {
 	return {
 		type: actions.FILTER_TODOS,
 		payload: {
-			filterQuery
+			filterBy
 		}
 	}
 }
 // Filter Dropdown
-
-export const showFilter = () => {
-	return {
-		type: actions.SHOW_FILTER_DROPDOWN
-	}
-}
 
 export const chooseFilter = (text) => {
 	return {
@@ -77,19 +71,7 @@ export const chooseFilter = (text) => {
 	}
 }
 
-export const hideFilter = () => {
-	return{
-		type: actions.HIDE_FILTER_DROPDOWN
-	}
-}
-
 // Priority Dropdown
-
-export const showPriority = () => {
-	return {
-		type: actions.SHOW_PRIORITY_DROPDOWN
-	}
-}
 
 export const choosePriority = (text) => {
 	return {
@@ -97,12 +79,6 @@ export const choosePriority = (text) => {
 		payload: {
 			text
 		}
-	}
-}
-
-export const hidePriority = () => {
-	return{
-		type: actions.HIDE_PRIORITY_DROPDOWN
 	}
 }
 
@@ -124,26 +100,11 @@ export const renderTypeDropdown = (typeObj) => {
 	}
 }
 
-export const showType = () => {
-	return {
-		type: actions.SHOW_TYPE_DROPDOWN
-	}
-}
-
 export const chooseType = (text) => {
 	return {
 		type: actions.CHOOSE_TYPE_DROPDOWN,
 		payload: {
 			text
-		}
-	}
-}
-
-export const hideType = (dataArr) => {
-	return{
-		type: actions.HIDE_TYPE_DROPDOWN,
-		payload: {
-			dataArr
 		}
 	}
 }

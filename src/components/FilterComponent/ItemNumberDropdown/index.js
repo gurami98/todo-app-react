@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as actionCreators from "../../../store/actionCreators";
+import {setItemsToShowCount} from "../../../store/actionCreators";
 
 const Container = styled.div`
   display: flex;
@@ -38,12 +38,8 @@ const mapStateToProps = (state) => {
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+	setItemsToShowCount
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemNumberDropdown)

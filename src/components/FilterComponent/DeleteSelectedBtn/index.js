@@ -3,7 +3,7 @@ import CustomButton from "../../UIKITS/CustomButton";
 import { useSelector } from "react-redux";
 
 const DeleteSelectedBtn = ({selectAllHandler, isAnyItemChecked, deleteSelectedHandler}) => {
-	const isAllCheckedSelector = useSelector(({isAllChecked}) => isAllChecked)
+	const isAllCheckedSelector = useSelector(({filterData}) => filterData.isAllChecked)
 	return (
 		<div className='select-delete-main-container'>
 			<div className="round">

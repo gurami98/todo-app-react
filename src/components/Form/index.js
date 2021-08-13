@@ -6,8 +6,15 @@ import CustomButton from "../UIKITS/CustomButton";
 import './Form.css'
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux";
-import * as actionCreators from "../../store/actionCreators";
-import { renderTypeDropdown } from "../../store/actionCreators";
+import {
+	resetPriority,
+	resetType,
+	renderTypeDropdown,
+	addTodo,
+	setActivePage,
+	changePagination,
+} from "../../store/actionCreators";
+import { addTodoItem } from "../../API/todoAPI";
 export const defaultFormData = {
 	defaultTypeText: 'University',
 	defaultPriorityText: 'Medium'
@@ -87,12 +94,19 @@ const Wrapper = styled.div`
 `
 
 const Form = ({
-	              submitHandler,
+								// states
+	              listCount,
 	              priorityDropdownSelector,
 	              typeDropdownSelector,
+	              itemsToShowCountSelector,
+								// actions
+	              alertHandler,
 	              resetPriority,
+	              resetType,
 	              renderTypeDropdown,
-	              resetType
+								addTodo,
+	              setActivePage,
+	              changePagination,
               }) => {
 	let currentDate = new Date().toJSON().slice(0, 10)
 
@@ -106,9 +120,8 @@ const Form = ({
 
 	useEffect(() => {
 		renderTypeDropdown({
-			typeDropdownShow: false,
-			typeDropdownData: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
-			typeDropdownText: defaultFormData.defaultTypeText
+			options: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
+			currentChoice: defaultFormData.defaultTypeText
 		})
 	}, [])
 
@@ -136,13 +149,28 @@ const Form = ({
 		e.preventDefault()
 		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
-			let priorityIndex = priorityDropdownSelector.priorityDropdownData.indexOf(priorityDropdownSelector.priorityDropdownText)
+			let priorityIndex = priorityDropdownSelector.options.indexOf(priorityDropdownSelector.currentChoice)
 
 			let listData = {
-				text, taskType: typeDropdownSelector.typeDropdownText, dueDate, timeAdded: dateAdded,
-				priority: priorityDropdownSelector.priorityDropdownDataNumbers[priorityIndex], done: false
+				text, taskType: typeDropdownSelector.currentChoice, dueDate, timeAdded: dateAdded,
+				priority: priorityDropdownSelector.optionNumbers[priorityIndex], done: false
 			}
-			submitHandler(listData)
+			try {
+				const resp = await addTodoItem(listData)
+				addTodo(resp.data)
+				alertHandler('Item Successfully Added', 'success')
+				listCount++
+				let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
+				setActivePage(pageCount)
+				changePagination({
+					pageNumbers: pageCount,
+					startPage: pageCount > 6 ? pageCount - 4 : 1,
+					endPage: pageCount,
+				})
+			} catch (e) {
+				alertHandler(e.response.data.message, 'error')
+			}
+
 			resetType(defaultFormData.defaultTypeText)
 			resetPriority(defaultFormData.defaultPriorityText)
 			setDueDate(currentDate)
@@ -182,17 +210,19 @@ const Form = ({
 
 const mapStateToProps = (state) => {
 	return {
-		priorityDropdownSelector: state.priorityDropdown,
-		typeDropdownSelector: state.typeDropdown
+		priorityDropdownSelector: state.filterData.priority,
+		typeDropdownSelector: state.filterData.type,
+		itemsToShowCountSelector: state.itemsToShowCount
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+	resetPriority,
+	resetType,
+	renderTypeDropdown,
+	addTodo,
+	setActivePage,
+	changePagination,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form);

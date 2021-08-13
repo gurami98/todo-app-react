@@ -1,27 +1,31 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux";
-import * as actionCreators from "../../../store/actionCreators";
+import {choosePriority} from "../../../store/actionCreators";
 
-const PriorityDropdown = ({priorityDropdown, choosePriority, hidePriority, showPriority}) => {
+const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
+	const [priorityDropdownShow, setPriorityDropdownShow] = useState(false)
 	const showDropDown = (a) => {
-		if (a.includes(priorityDropdown.priorityDropdownText)) {
-			showPriority()
+		if (a.includes(priorityDropdown.currentChoice)) {
+			// showPriority()
+			setPriorityDropdownShow(!priorityDropdownShow)
 		}
 	}
 
 	const choosePriorityDropdown = (e) => {
 		choosePriority(e.target.innerHTML)
+		setPriorityDropdownShow(false)
 	}
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 			if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
-				hidePriority()
+				setPriorityDropdownShow(false)
+				// hidePriority()
 			}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
@@ -29,12 +33,12 @@ const PriorityDropdown = ({priorityDropdown, choosePriority, hidePriority, showP
 	return (
 		<div className="dropdown second">
 			<label>Priority: </label>
-			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(priorityDropdown.priorityDropdownText)}
-			        className="dropbtn" type="button">{priorityDropdown.priorityDropdownText} <span>▼</span>
+			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(priorityDropdown.currentChoice)}
+			        className="dropbtn" type="button">{priorityDropdown.currentChoice} <span>▼</span>
 			</CustomButton>
-			<CustomDropdown ref={dropdownItemsRef} show={priorityDropdown.priorityDropdownShow} className={priorityDropdown.priorityDropdownShow ? 'show' : ''}>
+			<CustomDropdown ref={dropdownItemsRef} show={priorityDropdownShow} className={priorityDropdownShow ? 'show' : ''}>
 				<div className={"dropdown-items"}>
-					{priorityDropdown.priorityDropdownData?.map(item => {
+					{priorityDropdown.options?.map(item => {
 						return (
 							<p onClick={choosePriorityDropdown} key={item}>{item}</p>
 						)
@@ -47,16 +51,12 @@ const PriorityDropdown = ({priorityDropdown, choosePriority, hidePriority, showP
 
 const mapStateToProps = (state) => {
 	return {
-		priorityDropdown: state.priorityDropdown,
+		priorityDropdown: state.filterData.priority,
 	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		...bindActionCreators({
-			...actionCreators
-		}, dispatch)
-	}
+const mapDispatchToProps = {
+	choosePriority
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PriorityDropdown)
