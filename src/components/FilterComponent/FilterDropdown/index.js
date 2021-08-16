@@ -5,7 +5,6 @@ import './FilterDropdown.css';
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
-import { bindActionCreators } from "redux";
 import {chooseFilter, filterTodos} from "../../../store/actionCreators";
 
 const FilterDropdown = ({

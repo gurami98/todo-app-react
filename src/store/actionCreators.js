@@ -90,37 +90,37 @@ export const resetPriority = (text) => {
 		}
 	}
 }
-// type dropdown
-export const renderTypeDropdown = (typeObj) => {
+// category dropdown
+export const renderCategoryDropdown = (categoryObj) => {
 	return {
-		type: actions.RENDER_TYPE_DROPDOWN,
+		type: actions.RENDER_CATEGORY_DROPDOWN,
 		payload: {
-			typeObj
+			categoryObj
 		}
 	}
 }
 
-export const chooseType = (text) => {
+export const chooseCategory = (text) => {
 	return {
-		type: actions.CHOOSE_TYPE_DROPDOWN,
+		type: actions.CHOOSE_CATEGORY_DROPDOWN,
 		payload: {
 			text
 		}
 	}
 }
 
-export const addType = (typeText) => {
+export const addCategory = (categoryText) => {
 	return {
-		type: actions.ADD_TYPE_DROPDOWN,
+		type: actions.ADD_CATEGORY_DROPDOWN,
 		payload: {
-			typeText
+			categoryText
 		}
 	}
 }
 
-export const resetType = (text) => {
+export const resetCategory = (text) => {
 	return{
-		type: actions.RESET_TYPE_DROPDOWN,
+		type: actions.RESET_CATEGORY_DROPDOWN,
 		payload: {
 			text
 		}
@@ -172,7 +172,7 @@ export const closeAlert = () => {
 
 export const chooseActiveCategory = (category) => {
 	return {
-		type: actions.CHO0SE_ACTIVE_CATEGORY,
+		type: actions.CHOOSE_ACTIVE_CATEGORY,
 		payload: {
 			category
 		}

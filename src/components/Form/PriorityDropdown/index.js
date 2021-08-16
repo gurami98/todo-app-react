@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
-import { bindActionCreators } from "redux";
 import {choosePriority} from "../../../store/actionCreators";
 
 const PriorityDropdown = ({priorityDropdown, choosePriority}) => {

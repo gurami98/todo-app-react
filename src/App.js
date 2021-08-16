@@ -57,14 +57,16 @@ const App = ({
 	             toggleLoading
              }) => {
 
-	const myStorage = window.localStorage.getItem('typeDropdownData')
-	if (!myStorage) window.localStorage.setItem('typeDropdownData', JSON.stringify(['University', 'Home', 'Work']))
+	const myStorage = window.localStorage.getItem('categoryDropdownData')
+	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
 	let startIndex = (activePageSelector - 1) * itemsToShowCountSelector
 	let endIndex = startIndex + itemsToShowCountSelector
 
-	let filteredArrByCategory = todosList.filter(item => (item.taskType === activeCategorySelector || activeCategorySelector === defaultCategory) && item)
+	let filteredArrByCategory = todosList.filter(item => (item.taskCategory === activeCategorySelector || activeCategorySelector === defaultCategory) && item)
 	let itemsToShow = filteredArrByCategory.slice(startIndex, endIndex)
+	console.log(activeCategorySelector);
+	console.log(filteredArrByCategory);
 
 
 	let listCount = filteredArrByCategory.length
@@ -229,9 +231,9 @@ const mapStateToProps = (state) => {
 	return {
 		todosList: state.todos,
 		activePageSelector: state.paginationInfo.activePage,
-		itemsToShowCountSelector: state.itemsToShowCount,
+		itemsToShowCountSelector: state.filterData.itemsToShowCount,
 		alertInfoSelector: state.alertInfo,
-		activeCategorySelector: state.activeCategory,
+		activeCategorySelector: state.filterData.category.activeCategory,
 		isAllCheckedSelector: state.filterData.isAllChecked,
 		loadingSelector: state.loading,
 		pagesToShowSelector: state.paginationInfo.pagesToShow

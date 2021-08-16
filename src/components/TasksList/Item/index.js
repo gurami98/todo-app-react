@@ -159,7 +159,7 @@ const Item = ({ deleteItemHandler, editItemHandler, item, index}) => {
 				<PriorityContainer priority={item.priority}/>
 			</CustomDiv>
 			<CustomContentDiv status={detailsShow}>
-				<p className='task-type'>To do for: <span >{item.taskType}</span></p>
+				<p className='task-type'>To do for: <span >{item.taskCategory}</span></p>
 				<div className='dates'>
 					<p>Added on: <span>{new Date(item.timeAdded).toUTCString()}</span></p>
 					<p>Due: <span>{item.dueDate}</span></p>

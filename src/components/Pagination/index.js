@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import { connect } from "react-redux";
-// import { changePagination, setActivePage } from "../../store/actionCreators";
-import { bindActionCreators } from "redux";
 import {setActivePage, changePagination} from "../../store/actionCreators";
 
 const CustomPagesDiv = styled.div`

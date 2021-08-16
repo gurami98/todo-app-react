@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import CustomButton from "../../UIKITS/CustomButton";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import {chooseActiveCategory} from "../../../store/actionCreators";
 const Container = styled.div`  	
 	/* width */
@@ -44,11 +43,11 @@ const Container = styled.div`
   }
 `
 
-const Categories = ({chooseActiveCategory, typeDropdownItemsSelector}) => {
+const Categories = ({chooseActiveCategory, categoryDropdownItemsSelector}) => {
 	return (
 		<Container>
 			<CustomButton categoryBtn={true} onClick={(e) => chooseActiveCategory(e.target.innerHTML)}>All Categories</CustomButton>
-			{typeDropdownItemsSelector?.map((item, index) => {
+			{categoryDropdownItemsSelector?.map((item, index) => {
 				return (
 					<CustomButton categoryBtn={true} key={index} onClick={(e) => chooseActiveCategory(e.target.innerHTML)}>{item}</CustomButton>
 				)
@@ -59,7 +58,7 @@ const Categories = ({chooseActiveCategory, typeDropdownItemsSelector}) => {
 
 const mapStateToProps = (state) => {
 	return {
-		typeDropdownItemsSelector: state.filterData.type.options
+		categoryDropdownItemsSelector: state.filterData.category.options
 	}
 }
 

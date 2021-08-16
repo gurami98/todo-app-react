@@ -1,5 +1,5 @@
-import * as actions from "./actionTypes";
-import getFilteredData, { filterData } from "../helpers/filterHelper";
+import * as actions from "./actionTypes"
+import getFilteredData, { filterData } from "../helpers/filterHelper"
 import {defaultFormData} from '../components/Form/index'
 let defaultFilterText = 'Sort By'
 const initialState = {
@@ -15,23 +15,14 @@ const initialState = {
 			options: ['Low', 'Medium', 'High'],
 			optionNumbers: [1, 2, 3]
 		},
-		type: { // maybe change name to Category ? ? ?
-
+		category: { 
+			activeCategory: 'All Categories'
 		},
 		isAllChecked: false,
-		// itemsToShow:  {  // what is that ? ? ??  ?
-		// 	currentChoice: '',
-		// 	options: [],
-		// },
-		// categories: {
-		// 	currentChoice: '',
-		// 	options: [],
-		// },
+		itemsToShowCount: 8, 
 	},
 	paginationInfo: {pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1, activePage: 1},
-	itemsToShowCount: 8, // needs to be in filter Data
 	alertInfo: {},
-	activeCategory: 'All Categories',
 	loading: true
 }
 
@@ -71,30 +62,30 @@ const reducer = (state = initialState, action) => {
 			return {...state, filterData:  {...state.filterData, priority: {...state.filterData.priority, currentChoice: action.payload.text}}}
 		case actions.RESET_PRIORITY_DROPDOWN:
 			return {...state, filterData:{...state.filterData, priority: {...state.filterData.priority, currentChoice: action.payload.text}}}
-			// type
-		case actions.RENDER_TYPE_DROPDOWN:
-			return {...state, filterData: {...state.filterData, type: action.payload.typeObj}}
-		case actions.CHOOSE_TYPE_DROPDOWN:
-			return {...state, filterData: {...state.filterData, type: {...state.filterData.type, currentChoice: action.payload.text}}}
-		case actions.ADD_TYPE_DROPDOWN:
-			return {...state, filterData: {...state.filterData, type: {...state.filterData.type, options: [...state.filterData.type.options, action.payload.typeText]}}}
-		case actions.RESET_TYPE_DROPDOWN:
-			return {...state, filterData: {...state.filterData, type: {...state.filterData.type, currentChoice: action.payload.text}}}
+			// category
+		case actions.RENDER_CATEGORY_DROPDOWN:
+			return {...state, filterData: {...state.filterData, category: action.payload.categoryObj}}
+		case actions.CHOOSE_CATEGORY_DROPDOWN:
+			return {...state, filterData: {...state.filterData, category: {...state.filterData.category, currentChoice: action.payload.text}}}
+		case actions.ADD_CATEGORY_DROPDOWN:
+			return {...state, filterData: {...state.filterData, category: {...state.filterData.category, options: [...state.filterData.category.options, action.payload.categoryText]}}}
+		case actions.RESET_CATEGORY_DROPDOWN:
+			return {...state, filterData: {...state.filterData, category: {...state.filterData.category, currentChoice: action.payload.text}}}
 			// pagination
 		case actions.CHANGE_PAGINATION:
 			return {...state, paginationInfo: {...state.paginationInfo, ...action.payload.paginationInfo}}
 		case actions.SET_ACTIVE_PAGE:
 			return {...state, paginationInfo: {...state.paginationInfo, activePage: action.payload.page}}
 		case actions.SET_ITEMS_TO_SHOW_COUNT:
-			return {...state, itemsToShowCount: action.payload.count}
+			return {...state,  filterData: {...state.filterData, itemsToShowCount: action.payload.count}}
 			// alert info
 		case actions.SHOW_ALERT:
 			return {...state, alertInfo: {...state.alertInfo, alertVisible: true, alertText: action.payload.alertText, alertType: action.payload.alertType}}
 		case actions.CLOSE_ALERT:
 			return {...state, alertInfo: {...state.alertInfo, alertVisible: false, alertText: '', alertType: ''}}
 			// category
-		case actions.CHO0SE_ACTIVE_CATEGORY:
-			return {...state, activeCategory: action.payload.category}
+		case actions.CHOOSE_ACTIVE_CATEGORY:
+			return {...state, filterData: {...state.filterData, category: {...state.filterData.category, activeCategory: action.payload.category}}}
 			// toggle is all checked
 		case actions.TOGGLE_IS_ALL_CHECKED:
 			return {...state, filterData:{...state.filterData, isAllChecked: action.payload.status}}

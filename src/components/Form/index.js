@@ -1,22 +1,21 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import TypeDropdown from "./TypeDropdown";
+import CategoryDropdown from "./categoryDropdown";
 import PriorityDropdown from "./PriorityDropdown";
 import CustomButton from "../UIKITS/CustomButton";
 import './Form.css'
 import { connect } from 'react-redux'
-import { bindActionCreators } from "redux";
 import {
 	resetPriority,
-	resetType,
-	renderTypeDropdown,
+	resetCategory,
+	renderCategoryDropdown,
 	addTodo,
 	setActivePage,
 	changePagination,
 } from "../../store/actionCreators";
 import { addTodoItem } from "../../API/todoAPI";
 export const defaultFormData = {
-	defaultTypeText: 'University',
+	defaultCategoryText: 'University',
 	defaultPriorityText: 'Medium'
 }
 const StyledForm = styled.form`
@@ -97,13 +96,13 @@ const Form = ({
 								// states
 	              listCount,
 	              priorityDropdownSelector,
-	              typeDropdownSelector,
+	              categoryDropdownSelector,
 	              itemsToShowCountSelector,
 								// actions
 	              alertHandler,
 	              resetPriority,
-	              resetType,
-	              renderTypeDropdown,
+	              resetCategory,
+	              renderCategoryDropdown,
 								addTodo,
 	              setActivePage,
 	              changePagination,
@@ -119,9 +118,10 @@ const Form = ({
 	const myStorage = window.localStorage
 
 	useEffect(() => {
-		renderTypeDropdown({
-			options: [...JSON.parse(window.localStorage.getItem('typeDropdownData'))],
-			currentChoice: defaultFormData.defaultTypeText
+		renderCategoryDropdown({
+			options: [...JSON.parse(window.localStorage.getItem('categoryDropdownData'))],
+			currentChoice: defaultFormData.defaultCategoryText,
+			activeCategory: 'All Categories'
 		})
 	}, [])
 
@@ -152,7 +152,7 @@ const Form = ({
 			let priorityIndex = priorityDropdownSelector.options.indexOf(priorityDropdownSelector.currentChoice)
 
 			let listData = {
-				text, taskType: typeDropdownSelector.currentChoice, dueDate, timeAdded: dateAdded,
+				text, taskCategory: categoryDropdownSelector.currentChoice, dueDate, timeAdded: dateAdded,
 				priority: priorityDropdownSelector.optionNumbers[priorityIndex], done: false
 			}
 			try {
@@ -171,7 +171,7 @@ const Form = ({
 				alertHandler(e.response.data.message, 'error')
 			}
 
-			resetType(defaultFormData.defaultTypeText)
+			resetCategory(defaultFormData.defaultCategoryText)
 			resetPriority(defaultFormData.defaultPriorityText)
 			setDueDate(currentDate)
 			setText('')
@@ -191,7 +191,7 @@ const Form = ({
 			</div>
 			<Wrapper visible={wrapperVisible}>
 				<div className="row1">
-					<TypeDropdown myStorage={myStorage}/>
+					<CategoryDropdown myStorage={myStorage}/>
 				</div>
 
 				<div className="row2">
@@ -211,15 +211,15 @@ const Form = ({
 const mapStateToProps = (state) => {
 	return {
 		priorityDropdownSelector: state.filterData.priority,
-		typeDropdownSelector: state.filterData.type,
-		itemsToShowCountSelector: state.itemsToShowCount
+		categoryDropdownSelector: state.filterData.category,
+		itemsToShowCountSelector: state.filterData.itemsToShowCount
 	}
 }
 
 const mapDispatchToProps = {
 	resetPriority,
-	resetType,
-	renderTypeDropdown,
+	resetCategory,
+	renderCategoryDropdown,
 	addTodo,
 	setActivePage,
 	changePagination,
