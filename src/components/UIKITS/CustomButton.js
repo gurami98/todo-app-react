@@ -59,6 +59,12 @@ const CustomButton = styled.button`
            min-width: fit-content;
            padding: 5px 10px;`
   }
+  
+  ${props => props.activeCategoryBtn &&
+          ` color: #F6F4F4;
+            background-color: #2794BD; 
+          `
+  }
 
   ${props => props.deleteSelectedBtn &&
           `vertical-align: super;

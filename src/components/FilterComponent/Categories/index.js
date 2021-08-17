@@ -2,6 +2,7 @@ import styled from "styled-components";
 import CustomButton from "../../UIKITS/CustomButton";
 import { connect } from "react-redux";
 import {chooseActiveCategory, setFilteredArrByCategory} from "../../../store/actionCreators";
+const defaultCategory = 'All Categories'
 const Container = styled.div`  	
 	/* width */
   &::-webkit-scrollbar {
@@ -43,17 +44,18 @@ const Container = styled.div`
   }
 `
 
-const Categories = ({todosList, chooseActiveCategory, categoryDropdownItemsSelector, setFilteredArrByCategory}) => {
+const Categories = ({todosList, activeCategory, chooseActiveCategory, categoryDropdownItemsSelector, setFilteredArrByCategory}) => {
 	const handleCategoryChange = (category) => {
 		chooseActiveCategory(category)
 		setFilteredArrByCategory(todosList)
 	}
+
 	return (
 		<Container>
-			<CustomButton categoryBtn={true} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>All Categories</CustomButton>
+			<CustomButton categoryBtn={true} activeCategoryBtn={activeCategory === defaultCategory} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>{defaultCategory}</CustomButton>
 			{categoryDropdownItemsSelector?.map((item, index) => {
 				return (
-					<CustomButton categoryBtn={true} key={index} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>{item}</CustomButton>
+					<CustomButton categoryBtn={true} activeCategoryBtn={activeCategory === item} key={index} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>{item}</CustomButton>
 				)
 			})}
 		</Container>
@@ -63,6 +65,7 @@ const Categories = ({todosList, chooseActiveCategory, categoryDropdownItemsSelec
 const mapStateToProps = (state) => {
 	return {
 		todosList: state.todos,
+		activeCategory: state.filterData.category.activeCategory,
 		categoryDropdownItemsSelector: state.filterData.category.options
 	}
 }
