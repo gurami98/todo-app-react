@@ -14,7 +14,7 @@ const UnorderedList = styled.ul`
   }
 `
 
-const TasksList = ({itemsToShow, deleteItemHandler, editItemHandler}) => {
+const TasksList = ({itemsToShow, alertHandler}) => {
 
 	if(itemsToShow.length) {
 		return (
@@ -22,8 +22,7 @@ const TasksList = ({itemsToShow, deleteItemHandler, editItemHandler}) => {
 				{
 					itemsToShow.map(item => {
 						return (
-							<Item editItemHandler={editItemHandler}
-							      deleteItemHandler={deleteItemHandler}
+							<Item alertHandler={alertHandler}
 							      item={item} index={item._id} key={item._id}/>
 						)
 					})

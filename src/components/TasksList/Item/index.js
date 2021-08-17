@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { MdArrowDropDown } from 'react-icons/md';
 import CustomButton from "../../UIKITS/CustomButton";
 import './Item.css'
+import {deleteTodoItem, updateTodoItem} from "../../../API/todoAPI";
+import {connect} from "react-redux";
+import {changePagination, deleteTodo, markDone, setActivePage} from '../../../store/actionCreators'
 
 const ListItem = styled.li`
   display: flex;
@@ -88,7 +91,7 @@ const EditText = styled.textarea`
 `
 
 const defaultHeight = 31;
-const Item = ({ deleteItemHandler, editItemHandler, item, index}) => {
+const Item = ({ item, index, alertHandler, markDone, todosList, activePageSelector, itemsToShowCountSelector, deleteTodo, setActivePage, changePagination }) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
@@ -97,7 +100,32 @@ const Item = ({ deleteItemHandler, editItemHandler, item, index}) => {
 
 	const deleteItem = async (index) => {
 		if (window.confirm('Are you sure you want to delete this item')) {
-			deleteItemHandler(index)
+			try {
+				await deleteTodoItem(index)
+				deleteTodo(index)
+				let newArr = todosList.filter(item => item._id !== index)
+				let listCount = newArr.length
+				let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
+				setActivePage(activePageSelector > pageCount ? pageCount : activePageSelector)
+				changePagination({
+					pageNumbers: pageCount,
+					startPage: activePageSelector >= pageCount - 4 ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
+					endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
+				})
+				alertHandler('Item Successfully Removed', 'success')
+			} catch (e) {
+				alertHandler(e, 'error')
+			}
+		}
+	}
+
+	const updateHandler = async (index, params) => {
+		try {
+			await updateTodoItem(index, params)
+			alertHandler('Item Successfully Edited', 'success')
+			markDone(index, params)
+		} catch (e) {
+			alertHandler(e.response.data.message, 'error')
 		}
 	}
 
@@ -105,7 +133,7 @@ const Item = ({ deleteItemHandler, editItemHandler, item, index}) => {
 		setBeingEdited(!beingEdited)
 		if (beingEdited) {
 			if (editText.trim()) {
-				editItemHandler(index, params)
+				await updateHandler(index, params)
 				setEditText(editText.trim())
 			} else {
 				setBeingEdited(true)
@@ -146,7 +174,7 @@ const Item = ({ deleteItemHandler, editItemHandler, item, index}) => {
 		<ListItem key={index} deadLine={hoursLeft < 48}>
 			<CustomDiv status={detailsShow}>
 				<div className="round">
-					<input type="checkbox" id={index} onChange={(e) => editItemHandler(index, {done: e.target.checked})} checked={item.done}/>
+					<input type="checkbox" id={index} onChange={(e) => updateHandler(index, {done: e.target.checked})} checked={item.done}/>
 					<label htmlFor={index}/>
 				</div>
 				{
@@ -173,4 +201,19 @@ const Item = ({ deleteItemHandler, editItemHandler, item, index}) => {
 	)
 }
 
-export default Item;
+const mapStateToProps = (state) => {
+	return{
+		todosList: state.todos,
+		activePageSelector: state.paginationInfo.activePage,
+		itemsToShowCountSelector: state.filterData.itemsToShowCount
+	}
+}
+
+const mapDispatchToProps = {
+	changePagination,
+	deleteTodo,
+	markDone,
+	setActivePage
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

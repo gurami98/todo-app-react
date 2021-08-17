@@ -4,13 +4,12 @@ import FilterDropdown from "./FilterDropdown";
 import Categories from "./Categories";
 import './FilterComponent.css'
 
-const FilterComponent = ({ isAnyItemChecked, selectAllHandler, deleteSelectedHandler}) => {
+const FilterComponent = ({ alertHandler}) => {
 
 	return (
 		<>
 			<div id="filter-row1">
-				<DeleteSelectedBtn selectAllHandler={selectAllHandler} deleteSelectedHandler={deleteSelectedHandler}
-				                   isAnyItemChecked={isAnyItemChecked} />
+				<DeleteSelectedBtn alertHandler={alertHandler} />
 
 				<ItemNumberDropdown/>
 

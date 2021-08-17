@@ -46,7 +46,22 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({pageCount, changePage, paginationInfo, activePage, changePagination, setActivePage}) => {
+const Pagination = ({pageCount, paginationInfo, pagesToShowSelector, activePage, changePagination, setActivePage}) => {
+	const changePage = (page) => {
+		setActivePage(page)
+		if (pageCount >= pagesToShowSelector) {
+			if (page <= pagesToShowSelector) {
+				changePagination({endPage: pagesToShowSelector, startPage: 1})
+			} else if (page >= pageCount - pagesToShowSelector + 1) {
+				changePagination({
+					endPage: pageCount,
+					startPage: pageCount - pagesToShowSelector + 1
+				})
+			} else {
+				changePagination({endPage: page + 2, startPage: page - 2})
+			}
+		}
+	}
 	const prevPage = (page) => {
 		if (page > 1) {
 			setActivePage(page - 1)
@@ -122,7 +137,8 @@ const Pagination = ({pageCount, changePage, paginationInfo, activePage, changePa
 const mapStateToProps = (state) => {
 	return {
 		paginationInfo: state.paginationInfo,
-		activePage: state.paginationInfo.activePage
+		activePage: state.paginationInfo.activePage,
+		pagesToShowSelector: state.paginationInfo.pagesToShow
 	}
 }
 
