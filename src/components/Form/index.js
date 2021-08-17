@@ -93,12 +93,11 @@ const Wrapper = styled.div`
 `
 
 const Form = ({
-				  listCount,
 				  // states
-				  todosList,
 	              priorityDropdownSelector,
 	              categoryDropdownSelector,
 	              itemsToShowCountSelector,
+				  filteredArrByCategory,
 				  // actions
 	              alertHandler,
 	              resetPriority,
@@ -117,6 +116,8 @@ const Form = ({
 	const [wrapperVisible, setWrapperVisible] = useState(false)
 
 	const myStorage = window.localStorage
+
+	let listCount = filteredArrByCategory.length
 
 	useEffect(() => {
 		renderCategoryDropdown({
@@ -160,7 +161,6 @@ const Form = ({
 				const resp = await addTodoItem(listData)
 				addTodo(resp.data)
 				alertHandler('Item Successfully Added', 'success')
-				// let listCount = todosList.length
 				listCount++
 				let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
 				setActivePage(pageCount)
@@ -212,10 +212,10 @@ const Form = ({
 
 const mapStateToProps = (state) => {
 	return {
-		todosList: state.todos,
 		priorityDropdownSelector: state.filterData.priority,
 		categoryDropdownSelector: state.filterData.category,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount
+		itemsToShowCountSelector: state.filterData.itemsToShowCount,
+		filteredArrByCategory: state.filterData.filteredArrByCategory
 	}
 }
 

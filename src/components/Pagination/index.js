@@ -46,7 +46,10 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({pageCount, paginationInfo, pagesToShowSelector, activePage, changePagination, setActivePage}) => {
+const Pagination = ({ paginationInfo, filteredArrByCategory, itemsToShowCountSelector, pagesToShowSelector, activePage, changePagination, setActivePage,}) => {
+	let listCount = filteredArrByCategory.length
+	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
+
 	const changePage = (page) => {
 		setActivePage(page)
 		if (pageCount >= pagesToShowSelector) {
@@ -136,9 +139,11 @@ const Pagination = ({pageCount, paginationInfo, pagesToShowSelector, activePage,
 
 const mapStateToProps = (state) => {
 	return {
+		filteredArrByCategory: state.filterData.filteredArrByCategory,
 		paginationInfo: state.paginationInfo,
 		activePage: state.paginationInfo.activePage,
-		pagesToShowSelector: state.paginationInfo.pagesToShow
+		pagesToShowSelector: state.paginationInfo.pagesToShow,
+		itemsToShowCountSelector: state.filterData.itemsToShowCount
 	}
 }
 

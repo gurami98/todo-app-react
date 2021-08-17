@@ -18,10 +18,9 @@ import {
 	setActivePage,
 	showAlert,
 	toggleIsAllChecked,
-	toggleLoading
+	toggleLoading,
+	setFilteredArrByCategory
 } from "./store/actionCreators";
-
-const defaultCategory = 'All Categories'
 
 const App = ({
 	             //state
@@ -32,6 +31,7 @@ const App = ({
 	             activeCategorySelector,
 	             loadingSelector,
 	             pagesToShowSelector,
+				 filteredArrByCategory,
 	             // actions
 	             changePagination,
 	             closeAlert,
@@ -39,17 +39,12 @@ const App = ({
 	             setActivePage,
 	             showAlert,
 	             toggleIsAllChecked,
-	             toggleLoading
+	             toggleLoading,
+				 setFilteredArrByCategory
              }) => {
 
 	const myStorage = window.localStorage.getItem('categoryDropdownData')
 	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
-
-	let startIndex = (activePageSelector - 1) * itemsToShowCountSelector
-	let endIndex = startIndex + itemsToShowCountSelector
-
-	let filteredArrByCategory = todosList.filter(item => (item.taskCategory === activeCategorySelector || activeCategorySelector === defaultCategory) && item)
-	let itemsToShow = filteredArrByCategory.slice(startIndex, endIndex) // these 2 in redux store
 
 	let listCount = filteredArrByCategory.length
 	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
@@ -60,6 +55,7 @@ const App = ({
 
 	useEffect(() => {
 		toggleIsAllChecked(todosList.every(item => item.done))
+		setFilteredArrByCategory(todosList)
 	}, [todosList])
 
 	useState(() => {
@@ -106,6 +102,7 @@ const App = ({
 				startPage: 1
 			})
 			setActivePage(1)
+			setFilteredArrByCategory(data)
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
@@ -115,15 +112,15 @@ const App = ({
 		<div className="App">
 			<FilterComponent alertHandler={alertHandler}/>
 
-			<Form alertHandler={alertHandler} listCount={listCount}/>
+			<Form alertHandler={alertHandler}/>
 
 			{
 				!loadingSelector ?
-					<TasksList alertHandler={alertHandler} itemsToShow={itemsToShow}/>
+					<TasksList alertHandler={alertHandler}/>
 					: <FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
 			}
 
-			<Pagination pageCount={pageCount}/>
+			<Pagination/>
 
 			{alertInfoSelector.alertVisible && <CustomAlert/>}
 		</div>
@@ -138,7 +135,8 @@ const mapStateToProps = (state) => {
 		alertInfoSelector: state.alertInfo,
 		activeCategorySelector: state.filterData.category.activeCategory,
 		loadingSelector: state.loading,
-		pagesToShowSelector: state.paginationInfo.pagesToShow
+		pagesToShowSelector: state.paginationInfo.pagesToShow,
+		filteredArrByCategory: state.filterData.filteredArrByCategory
 	}
 }
 
@@ -149,7 +147,8 @@ const mapDispatchToProps = {
 	setActivePage,
 	showAlert,
 	toggleIsAllChecked,
-	toggleLoading
+	toggleLoading,
+	setFilteredArrByCategory
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

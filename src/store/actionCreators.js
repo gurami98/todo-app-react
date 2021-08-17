@@ -1,4 +1,5 @@
 import * as actions from "./actionTypes";
+import {SET_ITEMS_TO_SHOW} from "./actionTypes";
 
 export const renderTodos = (todoArr) => {
 	return {
@@ -193,6 +194,25 @@ export const toggleLoading = (status) => {
 		type: actions.TOGGLE_LOADING,
 		payload: {
 			status
+		}
+	}
+}
+
+export const setFilteredArrByCategory = (todosList) => {
+	return{
+		type: actions.SET_FILTERED_ARR_BY_CATEGORY,
+		payload: {
+			todosList
+		}
+	}
+}
+
+export const setItemsToShow = (startIndex, endIndex) => {
+	return {
+		type: actions.SET_ITEMS_TO_SHOW,
+		payload:{
+			startIndex,
+			endIndex
 		}
 	}
 }
