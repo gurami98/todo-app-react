@@ -1,0 +1,11 @@
+.select-delete-main-container{
+    display: flex;
+    align-content: center;
+    gap: 5px;
+}
+
+.round span{
+    margin-left: 10px;
+    font-size: 15px;
+    color: #2794BD;
+}

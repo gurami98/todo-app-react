@@ -1,76 +1,44 @@
 .App {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  box-sizing: border-box;
+ width: fit-content;
+ text-align: center;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ margin: 0 auto;
+ box-sizing: border-box;
 }
 
-@media (max-width: 800px){
-  .App {
-    width: 100%;
-  }
+.App form {
+ margin-top: 50px;
 }
 
-.App form{
-  margin-top: 50px;
+@media (max-width: 800px) {
+ .App {
+  width: 100%;
+ }
+ ul li input[type='text'] {
+  width: inherit;
+  margin: 0 0 0 4%;
+ }
+ ul li span {
+  width: inherit;
+  margin-left: 1px;
+ }
+ .row2 input[type='date']::-webkit-datetime-edit {
+  margin-top: 4px;
+ }
 }
 
-ul li input[type=checkbox]{
-  margin: 0;
-  width: 20px;
-  height: 20px;
+.loading-icon{
+ font-size: 50px;
+ margin-top: 50px;
+ -webkit-animation:spin 2s linear infinite;
+ -moz-animation:spin 2s linear infinite;
+ animation:spin 2s linear infinite;
+ color: #2794BD;
 }
-
-ul li input[type=text]{
-  margin: 0 145px 0 30px;
-  padding: 0;
-  height: 21px;
-  outline: none;
-  box-sizing: border-box;
-  text-indent: 5px;
-}
-ul li span{
-  width: 300px;
-  margin-left: 30px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-@media (max-width: 800px){
-  ul li input[type=text]{
-    width: inherit;
-    margin: 0 0 0 4%;
-  }
-  ul li span{
-    width: inherit;
-    margin-left: 1px;
-  }
-}
-
-.finished-item{
-  text-decoration: line-through;
-  color: red;
-}
-
-#checker{
-  margin-top: 50px;
-  font-size: 24px;
-}
-
-#checker input{
-  width: 25px;
-  height: 25px;
-  margin-right: 5px;
-}
-
-#checker label{
-  vertical-align: top;
-  margin-right: 10px;
-}
-
-
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 

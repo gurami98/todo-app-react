@@ -1,148 +1,153 @@
 import './App.css';
-import styled from "styled-components";
+import './styles/shared/shared.css'
 import { useEffect, useState } from "react";
-import List from './components/List'
+import {getAllTodoItems} from "./API/todoAPI";
+import TasksList from './components/TasksList'
 import Form from './components/Form'
 import Pagination from './components/Pagination'
-import Dropdown from './components/Dropdown'
+import CustomAlert from "./components/CustomAlert";
+import FilterComponent from "./components/FilterComponent";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux'
+import {
+	changePagination,
+	closeAlert,
+	renderTodos,
+	setActivePage,
+	showAlert,
+	toggleIsAllChecked,
+	toggleLoading,
+	setFilteredArrByCategory
+} from "./store/actionCreators";
 
-const Button = styled.button`
-	&:hover{
-		opacity: 0.7;
-	}
-	cursor: pointer;
-  vertical-align: super;
-  background-color: #d9534f;
-  color: white;
-  border: 0;
-  border-radius: 5px;
-  width: 120px;
-  height: 25px;
-  ${props => props.disabled && 
-				  `color: #a2a199;
-		 background-color: #c7c1c1;
-		 &:hover {
-      opacity: 1;
-		  cursor: default
-     }`
-  }
-`
+const App = ({
+	             //state
+	             todosList,
+	             activePageSelector,
+	             itemsToShowCountSelector,
+	             alertInfoSelector,
+	             activeCategorySelector,
+	             loadingSelector,
+	             pagesToShowSelector,
+				 filteredArrByCategory,
+	             // actions
+	             changePagination,
+	             closeAlert,
+	             renderTodos,
+	             setActivePage,
+	             showAlert,
+	             toggleIsAllChecked,
+	             toggleLoading,
+				 setFilteredArrByCategory
+             }) => {
 
-const App = () => {
-	const [list, setList] = useState([])
-	const [activePage, setActive] = useState(1)
-	const [itemsToShow, setItemsToShow] = useState(8)
+	const myStorage = window.localStorage.getItem('categoryDropdownData')
+	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
-	const [paginationInfo, setPaginationInfo] = useState({pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1})
-
-	const [checkedAll, setCheckedAll] = useState(false)
-
-	let listCount = list.length
-	let pageCount = Math.ceil(listCount / itemsToShow)
-
-	let startIndex = (activePage - 1) * itemsToShow
-	let endIndex = startIndex + itemsToShow
-	let itemsArr = list.slice(startIndex, endIndex)
+	let listCount = filteredArrByCategory.length
+	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
 
 	useEffect(() => {
-		let counter = 0;
-		list.forEach(item => {
-			if(!item.done) setCheckedAll(false)
-			else counter++
+		getList()
+	}, [])
+
+	useEffect(() => {
+		toggleIsAllChecked(todosList.every(item => item.done))
+		setFilteredArrByCategory(todosList)
+	}, [todosList])
+
+	useState(() => {
+		setActivePage(1)
+	}, [activeCategorySelector])
+
+	useEffect(() => {
+		let listCount = filteredArrByCategory.length || 1
+		let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
+		setActivePage(pageCount > activePageSelector ? activePageSelector : pageCount)
+		changePagination({
+			pageNumbers: pageCount,
+			startPage: (activePageSelector >= pageCount - 4 && activePageSelector > 5 && pageCount > 5) ? pageCount - 4 : (activePageSelector <= 5 || pageCount <= 5) ? 1 : activePageSelector - 2,
+			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
 		})
-		if(counter === list.length && counter > 0) setCheckedAll(true)
-	}, [list])
+	}, [listCount])
 
-	const handleSubmit = (text) => {
-		let newArr = [...list, {text, done: false, id: new Date().getTime()}]
-		if (text.trim()) {
-			setList(newArr)
-			let listCount = newArr.length
-			let pageCount = Math.ceil(listCount / itemsToShow)
-			if (!listCount) setPaginationInfo({...paginationInfo, pageNumbers: [1]})
-			else if (listCount % itemsToShow === 1) {
-				setActive(pageCount)
-				if (pageCount > paginationInfo.endPage) {
-					setPaginationInfo({
-						...paginationInfo,
-						endPage: pageCount,
-						startPage: pageCount - paginationInfo.pagesToShow + 1,
-						pageNumbers: pageCount
-					})
-				}else{
-					setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
-				}
-			}
-			setActive(pageCount)
-			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
-		} else alert('Enter an item')
-	}
-
-	const changePage = (page) => {
-		setActive(page)
-		if (page <= paginationInfo.pagesToShow) {
-			setPaginationInfo({...paginationInfo, endPage: paginationInfo.pagesToShow, startPage: 1})
-		} else if (page >= pageCount - paginationInfo.pagesToShow + 1) {
-			setPaginationInfo({...paginationInfo, endPage: pageCount, startPage: pageCount - paginationInfo.pagesToShow + 1})
-		} else {
-			setPaginationInfo({...paginationInfo, endPage: page + 2, startPage: page - 2})
-		}
-	}
-
-	const tick = () => {
-		setCheckedAll(!checkedAll)
-		setList([...list].map(item => ({...item, done: !checkedAll})))
-	}
-
-	const deleteSelected = () => {
-		let newArr = [...list]
-		newArr = newArr.filter(item => {
-			return !item.done
+	useEffect(() => {
+		changePagination({
+			pageNumbers: pageCount,
+			startPage: pageCount > 5 ? pageCount - pagesToShowSelector + 1 : 1,
+			endPage: pageCount,
 		})
-		listCount = newArr.length
-		pageCount = Math.ceil(listCount / itemsToShow)
-		setList(newArr)
+		setActivePage(pageCount)
+	}, [itemsToShowCountSelector])
 
-		if(pageCount > activePage){
-			setPaginationInfo({...paginationInfo, pageNumbers: pageCount})
-		}
-		else if (!pageCount) {
-			setPaginationInfo({...paginationInfo, pageNumbers: 1})
-			setActive(1)
-		}
-		else {
-			setActive(pageCount)
-			setPaginationInfo({...paginationInfo, pageNumbers: pageCount, endPage: pageCount, startPage: pageCount > 5 ? pageCount - paginationInfo.pagesToShow + 1 : 1})
-		}
+	const alertHandler = (alertText, alertType) => {
+		showAlert(alertText, alertType)
+		setTimeout(() => {
+			closeAlert()
+		}, 3000)
 	}
 
-	let isAnyItemChecked = false;
-	list.forEach(item => {
-			if(item.done) isAnyItemChecked = true
-	})
+	const getList = async () => {
+		try {
+			const response = await getAllTodoItems()
+			const data = await response.json()
+			toggleLoading(false)
+			renderTodos(data)
+			listCount = data.length
+			pageCount = Math.ceil(listCount / itemsToShowCountSelector)
+			changePagination({
+				endPage: pageCount < 7 ? pageCount : 5,
+				startPage: 1
+			})
+			setActivePage(1)
+			setFilteredArrByCategory(data)
+		} catch (e) {
+			alertHandler(e.response.data.message, 'error')
+		}
+	}
 
 	return (
 		<div className="App">
-			<Form handleSubmit={handleSubmit}/>
-			<Dropdown  paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-								listCount={listCount} pageCount={pageCount}
-			           setActive={setActive} itemsToShow={itemsToShow}
-			          setItemsToShow={setItemsToShow}/>
+			<FilterComponent alertHandler={alertHandler}/>
 
-			<div id="checker">
-				<input disabled={!listCount} type="checkbox" id="select-all" name="select-all" checked={checkedAll} onChange={() => tick()}/>
-				<label htmlFor="select-all">Select All</label>
-				<Button disabled={!isAnyItemChecked} onClick={()=>deleteSelected()}>Delete Selected</Button>
-			</div>
+			<Form alertHandler={alertHandler}/>
 
-			<List paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-						activePage={activePage} setActive={setActive}
-			      list={list} setList={setList} itemsToShow={itemsToShow} itemsArr={itemsArr}/>
-			<Pagination paginationInfo={paginationInfo} setPaginationInfo={setPaginationInfo}
-			            pageCount={pageCount} activePage={activePage} setActive={setActive}
-			            changePage={changePage}/>
+			{
+				!loadingSelector ?
+					<TasksList alertHandler={alertHandler}/>
+					: <FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
+			}
+
+			<Pagination/>
+
+			{alertInfoSelector.alertVisible && <CustomAlert/>}
 		</div>
-);
+	);
 }
 
-export default App;
+const mapStateToProps = (state) => {
+	return {
+		todosList: state.todos,
+		activePageSelector: state.paginationInfo.activePage,
+		itemsToShowCountSelector: state.filterData.itemsToShowCount,
+		alertInfoSelector: state.alertInfo,
+		activeCategorySelector: state.filterData.category.activeCategory,
+		loadingSelector: state.loading,
+		pagesToShowSelector: state.paginationInfo.pagesToShow,
+		filteredArrByCategory: state.filterData.filteredArrByCategory
+	}
+}
+
+const mapDispatchToProps = {
+	changePagination,
+	closeAlert,
+	renderTodos,
+	setActivePage,
+	showAlert,
+	toggleIsAllChecked,
+	toggleLoading,
+	setFilteredArrByCategory
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
