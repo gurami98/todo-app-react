@@ -12,8 +12,6 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 	const [categoryDropdownShow, setCategoryDropdownShow] = useState(false)
 	const showDropDown = (a) => {
 		if (a.includes(categoryDropdown.currentChoice)) {
-			// showType()
-			console.log(a)
 			setCategoryDropdownShow(!categoryDropdownShow)
 		}
 	}

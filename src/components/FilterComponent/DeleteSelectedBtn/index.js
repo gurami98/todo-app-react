@@ -24,7 +24,7 @@ const DeleteSelectedBtn = ({
                                toggleIsAllChecked,
                                markAllDone
                            }) => {
-    let isAnyItemChecked = todosList.some(item => item.done)
+    const isAnyItemChecked = todosList.some(item => item.done)
 
     const deleteSelectedHandler = async () => {
         try {

@@ -10,7 +10,6 @@ const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 	const [priorityDropdownShow, setPriorityDropdownShow] = useState(false)
 	const showDropDown = (a) => {
 		if (a.includes(priorityDropdown.currentChoice)) {
-			// showPriority()
 			setPriorityDropdownShow(!priorityDropdownShow)
 		}
 	}
@@ -24,7 +23,6 @@ const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 		document.removeEventListener("mousedown", handleClickOutside);
 			if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
 				setPriorityDropdownShow(false)
-				// hidePriority()
 			}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
