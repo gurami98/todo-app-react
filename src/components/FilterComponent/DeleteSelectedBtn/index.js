@@ -7,8 +7,11 @@ import {
     deleteSelected,
     markAllDone,
     setActivePage,
-    toggleIsAllChecked
+    toggleIsAllChecked, toggleIsAnyChecked
 } from "../../../store/actionCreators";
+import {useEffect} from "react";
+import {createSelector} from "reselect";
+import * as todoSelectors from "../../../selectors/todoSelectors";
 
 const DeleteSelectedBtn = ({
                                alertHandler,
@@ -17,14 +20,19 @@ const DeleteSelectedBtn = ({
                                itemsToShowCountSelector,
                                activePageSelector,
                                isAllCheckedSelector,
+                               isAnyCheckedSelector,
                                 // actions
                                changePagination,
                                deleteSelected,
                                setActivePage,
                                toggleIsAllChecked,
+                               toggleIsAnyChecked,
                                markAllDone
                            }) => {
-    const isAnyItemChecked = todosList.some(item => item.done)
+
+    useEffect(() => {
+        toggleIsAnyChecked(todosList.some(item => item.done))
+    }, [todosList])
 
     const deleteSelectedHandler = async () => {
         try {
@@ -63,19 +71,25 @@ const DeleteSelectedBtn = ({
                 <span>Select All</span>
             </div>
             <div className="delete-selected-btn-container">
-                <CustomButton deleteSelectedBtn={true} disabled={!isAnyItemChecked} onClick={deleteSelectedHandler}>Delete
+                <CustomButton deleteSelectedBtn={true} disabled={!isAnyCheckedSelector} onClick={deleteSelectedHandler}>Delete
                     Selected</CustomButton>
             </div>
         </div>
     )
 }
 
+const getIsAnyItemChecked = createSelector(
+    todoSelectors.getTodos,
+    (todosList) => todosList.some(item => item.done)
+)
+
 const mapStateToProps = (state) => {
     return {
-        todosList: state.todos,
-        itemsToShowCountSelector: state.filterData.itemsToShowCount,
-        activePageSelector: state.paginationInfo.activePage,
-        isAllCheckedSelector: state.filterData.isAllChecked
+        todosList: todoSelectors.getTodos(state),
+        itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state),
+        activePageSelector: todoSelectors.getActivePage(state),
+        isAllCheckedSelector: todoSelectors.getIsAllChecked(state),
+        isAnyCheckedSelector: getIsAnyItemChecked(state)
     }
 }
 
@@ -84,7 +98,8 @@ const mapDispatchToProps = {
     deleteSelected,
     setActivePage,
     toggleIsAllChecked,
-    markAllDone
+    markAllDone,
+    toggleIsAnyChecked
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteSelectedBtn)

@@ -21,6 +21,7 @@ const initialState = {
             activeCategory: 'All Categories'
         },
         isAllChecked: false,
+        isAnyChecked: false,
         itemsToShow: [],
         itemsToShowCount: 8,
         filteredArrByCategory: []
@@ -144,6 +145,9 @@ const reducer = (state = initialState, action) => {
         // toggle is all checked
         case actions.TOGGLE_IS_ALL_CHECKED:
             return {...state, filterData: {...state.filterData, isAllChecked: action.payload.status}}
+        // toggle is any checked
+        case actions.TOGGLE_IS_ANY_CHECKED:
+            return {...state, filterData: {...state.filterData, isAnyChecked: action.payload.status}}
         // toggle loading
         case actions.TOGGLE_LOADING:
             return {...state, loading: action.payload.status}

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import {useRef, useState} from "react";
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
@@ -8,6 +8,7 @@ const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
 	const [priorityDropdownShow, setPriorityDropdownShow] = useState(false)
+
 	const showDropDown = (a) => {
 		if (a.includes(priorityDropdown.currentChoice)) {
 			setPriorityDropdownShow(!priorityDropdownShow)

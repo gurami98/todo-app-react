@@ -1,5 +1,5 @@
 import * as actions from "./actionTypes";
-import {SET_ITEMS_TO_SHOW} from "./actionTypes";
+import {SET_ITEMS_TO_SHOW, TOGGLE_IS_ANY_CHECKED} from "./actionTypes";
 
 export const renderTodos = (todoArr) => {
 	return {
@@ -183,6 +183,15 @@ export const chooseActiveCategory = (category) => {
 export const toggleIsAllChecked = (status) => {
 	return{
 		type: actions.TOGGLE_IS_ALL_CHECKED,
+		payload: {
+			status
+		}
+	}
+}
+
+export const toggleIsAnyChecked = (status) => {
+	return{
+		type: actions.TOGGLE_IS_ANY_CHECKED,
 		payload: {
 			status
 		}

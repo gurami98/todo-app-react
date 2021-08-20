@@ -17,6 +17,7 @@ const DropDownMenu = styled.select`
 const itemNumbers = [2, 4, 5, 8]
 
 const ItemNumberDropdown = ({setItemsToShowCount, itemsToShowCountSelector}) => {
+
 	const changeItemsToShow = (e) => {
 		setItemsToShowCount(parseInt(e.target.value))
 	}

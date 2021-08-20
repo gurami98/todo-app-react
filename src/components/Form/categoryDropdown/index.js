@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import {useRef, useState} from "react";
 import './CategoryDropdown.css'
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
@@ -10,6 +10,7 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 	const dropdownBtn = useRef(null)
 	const [categoryDropdownInput, setCategoryDropdownInput] = useState('')
 	const [categoryDropdownShow, setCategoryDropdownShow] = useState(false)
+
 	const showDropDown = (a) => {
 		if (a.includes(categoryDropdown.currentChoice)) {
 			setCategoryDropdownShow(!categoryDropdownShow)
