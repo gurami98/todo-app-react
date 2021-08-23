@@ -3,7 +3,6 @@ import getFilteredData, {filterData} from "../helpers/filterHelper"
 import {defaultFormData} from '../components/Form/index'
 
 const defaultFilterText = 'Sort By'
-const defaultCategory = 'All Categories'
 const initialState = {
     todos: [],
     filterData: {
@@ -20,11 +19,7 @@ const initialState = {
         category: {
             activeCategory: 'All Categories'
         },
-        isAllChecked: false,
-        isAnyChecked: false,
-        itemsToShow: [],
         itemsToShowCount: 8,
-        filteredArrByCategory: []
     },
     paginationInfo: {pageNumbers: 1, pagesToShow: 5, endPage: 1, startPage: 1, activePage: 1},
     alertInfo: {},
@@ -142,34 +137,9 @@ const reducer = (state = initialState, action) => {
                     category: {...state.filterData.category, activeCategory: action.payload.category}
                 }
             }
-        // toggle is all checked
-        case actions.TOGGLE_IS_ALL_CHECKED:
-            return {...state, filterData: {...state.filterData, isAllChecked: action.payload.status}}
-        // toggle is any checked
-        case actions.TOGGLE_IS_ANY_CHECKED:
-            return {...state, filterData: {...state.filterData, isAnyChecked: action.payload.status}}
         // toggle loading
         case actions.TOGGLE_LOADING:
             return {...state, loading: action.payload.status}
-        // set filtered arr by category
-        case actions.SET_FILTERED_ARR_BY_CATEGORY:
-            return {
-                ...state,
-                filterData: {
-                    ...state.filterData,
-                    filteredArrByCategory: action.payload.todosList.filter(item => (item.taskCategory === state.filterData.category.activeCategory ||
-                                                                                             state.filterData.category.activeCategory === defaultCategory) && item)
-                }
-            }
-            //set items to show
-        case actions.SET_ITEMS_TO_SHOW:
-            return {
-                ...state,
-                filterData: {
-                    ...state.filterData,
-                    itemsToShow: state.filterData.filteredArrByCategory.slice(action.payload.startIndex, action.payload.endIndex)
-                }
-            }
         default:
             return state
     }

@@ -3,6 +3,8 @@ import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import {choosePriority} from "../../../store/actionCreators";
+import {getPriorityDropdown} from "../../../selectors/todoSelectors";
+import * as todoSelectors from "../../../selectors/todoSelectors";
 
 const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 	const dropdownItemsRef = useRef(null)
@@ -49,7 +51,7 @@ const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 
 const mapStateToProps = (state) => {
 	return {
-		priorityDropdown: state.filterData.priority,
+		priorityDropdown: todoSelectors.getPriorityDropdown(state),
 	}
 }
 

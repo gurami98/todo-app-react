@@ -6,6 +6,7 @@ import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import {chooseFilter, filterTodos} from "../../../store/actionCreators";
+import {getFilterDropdown} from "../../../selectors/todoSelectors";
 
 const FilterDropdown = ({
 	                        filterDropdownSelector,
@@ -57,7 +58,7 @@ const FilterDropdown = ({
 
 const mapStateToProps = (state) => {
 	return {
-		filterDropdownSelector: state.filterData.sort
+		filterDropdownSelector: getFilterDropdown(state)
 	}
 }
 

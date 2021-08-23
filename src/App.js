@@ -16,9 +16,7 @@ import {
 	renderTodos,
 	setActivePage,
 	showAlert,
-	toggleIsAllChecked,
-	toggleLoading,
-	setFilteredArrByCategory
+	toggleLoading
 } from "./store/actionCreators";
 import * as todoSelectors from './selectors/todoSelectors'
 
@@ -31,47 +29,27 @@ const App = ({
 	             activeCategorySelector,
 	             loadingSelector,
 	             pagesToShowSelector,
-				 filteredArrByCategory,
 	             // actions
 	             changePagination,
 	             closeAlert,
 	             renderTodos,
 	             setActivePage,
 	             showAlert,
-	             toggleIsAllChecked,
 	             toggleLoading,
-				 setFilteredArrByCategory
+				 pageCount
              }) => {
 
 	const myStorage = window.localStorage.getItem('categoryDropdownData')
 	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
-	let listCount = filteredArrByCategory.length
-	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
-
 	useEffect(() => {
 		getList()
 	}, [])
 
-	useEffect(() => {
-		toggleIsAllChecked(todosList.every(item => item.done))
-		setFilteredArrByCategory(todosList)
-	}, [todosList])
 
 	useState(() => {
 		setActivePage(1)
 	}, [activeCategorySelector])
-
-	useEffect(() => {
-		let listCount = filteredArrByCategory.length || 1
-		let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-		setActivePage(pageCount > activePageSelector ? activePageSelector : pageCount)
-		changePagination({
-			pageNumbers: pageCount,
-			startPage: (activePageSelector >= pageCount - 4 && activePageSelector > 5 && pageCount > 5) ? pageCount - 4 : (activePageSelector <= 5 || pageCount <= 5) ? 1 : activePageSelector - 2,
-			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
-		})
-	}, [listCount])
 
 	useEffect(() => {
 		changePagination({
@@ -95,14 +73,11 @@ const App = ({
 			const data = await response.json()
 			toggleLoading(false)
 			renderTodos(data)
-			listCount = data.length
-			pageCount = Math.ceil(listCount / itemsToShowCountSelector)
 			changePagination({
 				endPage: pageCount < 7 ? pageCount : 5,
 				startPage: 1
 			})
 			setActivePage(1)
-			setFilteredArrByCategory(data)
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
@@ -136,7 +111,8 @@ const mapStateToProps = (state) => {
 		activeCategorySelector: todoSelectors.getActiveCategory(state),
 		loadingSelector: todoSelectors.getLoadingStatus(state),
 		pagesToShowSelector: todoSelectors.getPagesToShow(state),
-		filteredArrByCategory: todoSelectors.filteredArrayByCategory(state)
+		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 
@@ -146,9 +122,7 @@ const mapDispatchToProps = {
 	renderTodos,
 	setActivePage,
 	showAlert,
-	toggleIsAllChecked,
-	toggleLoading,
-	setFilteredArrByCategory
+	toggleLoading
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

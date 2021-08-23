@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { connect } from "react-redux";
 import {setActivePage, changePagination} from "../../store/actionCreators";
+import * as todoSelectors from "../../selectors/todoSelectors";
+import {getPaginationInfo} from "../../selectors/todoSelectors";
 
 const CustomPagesDiv = styled.div`
   max-width: 522px;
@@ -139,11 +141,11 @@ const Pagination = ({ paginationInfo, filteredArrByCategory, itemsToShowCountSel
 
 const mapStateToProps = (state) => {
 	return {
-		filteredArrByCategory: state.filterData.filteredArrByCategory,
-		paginationInfo: state.paginationInfo,
-		activePage: state.paginationInfo.activePage,
-		pagesToShowSelector: state.paginationInfo.pagesToShow,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount
+		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
+		paginationInfo: todoSelectors.getPaginationInfo(state),
+		activePage: todoSelectors.getActivePage(state),
+		pagesToShowSelector: todoSelectors.getPagesToShow(state),
+		itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state)
 	}
 }
 

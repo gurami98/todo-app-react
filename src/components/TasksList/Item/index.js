@@ -6,6 +6,7 @@ import './Item.css'
 import {deleteTodoItem, updateTodoItem} from "../../../API/todoAPI";
 import {connect} from "react-redux";
 import {changePagination, deleteTodo, markDone, setActivePage} from '../../../store/actionCreators'
+import * as todoSelectors from "../../../selectors/todoSelectors"
 
 const ListItem = styled.li`
   display: flex;
@@ -91,27 +92,27 @@ const EditText = styled.textarea`
 `
 
 const defaultHeight = 31;
-const Item = ({ item, index, alertHandler, markDone, todosList, activePageSelector, itemsToShowCountSelector, deleteTodo, setActivePage, changePagination }) => {
+const Item = ({ item, index, alertHandler, markDone, activePageSelector, pageCount, deleteTodo, setActivePage, changePagination }) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
 	const [defaultLineCount, setDefaultLineCount] = useState(Math.ceil(editText.length / 29))
 	const [customHeight, setCustomHeight] = useState(((defaultLineCount - 1) * 19) + defaultHeight)
 
+	useEffect(() => {
+		setActivePage(activePageSelector >= pageCount ? pageCount : activePageSelector)
+		changePagination({
+			pageNumbers: pageCount,
+			startPage: activePageSelector >= pageCount - 4 ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
+			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
+		})
+	}, [pageCount])
+
 	const deleteItem = async (index) => {
 		if (window.confirm('Are you sure you want to delete this item')) {
 			try {
 				await deleteTodoItem(index)
 				deleteTodo(index)
-				let newArr = todosList.filter(item => item._id !== index)
-				let listCount = newArr.length
-				let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-				setActivePage(activePageSelector > pageCount ? pageCount : activePageSelector)
-				changePagination({
-					pageNumbers: pageCount,
-					startPage: activePageSelector >= pageCount - 4 ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
-					endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
-				})
 				alertHandler('Item Successfully Removed', 'success')
 			} catch (e) {
 				alertHandler(e, 'error')
@@ -203,9 +204,8 @@ const Item = ({ item, index, alertHandler, markDone, todosList, activePageSelect
 
 const mapStateToProps = (state) => {
 	return{
-		todosList: state.todos,
 		activePageSelector: state.paginationInfo.activePage,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 

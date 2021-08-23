@@ -14,6 +14,7 @@ import {
 	changePagination,
 } from "../../store/actionCreators";
 import { addTodoItem } from "../../API/todoAPI";
+import * as todoSelectors from "../../selectors/todoSelectors";
 export const defaultFormData = {
 	defaultCategoryText: 'University',
 	defaultPriorityText: 'Medium'
@@ -96,16 +97,17 @@ const Form = ({
 				  // states
 	              priorityDropdownSelector,
 	              categoryDropdownSelector,
-	              itemsToShowCountSelector,
-				  filteredArrByCategory,
 				  // actions
 	              alertHandler,
 	              resetPriority,
 	              resetCategory,
 	              renderCategoryDropdown,
 				  addTodo,
-	              setActivePage,
 	              changePagination,
+				  pageCount,
+				  filteredArrByCategory,
+				  activePageSelector,
+				  setActivePage
               }) => {
 	let currentDate = new Date().toJSON().slice(0, 10)
 
@@ -117,8 +119,6 @@ const Form = ({
 
 	const myStorage = window.localStorage
 
-	let listCount = filteredArrByCategory.length
-
 	useEffect(() => {
 		renderCategoryDropdown({
 			options: [...JSON.parse(window.localStorage.getItem('categoryDropdownData'))],
@@ -126,6 +126,15 @@ const Form = ({
 			activeCategory: 'All Categories'
 		})
 	}, [])
+
+	useEffect(() => {
+		setActivePage(activePageSelector > pageCount ? pageCount : activePageSelector)
+		changePagination({
+			pageNumbers: pageCount,
+			startPage: pageCount > 6 ? pageCount - 4 : 1,
+			endPage: pageCount,
+		})
+	}, [filteredArrByCategory.length])
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
@@ -161,16 +170,8 @@ const Form = ({
 				const resp = await addTodoItem(listData)
 				addTodo(resp.data)
 				alertHandler('Item Successfully Added', 'success')
-				listCount++
-				let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-				setActivePage(pageCount)
-				changePagination({
-					pageNumbers: pageCount,
-					startPage: pageCount > 6 ? pageCount - 4 : 1,
-					endPage: pageCount,
-				})
 			} catch (e) {
-				alertHandler(e, 'error')
+				alertHandler(e.response.data.message, 'error')
 			}
 
 			resetCategory(defaultFormData.defaultCategoryText)
@@ -212,10 +213,11 @@ const Form = ({
 
 const mapStateToProps = (state) => {
 	return {
-		priorityDropdownSelector: state.filterData.priority,
-		categoryDropdownSelector: state.filterData.category,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount,
-		filteredArrByCategory: state.filterData.filteredArrByCategory
+		priorityDropdownSelector: todoSelectors.getPriorityDropdown(state),
+		categoryDropdownSelector: todoSelectors.getCategoryDropdown(state),
+		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
+		pageCount: todoSelectors.getPageCount(state),
+		activePageSelector: todoSelectors.getActivePage(state)
 	}
 }
 

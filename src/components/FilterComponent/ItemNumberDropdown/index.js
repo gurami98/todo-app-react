@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { connect } from "react-redux";
 import {setItemsToShowCount} from "../../../store/actionCreators";
+import {getItemsToShowCount} from "../../../selectors/todoSelectors";
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +35,7 @@ const ItemNumberDropdown = ({setItemsToShowCount, itemsToShowCountSelector}) => 
 
 const mapStateToProps = (state) => {
 	return {
-		itemsToShowCountSelector: state.filterData.itemsToShowCount,
+		itemsToShowCountSelector: getItemsToShowCount(state),
 	}
 }
 
