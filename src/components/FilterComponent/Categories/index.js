@@ -2,8 +2,6 @@ import styled from "styled-components";
 import CustomButton from "../../UIKITS/CustomButton";
 import { connect } from "react-redux";
 import {chooseActiveCategory, setFilteredArrByCategory} from "../../../store/actionCreators";
-import {createSelector} from "reselect";
-import * as todoSelectors from "../../../selectors/todoSelectors";
 const defaultCategory = 'All Categories'
 const Container = styled.div`  	
 	/* width */

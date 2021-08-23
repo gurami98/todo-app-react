@@ -10,7 +10,6 @@ import {
     toggleIsAllChecked, toggleIsAnyChecked
 } from "../../../store/actionCreators";
 import {useEffect} from "react";
-import {createSelector} from "reselect";
 import * as todoSelectors from "../../../selectors/todoSelectors";
 
 const DeleteSelectedBtn = ({
@@ -78,18 +77,13 @@ const DeleteSelectedBtn = ({
     )
 }
 
-const getIsAnyItemChecked = createSelector(
-    todoSelectors.getTodos,
-    (todosList) => todosList.some(item => item.done)
-)
-
 const mapStateToProps = (state) => {
     return {
         todosList: todoSelectors.getTodos(state),
         itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state),
         activePageSelector: todoSelectors.getActivePage(state),
         isAllCheckedSelector: todoSelectors.getIsAllChecked(state),
-        isAnyCheckedSelector: getIsAnyItemChecked(state)
+        isAnyCheckedSelector: todoSelectors.getIsAnyItemChecked(state)
     }
 }
 

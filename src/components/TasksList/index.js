@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import {useEffect} from "react";
 import {setItemsToShow} from "../../store/actionCreators";
 import * as todoSelectors from '../../selectors/todoSelectors'
-import {createSelector} from "reselect";
 
 const UnorderedList = styled.ul`
   width: 522px;
@@ -47,23 +46,12 @@ const TasksList = ({alertHandler, itemsToShow, activePageSelector, itemsToShowCo
 	)
 }
 
-const itemsToShowList = createSelector(
-	todoSelectors.getFilteredArrByCategory,
-	todoSelectors.getItemsToShowCount,
-	todoSelectors.getActivePage,
-	(filteredArrByCategory, itemsToShowCount, activePage) => {
-		let startIndex = (activePage - 1) * itemsToShowCount
-		let endIndex = startIndex + itemsToShowCount
-		return filteredArrByCategory.slice(startIndex, endIndex)
-	}
-)
-
 const mapStateToProps = (state) => {
 	return {
 		filteredArrByCategory: todoSelectors.getFilteredArrByCategory(state),
 		itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state),
 		activePageSelector: todoSelectors.getActivePage(state),
-		itemsToShow: itemsToShowList(state)
+		itemsToShow: todoSelectors.itemsToShowList(state)
 	}
 }
 

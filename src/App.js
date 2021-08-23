@@ -20,10 +20,7 @@ import {
 	toggleLoading,
 	setFilteredArrByCategory
 } from "./store/actionCreators";
-import {createSelector} from "reselect";
 import * as todoSelectors from './selectors/todoSelectors'
-
-const defaultCategory = 'All Categories'
 
 const App = ({
 	             //state
@@ -130,12 +127,6 @@ const App = ({
 	);
 }
 
-const filteredArrayByCategory = createSelector(
-	todoSelectors.getTodos,
-	todoSelectors.getActiveCategory,
-	(todos, activeCategory) =>  todos.filter(item => (item.taskCategory === activeCategory || activeCategory === defaultCategory) && item)
-)
-
 const mapStateToProps = (state) => {
 	return {
 		todosList: todoSelectors.getTodos(state),
@@ -145,7 +136,7 @@ const mapStateToProps = (state) => {
 		activeCategorySelector: todoSelectors.getActiveCategory(state),
 		loadingSelector: todoSelectors.getLoadingStatus(state),
 		pagesToShowSelector: todoSelectors.getPagesToShow(state),
-		filteredArrByCategory: filteredArrayByCategory(state)
+		filteredArrByCategory: todoSelectors.filteredArrayByCategory(state)
 	}
 }
 
