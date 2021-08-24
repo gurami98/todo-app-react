@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import {setActivePage, changePagination} from "../../store/actionCreators";
 import * as todoSelectors from "../../selectors/todoSelectors";
-import {getPaginationInfo} from "../../selectors/todoSelectors";
 
 const CustomPagesDiv = styled.div`
   max-width: 522px;
@@ -48,9 +47,7 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({ paginationInfo, filteredArrByCategory, itemsToShowCountSelector, pagesToShowSelector, activePage, changePagination, setActivePage,}) => {
-	let listCount = filteredArrByCategory.length
-	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
+const Pagination = ({ paginationInfo, pageCount, pagesToShowSelector, activePage, changePagination, setActivePage,}) => {
 
 	const changePage = (page) => {
 		setActivePage(page)
@@ -145,7 +142,8 @@ const mapStateToProps = (state) => {
 		paginationInfo: todoSelectors.getPaginationInfo(state),
 		activePage: todoSelectors.getActivePage(state),
 		pagesToShowSelector: todoSelectors.getPagesToShow(state),
-		itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state)
+		itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state),
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 

@@ -22,8 +22,6 @@ import * as todoSelectors from './selectors/todoSelectors'
 
 const App = ({
 	             //state
-	             todosList,
-	             activePageSelector,
 	             itemsToShowCountSelector,
 	             alertInfoSelector,
 	             activeCategorySelector,
@@ -44,8 +42,11 @@ const App = ({
 
 	useEffect(() => {
 		getList()
+		changePagination({
+			endPage: pageCount < 7 ? pageCount : 5,
+			startPage: 1
+		})
 	}, [])
-
 
 	useState(() => {
 		setActivePage(1)
@@ -73,10 +74,6 @@ const App = ({
 			const data = await response.json()
 			toggleLoading(false)
 			renderTodos(data)
-			changePagination({
-				endPage: pageCount < 7 ? pageCount : 5,
-				startPage: 1
-			})
 			setActivePage(1)
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
@@ -104,14 +101,11 @@ const App = ({
 
 const mapStateToProps = (state) => {
 	return {
-		todosList: todoSelectors.getTodos(state),
-		activePageSelector: todoSelectors.getActivePage(state),
 		itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state),
 		alertInfoSelector: todoSelectors.getAlertInfo(state),
 		activeCategorySelector: todoSelectors.getActiveCategory(state),
 		loadingSelector: todoSelectors.getLoadingStatus(state),
 		pagesToShowSelector: todoSelectors.getPagesToShow(state),
-		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
 		pageCount: todoSelectors.getPageCount(state)
 	}
 }

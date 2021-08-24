@@ -47,9 +47,9 @@ export const getItemsToShowList = createSelector(
 )
 
 export const getPageCount = createSelector(
-    getTodos,
+    getFilteredArrayByCategory,
     getItemsToShowCount,
     (todos, itemsToShowCount) => {
-        return Math.ceil(todos.length / itemsToShowCount)
+        return Math.ceil(todos.length / itemsToShowCount) || 1
     }
 )

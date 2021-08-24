@@ -106,8 +106,7 @@ const Form = ({
 	              changePagination,
 				  pageCount,
 				  filteredArrByCategory,
-				  activePageSelector,
-				  setActivePage
+				  setActivePage,
               }) => {
 	let currentDate = new Date().toJSON().slice(0, 10)
 
@@ -128,7 +127,7 @@ const Form = ({
 	}, [])
 
 	useEffect(() => {
-		setActivePage(activePageSelector > pageCount ? pageCount : activePageSelector)
+		setActivePage(pageCount)
 		changePagination({
 			pageNumbers: pageCount,
 			startPage: pageCount > 6 ? pageCount - 4 : 1,

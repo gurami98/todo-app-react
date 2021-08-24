@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import { MdArrowDropDown } from 'react-icons/md';
 import CustomButton from "../../UIKITS/CustomButton";
 import './Item.css'
@@ -103,7 +103,7 @@ const Item = ({ item, index, alertHandler, markDone, activePageSelector, pageCou
 		setActivePage(activePageSelector >= pageCount ? pageCount : activePageSelector)
 		changePagination({
 			pageNumbers: pageCount,
-			startPage: activePageSelector >= pageCount - 4 ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
+			startPage:(activePageSelector >= pageCount - 4 && activePageSelector > 5) ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
 			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
 		})
 	}, [pageCount])
@@ -205,7 +205,8 @@ const Item = ({ item, index, alertHandler, markDone, activePageSelector, pageCou
 const mapStateToProps = (state) => {
 	return{
 		activePageSelector: state.paginationInfo.activePage,
-		pageCount: todoSelectors.getPageCount(state)
+		pageCount: todoSelectors.getPageCount(state),
+		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state)
 	}
 }
 
