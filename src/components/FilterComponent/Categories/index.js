@@ -45,7 +45,7 @@ const Container = styled.div`
   }
 `
 
-const Categories = ({activeCategory, chooseActiveCategory, categoryDropdownItemsSelector}) => {
+const Categories = ({activeCategory, chooseActiveCategory, categoryDropdownItems}) => {
 
 	const handleCategoryChange = (category) => {
 		chooseActiveCategory(category)
@@ -54,7 +54,7 @@ const Categories = ({activeCategory, chooseActiveCategory, categoryDropdownItems
 	return (
 		<Container>
 			<CustomButton categoryBtn={true} activeCategoryBtn={activeCategory === defaultCategory} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>{defaultCategory}</CustomButton>
-			{categoryDropdownItemsSelector?.map((item, index) => {
+			{categoryDropdownItems?.map((item, index) => {
 				return (
 					<CustomButton categoryBtn={true} activeCategoryBtn={activeCategory === item} key={index} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>{item}</CustomButton>
 				)
@@ -66,7 +66,7 @@ const Categories = ({activeCategory, chooseActiveCategory, categoryDropdownItems
 const mapStateToProps = (state) => {
 	return {
 		activeCategory: todoSelectors.getActiveCategory(state),
-		categoryDropdownItemsSelector: todoSelectors.getCategoryDropdownItems(state)
+		categoryDropdownItems: todoSelectors.getCategoryDropdownItems(state)
 	}
 }
 

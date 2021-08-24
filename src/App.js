@@ -22,11 +22,11 @@ import * as todoSelectors from './selectors/todoSelectors'
 
 const App = ({
 	             //state
-	             itemsToShowCountSelector,
-	             alertInfoSelector,
-	             activeCategorySelector,
-	             loadingSelector,
-	             pagesToShowSelector,
+				 itemsToShowCount,
+				 alertInfo,
+				 activeCategory,
+				 loading,
+				 pagesToShow,
 	             // actions
 	             changePagination,
 	             closeAlert,
@@ -50,16 +50,16 @@ const App = ({
 
 	useState(() => {
 		setActivePage(1)
-	}, [activeCategorySelector])
+	}, [activeCategory])
 
 	useEffect(() => {
 		changePagination({
 			pageNumbers: pageCount,
-			startPage: pageCount > 5 ? pageCount - pagesToShowSelector + 1 : 1,
+			startPage: pageCount > 5 ? pageCount - pagesToShow + 1 : 1,
 			endPage: pageCount,
 		})
 		setActivePage(pageCount)
-	}, [itemsToShowCountSelector])
+	}, [itemsToShowCount])
 
 	const alertHandler = (alertText, alertType) => {
 		showAlert(alertText, alertType)
@@ -87,25 +87,25 @@ const App = ({
 			<Form alertHandler={alertHandler}/>
 
 			{
-				!loadingSelector ?
+				!loading ?
 					<TasksList alertHandler={alertHandler}/>
 					: <FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
 			}
 
 			<Pagination/>
 
-			{alertInfoSelector.alertVisible && <CustomAlert/>}
+			{alertInfo.alertVisible && <CustomAlert/>}
 		</div>
 	);
 }
 
 const mapStateToProps = (state) => {
 	return {
-		itemsToShowCountSelector: todoSelectors.getItemsToShowCount(state),
-		alertInfoSelector: todoSelectors.getAlertInfo(state),
-		activeCategorySelector: todoSelectors.getActiveCategory(state),
-		loadingSelector: todoSelectors.getLoadingStatus(state),
-		pagesToShowSelector: todoSelectors.getPagesToShow(state),
+		itemsToShowCount: todoSelectors.getItemsToShowCount(state),
+		alertInfo: todoSelectors.getAlertInfo(state),
+		activeCategory: todoSelectors.getActiveCategory(state),
+		loading: todoSelectors.getLoadingStatus(state),
+		pagesToShow: todoSelectors.getPagesToShow(state),
 		pageCount: todoSelectors.getPageCount(state)
 	}
 }

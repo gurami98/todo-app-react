@@ -92,7 +92,7 @@ const EditText = styled.textarea`
 `
 
 const defaultHeight = 31;
-const Item = ({ item, index, alertHandler, markDone, activePageSelector, pageCount, deleteTodo, setActivePage, changePagination }) => {
+const Item = ({ item, index, alertHandler, markDone, activePage, pageCount, deleteTodo, setActivePage, changePagination }) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
@@ -100,11 +100,11 @@ const Item = ({ item, index, alertHandler, markDone, activePageSelector, pageCou
 	const [customHeight, setCustomHeight] = useState(((defaultLineCount - 1) * 19) + defaultHeight)
 
 	useEffect(() => {
-		setActivePage(activePageSelector >= pageCount ? pageCount : activePageSelector)
+		setActivePage(activePage >= pageCount ? pageCount : activePage)
 		changePagination({
 			pageNumbers: pageCount,
-			startPage:(activePageSelector >= pageCount - 4 && activePageSelector > 5) ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
-			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
+			startPage:(activePage >= pageCount - 4 && activePage > 5) ? pageCount - 4 : activePage <= 5 ? 1 : activePage - 2,
+			endPage: activePage >= pageCount - 5 ? pageCount : activePage <= 5 ? 5 : activePage + 2,
 		})
 	}, [pageCount])
 
@@ -204,9 +204,8 @@ const Item = ({ item, index, alertHandler, markDone, activePageSelector, pageCou
 
 const mapStateToProps = (state) => {
 	return{
-		activePageSelector: state.paginationInfo.activePage,
-		pageCount: todoSelectors.getPageCount(state),
-		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state)
+		activePage: todoSelectors.getActivePage(state),
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 

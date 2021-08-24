@@ -4,7 +4,6 @@ import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import {chooseCategory, addCategory} from "../../../store/actionCreators";
-import {getCategoryDropdown} from "../../../selectors/todoSelectors";
 import * as todoSelectors from "../../../selectors/todoSelectors";
 
 const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCategory}) => {

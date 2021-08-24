@@ -43,4 +43,4 @@ const mapStateToProps = (state) => {
 	}
 }
 
-export default connect(mapStateToProps, null)(TasksList);
+export default connect(mapStateToProps)(TasksList);

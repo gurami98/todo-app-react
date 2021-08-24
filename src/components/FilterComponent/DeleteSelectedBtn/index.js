@@ -12,8 +12,8 @@ import * as todoSelectors from "../../../selectors/todoSelectors";
 const DeleteSelectedBtn = ({
                                alertHandler,
                                 // redux state
-                               isAllCheckedSelector,
-                               isAnyCheckedSelector,
+                               isAllChecked,
+                               isAnyChecked,
                                 // actions
                                deleteSelected,
                                markAllDone
@@ -31,8 +31,8 @@ const DeleteSelectedBtn = ({
 
     const selectAllHandler = async () => {
         try {
-            await toggleAllTodosDone({done: !isAllCheckedSelector})
-            markAllDone(!isAllCheckedSelector)
+            await toggleAllTodosDone({done: !isAllChecked})
+            markAllDone(!isAllChecked)
         } catch (e) {
             alertHandler(e.response.data.message, 'error')
         }
@@ -41,12 +41,12 @@ const DeleteSelectedBtn = ({
     return (
         <div className='select-delete-main-container'>
             <div className="round">
-                <input type="checkbox" id="select-all" name="select-all" checked={isAllCheckedSelector} readOnly/>
+                <input type="checkbox" id="select-all" name="select-all" checked={isAllChecked} readOnly/>
                 <label htmlFor="checkbox" onClick={selectAllHandler}/>
                 <span>Select All</span>
             </div>
             <div className="delete-selected-btn-container">
-                <CustomButton deleteSelectedBtn={true} disabled={!isAnyCheckedSelector} onClick={deleteSelectedHandler}>Delete
+                <CustomButton deleteSelectedBtn={true} disabled={!isAnyChecked} onClick={deleteSelectedHandler}>Delete
                     Selected</CustomButton>
             </div>
         </div>
@@ -55,8 +55,8 @@ const DeleteSelectedBtn = ({
 
 const mapStateToProps = (state) => {
     return {
-        isAllCheckedSelector: todoSelectors.getIsAllItemChecked(state),
-        isAnyCheckedSelector: todoSelectors.getIsAnyItemChecked(state)
+        isAllChecked: todoSelectors.getIsAllItemChecked(state),
+        isAnyChecked: todoSelectors.getIsAnyItemChecked(state)
     }
 }
 

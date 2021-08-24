@@ -95,8 +95,8 @@ const Wrapper = styled.div`
 
 const Form = ({
 				  // states
-	              priorityDropdownSelector,
-	              categoryDropdownSelector,
+				  priorityDropdown,
+				  categoryDropdown,
 				  // actions
 	              alertHandler,
 	              resetPriority,
@@ -159,11 +159,11 @@ const Form = ({
 		e.preventDefault()
 		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
-			let priorityIndex = priorityDropdownSelector.options.indexOf(priorityDropdownSelector.currentChoice)
+			let priorityIndex = priorityDropdown.options.indexOf(priorityDropdown.currentChoice)
 
 			let listData = {
-				text, taskCategory: categoryDropdownSelector.currentChoice, dueDate, timeAdded: dateAdded,
-				priority: priorityDropdownSelector.optionNumbers[priorityIndex], done: false
+				text, taskCategory: categoryDropdown.currentChoice, dueDate, timeAdded: dateAdded,
+				priority: priorityDropdown.optionNumbers[priorityIndex], done: false
 			}
 			try {
 				const resp = await addTodoItem(listData)
@@ -212,11 +212,10 @@ const Form = ({
 
 const mapStateToProps = (state) => {
 	return {
-		priorityDropdownSelector: todoSelectors.getPriorityDropdown(state),
-		categoryDropdownSelector: todoSelectors.getCategoryDropdown(state),
+		priorityDropdown: todoSelectors.getPriorityDropdown(state),
+		categoryDropdown: todoSelectors.getCategoryDropdown(state),
 		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
-		pageCount: todoSelectors.getPageCount(state),
-		activePageSelector: todoSelectors.getActivePage(state)
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 
