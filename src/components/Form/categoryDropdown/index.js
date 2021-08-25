@@ -1,15 +1,17 @@
-import { useRef, useState } from "react";
+import {useRef, useState} from "react";
 import './CategoryDropdown.css'
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import {chooseCategory, addCategory} from "../../../store/actionCreators";
+import * as todoSelectors from "../../../selectors/todoSelectors";
 
 const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCategory}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
 	const [categoryDropdownInput, setCategoryDropdownInput] = useState('')
 	const [categoryDropdownShow, setCategoryDropdownShow] = useState(false)
+
 	const showDropDown = (a) => {
 		if (a.includes(categoryDropdown.currentChoice)) {
 			setCategoryDropdownShow(!categoryDropdownShow)
@@ -70,7 +72,7 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 
 const mapStateToProps = (state) => {
 	return {
-		categoryDropdown: state.filterData.category
+		categoryDropdown: todoSelectors.getCategoryDropdown(state)
 	}
 }
 

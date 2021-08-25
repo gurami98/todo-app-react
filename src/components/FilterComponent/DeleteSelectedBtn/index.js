@@ -5,26 +5,19 @@ import {deleteSelectedTodos, toggleAllTodosDone} from "../../../API/todoAPI";
 import {
     changePagination,
     deleteSelected,
-    markAllDone,
-    setActivePage,
-    toggleIsAllChecked
+    markAllDone
 } from "../../../store/actionCreators";
+import * as todoSelectors from "../../../selectors/todoSelectors";
 
 const DeleteSelectedBtn = ({
                                alertHandler,
                                 // redux state
-                               todosList,
-                               itemsToShowCountSelector,
-                               activePageSelector,
-                               isAllCheckedSelector,
+                               isAllChecked,
+                               isAnyChecked,
                                 // actions
-                               changePagination,
                                deleteSelected,
-                               setActivePage,
-                               toggleIsAllChecked,
                                markAllDone
                            }) => {
-    const isAnyItemChecked = todosList.some(item => item.done)
 
     const deleteSelectedHandler = async () => {
         try {
@@ -34,22 +27,12 @@ const DeleteSelectedBtn = ({
         } catch (e) {
             alertHandler(e.response.data.message, 'error')
         }
-        let newArr = todosList.filter(item => !item.done)
-        let listCount = newArr.length
-        let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-        setActivePage((pageCount >= activePageSelector && pageCount > 0) ? activePageSelector : pageCount === 0 ? 1 : pageCount)
-        changePagination({
-            pageNumbers: pageCount,
-            startPage: activePageSelector >= pageCount - 4 ? pageCount - 4 : activePageSelector <= 5 ? 1 : activePageSelector - 2,
-            endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
-        })
     }
 
     const selectAllHandler = async () => {
-        toggleIsAllChecked(!isAllCheckedSelector)
         try {
-            await toggleAllTodosDone({done: !isAllCheckedSelector})
-            markAllDone(!isAllCheckedSelector)
+            await toggleAllTodosDone({done: !isAllChecked})
+            markAllDone(!isAllChecked)
         } catch (e) {
             alertHandler(e.response.data.message, 'error')
         }
@@ -58,12 +41,12 @@ const DeleteSelectedBtn = ({
     return (
         <div className='select-delete-main-container'>
             <div className="round">
-                <input type="checkbox" id="select-all" name="select-all" checked={isAllCheckedSelector} readOnly/>
+                <input type="checkbox" id="select-all" name="select-all" checked={isAllChecked} readOnly/>
                 <label htmlFor="checkbox" onClick={selectAllHandler}/>
                 <span>Select All</span>
             </div>
             <div className="delete-selected-btn-container">
-                <CustomButton deleteSelectedBtn={true} disabled={!isAnyItemChecked} onClick={deleteSelectedHandler}>Delete
+                <CustomButton deleteSelectedBtn={true} disabled={!isAnyChecked} onClick={deleteSelectedHandler}>Delete
                     Selected</CustomButton>
             </div>
         </div>
@@ -72,19 +55,15 @@ const DeleteSelectedBtn = ({
 
 const mapStateToProps = (state) => {
     return {
-        todosList: state.todos,
-        itemsToShowCountSelector: state.filterData.itemsToShowCount,
-        activePageSelector: state.paginationInfo.activePage,
-        isAllCheckedSelector: state.filterData.isAllChecked
+        isAllChecked: todoSelectors.getIsAllItemChecked(state),
+        isAnyChecked: todoSelectors.getIsAnyItemChecked(state)
     }
 }
 
 const mapDispatchToProps = {
     changePagination,
     deleteSelected,
-    setActivePage,
-    toggleIsAllChecked,
-    markAllDone
+    markAllDone,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteSelectedBtn)

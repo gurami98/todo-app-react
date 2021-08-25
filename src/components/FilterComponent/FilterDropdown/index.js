@@ -6,9 +6,10 @@ import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import {chooseFilter, filterTodos} from "../../../store/actionCreators";
+import {getFilterDropdown} from "../../../selectors/todoSelectors";
 
 const FilterDropdown = ({
-	                        filterDropdownSelector,
+							filterDropdown,
 	                        chooseFilter,
 	                        filterTodos,
                         }) => {
@@ -39,12 +40,12 @@ const FilterDropdown = ({
 		<div className="dropdown">
 			<CustomButton filterBtn={true} ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn"
 			              type="button">
-				<GrSort/>{filterDropdownSelector.currentChoice} <span><MdArrowDropDown/></span>
+				<GrSort/>{filterDropdown.currentChoice} <span><MdArrowDropDown/></span>
 			</CustomButton>
 			<CustomDropdown ref={filterDropdownItemsRef} show={filterDropdownShow}
 			                className={filterDropdownShow ? 'show' : ''}>
 				<div className={"dropdown-items"}>
-					{filterDropdownSelector?.options?.map(item => {
+					{filterDropdown?.options?.map(item => {
 						return (
 							<p onClick={(e) => choseFilterType(e.target.innerHTML)} key={item}>{item}</p>
 						)
@@ -57,7 +58,7 @@ const FilterDropdown = ({
 
 const mapStateToProps = (state) => {
 	return {
-		filterDropdownSelector: state.filterData.sort
+		filterDropdown: getFilterDropdown(state)
 	}
 }
 

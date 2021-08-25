@@ -14,6 +14,7 @@ import {
 	changePagination,
 } from "../../store/actionCreators";
 import { addTodoItem } from "../../API/todoAPI";
+import * as todoSelectors from "../../selectors/todoSelectors";
 export const defaultFormData = {
 	defaultCategoryText: 'University',
 	defaultPriorityText: 'Medium'
@@ -94,18 +95,18 @@ const Wrapper = styled.div`
 
 const Form = ({
 				  // states
-	              priorityDropdownSelector,
-	              categoryDropdownSelector,
-	              itemsToShowCountSelector,
-				  filteredArrByCategory,
+				  priorityDropdown,
+				  categoryDropdown,
 				  // actions
 	              alertHandler,
 	              resetPriority,
 	              resetCategory,
 	              renderCategoryDropdown,
 				  addTodo,
-	              setActivePage,
 	              changePagination,
+				  pageCount,
+				  filteredArrByCategory,
+				  setActivePage,
               }) => {
 	let currentDate = new Date().toJSON().slice(0, 10)
 
@@ -117,8 +118,6 @@ const Form = ({
 
 	const myStorage = window.localStorage
 
-	let listCount = filteredArrByCategory.length
-
 	useEffect(() => {
 		renderCategoryDropdown({
 			options: [...JSON.parse(window.localStorage.getItem('categoryDropdownData'))],
@@ -126,6 +125,15 @@ const Form = ({
 			activeCategory: 'All Categories'
 		})
 	}, [])
+
+	useEffect(() => {
+		setActivePage(pageCount)
+		changePagination({
+			pageNumbers: pageCount,
+			startPage: pageCount > 6 ? pageCount - 4 : 1,
+			endPage: pageCount,
+		})
+	}, [filteredArrByCategory.length])
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
@@ -151,26 +159,18 @@ const Form = ({
 		e.preventDefault()
 		if (text.trim() && dueDate.trim()) {
 			let dateAdded = new Date()
-			let priorityIndex = priorityDropdownSelector.options.indexOf(priorityDropdownSelector.currentChoice)
+			let priorityIndex = priorityDropdown.options.indexOf(priorityDropdown.currentChoice)
 
 			let listData = {
-				text, taskCategory: categoryDropdownSelector.currentChoice, dueDate, timeAdded: dateAdded,
-				priority: priorityDropdownSelector.optionNumbers[priorityIndex], done: false
+				text, taskCategory: categoryDropdown.currentChoice, dueDate, timeAdded: dateAdded,
+				priority: priorityDropdown.optionNumbers[priorityIndex], done: false
 			}
 			try {
 				const resp = await addTodoItem(listData)
 				addTodo(resp.data)
 				alertHandler('Item Successfully Added', 'success')
-				listCount++
-				let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-				setActivePage(pageCount)
-				changePagination({
-					pageNumbers: pageCount,
-					startPage: pageCount > 6 ? pageCount - 4 : 1,
-					endPage: pageCount,
-				})
 			} catch (e) {
-				alertHandler(e, 'error')
+				alertHandler(e.response.data.message, 'error')
 			}
 
 			resetCategory(defaultFormData.defaultCategoryText)
@@ -212,10 +212,10 @@ const Form = ({
 
 const mapStateToProps = (state) => {
 	return {
-		priorityDropdownSelector: state.filterData.priority,
-		categoryDropdownSelector: state.filterData.category,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount,
-		filteredArrByCategory: state.filterData.filteredArrByCategory
+		priorityDropdown: todoSelectors.getPriorityDropdown(state),
+		categoryDropdown: todoSelectors.getCategoryDropdown(state),
+		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 

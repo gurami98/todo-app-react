@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { connect } from "react-redux";
 import {setActivePage, changePagination} from "../../store/actionCreators";
+import * as todoSelectors from "../../selectors/todoSelectors";
 
 const CustomPagesDiv = styled.div`
   max-width: 522px;
@@ -46,19 +47,17 @@ const PageRight = styled(PageButton)`
   border-radius: 0 5px 5px 0;
 `
 
-const Pagination = ({ paginationInfo, filteredArrByCategory, itemsToShowCountSelector, pagesToShowSelector, activePage, changePagination, setActivePage,}) => {
-	let listCount = filteredArrByCategory.length
-	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
+const Pagination = ({ paginationInfo, pageCount, pagesToShow, activePage, changePagination, setActivePage,}) => {
 
 	const changePage = (page) => {
 		setActivePage(page)
-		if (pageCount >= pagesToShowSelector) {
-			if (page <= pagesToShowSelector) {
-				changePagination({endPage: pagesToShowSelector, startPage: 1})
-			} else if (page >= pageCount - pagesToShowSelector + 1) {
+		if (pageCount >= pagesToShow) {
+			if (page <= pagesToShow) {
+				changePagination({endPage: pagesToShow, startPage: 1})
+			} else if (page >= pageCount - pagesToShow + 1) {
 				changePagination({
 					endPage: pageCount,
-					startPage: pageCount - pagesToShowSelector + 1
+					startPage: pageCount - pagesToShow + 1
 				})
 			} else {
 				changePagination({endPage: page + 2, startPage: page - 2})
@@ -139,11 +138,10 @@ const Pagination = ({ paginationInfo, filteredArrByCategory, itemsToShowCountSel
 
 const mapStateToProps = (state) => {
 	return {
-		filteredArrByCategory: state.filterData.filteredArrByCategory,
-		paginationInfo: state.paginationInfo,
-		activePage: state.paginationInfo.activePage,
-		pagesToShowSelector: state.paginationInfo.pagesToShow,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount
+		paginationInfo: todoSelectors.getPaginationInfo(state),
+		activePage: todoSelectors.getActivePage(state),
+		pagesToShow: todoSelectors.getPagesToShow(state),
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 

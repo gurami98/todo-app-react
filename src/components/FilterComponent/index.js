@@ -2,7 +2,6 @@ import DeleteSelectedBtn from "./DeleteSelectedBtn";
 import ItemNumberDropdown from "./ItemNumberDropdown";
 import FilterDropdown from "./FilterDropdown";
 import Categories from "./Categories";
-import './FilterComponent.css'
 
 const FilterComponent = ({ alertHandler}) => {
 

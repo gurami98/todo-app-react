@@ -16,70 +16,50 @@ import {
 	renderTodos,
 	setActivePage,
 	showAlert,
-	toggleIsAllChecked,
-	toggleLoading,
-	setFilteredArrByCategory
+	toggleLoading
 } from "./store/actionCreators";
+import * as todoSelectors from './selectors/todoSelectors'
 
 const App = ({
 	             //state
-	             todosList,
-	             activePageSelector,
-	             itemsToShowCountSelector,
-	             alertInfoSelector,
-	             activeCategorySelector,
-	             loadingSelector,
-	             pagesToShowSelector,
-				 filteredArrByCategory,
+				 itemsToShowCount,
+				 alertInfo,
+				 activeCategory,
+				 loading,
+				 pagesToShow,
 	             // actions
 	             changePagination,
 	             closeAlert,
 	             renderTodos,
 	             setActivePage,
 	             showAlert,
-	             toggleIsAllChecked,
 	             toggleLoading,
-				 setFilteredArrByCategory
+				 pageCount
              }) => {
 
 	const myStorage = window.localStorage.getItem('categoryDropdownData')
 	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
 
-	let listCount = filteredArrByCategory.length
-	let pageCount = Math.ceil(listCount / itemsToShowCountSelector) || 1
-
 	useEffect(() => {
 		getList()
+		changePagination({
+			endPage: pageCount < 7 ? pageCount : 5,
+			startPage: 1
+		})
 	}, [])
-
-	useEffect(() => {
-		toggleIsAllChecked(todosList.every(item => item.done))
-		setFilteredArrByCategory(todosList)
-	}, [todosList])
 
 	useState(() => {
 		setActivePage(1)
-	}, [activeCategorySelector])
-
-	useEffect(() => {
-		let listCount = filteredArrByCategory.length || 1
-		let pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-		setActivePage(pageCount > activePageSelector ? activePageSelector : pageCount)
-		changePagination({
-			pageNumbers: pageCount,
-			startPage: (activePageSelector >= pageCount - 4 && activePageSelector > 5 && pageCount > 5) ? pageCount - 4 : (activePageSelector <= 5 || pageCount <= 5) ? 1 : activePageSelector - 2,
-			endPage: activePageSelector >= pageCount - 5 ? pageCount : activePageSelector <= 5 ? 5 : activePageSelector + 2,
-		})
-	}, [listCount])
+	}, [activeCategory])
 
 	useEffect(() => {
 		changePagination({
 			pageNumbers: pageCount,
-			startPage: pageCount > 5 ? pageCount - pagesToShowSelector + 1 : 1,
+			startPage: pageCount > 5 ? pageCount - pagesToShow + 1 : 1,
 			endPage: pageCount,
 		})
 		setActivePage(pageCount)
-	}, [itemsToShowCountSelector])
+	}, [itemsToShowCount])
 
 	const alertHandler = (alertText, alertType) => {
 		showAlert(alertText, alertType)
@@ -94,14 +74,7 @@ const App = ({
 			const data = await response.json()
 			toggleLoading(false)
 			renderTodos(data)
-			listCount = data.length
-			pageCount = Math.ceil(listCount / itemsToShowCountSelector)
-			changePagination({
-				endPage: pageCount < 7 ? pageCount : 5,
-				startPage: 1
-			})
 			setActivePage(1)
-			setFilteredArrByCategory(data)
 		} catch (e) {
 			alertHandler(e.response.data.message, 'error')
 		}
@@ -114,28 +87,26 @@ const App = ({
 			<Form alertHandler={alertHandler}/>
 
 			{
-				!loadingSelector ?
+				!loading ?
 					<TasksList alertHandler={alertHandler}/>
 					: <FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
 			}
 
 			<Pagination/>
 
-			{alertInfoSelector.alertVisible && <CustomAlert/>}
+			{alertInfo.alertVisible && <CustomAlert/>}
 		</div>
 	);
 }
 
 const mapStateToProps = (state) => {
 	return {
-		todosList: state.todos,
-		activePageSelector: state.paginationInfo.activePage,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount,
-		alertInfoSelector: state.alertInfo,
-		activeCategorySelector: state.filterData.category.activeCategory,
-		loadingSelector: state.loading,
-		pagesToShowSelector: state.paginationInfo.pagesToShow,
-		filteredArrByCategory: state.filterData.filteredArrByCategory
+		itemsToShowCount: todoSelectors.getItemsToShowCount(state),
+		alertInfo: todoSelectors.getAlertInfo(state),
+		activeCategory: todoSelectors.getActiveCategory(state),
+		loading: todoSelectors.getLoadingStatus(state),
+		pagesToShow: todoSelectors.getPagesToShow(state),
+		pageCount: todoSelectors.getPageCount(state)
 	}
 }
 
@@ -145,9 +116,7 @@ const mapDispatchToProps = {
 	renderTodos,
 	setActivePage,
 	showAlert,
-	toggleIsAllChecked,
-	toggleLoading,
-	setFilteredArrByCategory
+	toggleLoading
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

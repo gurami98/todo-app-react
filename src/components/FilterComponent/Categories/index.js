@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import CustomButton from "../../UIKITS/CustomButton";
 import { connect } from "react-redux";
-import {chooseActiveCategory, setFilteredArrByCategory} from "../../../store/actionCreators";
+import {chooseActiveCategory} from "../../../store/actionCreators";
+import * as todoSelectors from "../../../selectors/todoSelectors";
 const defaultCategory = 'All Categories'
 const Container = styled.div`  	
 	/* width */
@@ -44,16 +45,16 @@ const Container = styled.div`
   }
 `
 
-const Categories = ({todosList, activeCategory, chooseActiveCategory, categoryDropdownItemsSelector, setFilteredArrByCategory}) => {
+const Categories = ({activeCategory, chooseActiveCategory, categoryDropdownItems}) => {
+
 	const handleCategoryChange = (category) => {
 		chooseActiveCategory(category)
-		setFilteredArrByCategory(todosList)
 	}
 
 	return (
 		<Container>
 			<CustomButton categoryBtn={true} activeCategoryBtn={activeCategory === defaultCategory} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>{defaultCategory}</CustomButton>
-			{categoryDropdownItemsSelector?.map((item, index) => {
+			{categoryDropdownItems?.map((item, index) => {
 				return (
 					<CustomButton categoryBtn={true} activeCategoryBtn={activeCategory === item} key={index} onClick={(e) => handleCategoryChange(e.target.innerHTML)}>{item}</CustomButton>
 				)
@@ -64,15 +65,13 @@ const Categories = ({todosList, activeCategory, chooseActiveCategory, categoryDr
 
 const mapStateToProps = (state) => {
 	return {
-		todosList: state.todos,
-		activeCategory: state.filterData.category.activeCategory,
-		categoryDropdownItemsSelector: state.filterData.category.options
+		activeCategory: todoSelectors.getActiveCategory(state),
+		categoryDropdownItems: todoSelectors.getCategoryDropdownItems(state)
 	}
 }
 
 const mapDispatchToProps = {
-	chooseActiveCategory,
-	setFilteredArrByCategory
+	chooseActiveCategory
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Categories)

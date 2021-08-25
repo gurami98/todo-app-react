@@ -1,3 +1,11 @@
+#filter-row1 {
+ width: 522px;
+ justify-content: space-between;
+ display: flex;
+ align-items: center;
+ margin-top: 50px;
+}
+
 #filter-row1 .dropdown {
  height: 26px;
 }
@@ -9,4 +17,13 @@
 #filter-row1 .dropbtn {
  vertical-align: super;
  width: 145px;
+}
+
+@media (max-width: 800px) {
+ #filter-row1 {
+  max-width: 90%;
+  height: 60px;
+  flex-direction: column;
+  gap: 5px;
+ }
 }

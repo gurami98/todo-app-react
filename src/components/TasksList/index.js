@@ -1,8 +1,7 @@
 import Item from './Item'
 import styled from 'styled-components'
 import {connect} from "react-redux";
-import {useEffect} from "react";
-import {setItemsToShow} from "../../store/actionCreators";
+import * as todoSelectors from '../../selectors/todoSelectors'
 
 const UnorderedList = styled.ul`
   width: 522px;
@@ -17,12 +16,7 @@ const UnorderedList = styled.ul`
   }
 `
 
-const TasksList = ({alertHandler, itemsToShow, activePageSelector, itemsToShowCountSelector, filteredArrByCategory, setItemsToShow}) => {
-	useEffect(() => {
-		let startIndex = (activePageSelector - 1) * itemsToShowCountSelector
-		let endIndex = startIndex + itemsToShowCountSelector
-		setItemsToShow(startIndex, endIndex)
-	}, [filteredArrByCategory, itemsToShowCountSelector, activePageSelector])
+const TasksList = ({alertHandler, itemsToShow}) => {
 
 	if(itemsToShow.length) {
 		return (
@@ -45,14 +39,8 @@ const TasksList = ({alertHandler, itemsToShow, activePageSelector, itemsToShowCo
 
 const mapStateToProps = (state) => {
 	return {
-		activePageSelector: state.paginationInfo.activePage,
-		itemsToShowCountSelector: state.filterData.itemsToShowCount,
-		filteredArrByCategory: state.filterData.filteredArrByCategory,
-		itemsToShow: state.filterData.itemsToShow
+		itemsToShow: todoSelectors.getItemsToShowList(state)
 	}
 }
-const mapDispatchToProps = {
-	setItemsToShow
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(TasksList);
+export default connect(mapStateToProps)(TasksList);

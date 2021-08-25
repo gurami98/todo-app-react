@@ -34,6 +34,7 @@ const CustomAlertContainer = styled.div`
 const CustomAlert = () => {
 	const alertInfoSelector = useSelector(({alertInfo}) => alertInfo)
 	const {alertType, alertText} = alertInfoSelector
+
 	return (
 		<CustomAlertContainer alertType={alertType}>
 			{alertType === error ? <AiOutlineInfoCircle/> : <BsCheckCircle/>}
