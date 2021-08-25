@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom'
 
 const Error = () => {
     const history = useHistory()
-    const [seconds, setSeconds] = useState(4)
+    const [seconds, setSeconds] = useState(3)
 
     useEffect(() => {
         let countdownInterval = setInterval(() => {
@@ -15,7 +15,7 @@ const Error = () => {
     useEffect(() => {
         let redirectTimer = setTimeout(() => {
             history.push('/')
-        }, 4000)
+        }, 3000)
         return () => clearTimeout(redirectTimer)
     }, [])
     return (
