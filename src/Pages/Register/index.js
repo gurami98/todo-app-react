@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
-import {Link, useHistory} from 'react-router-dom'
-import {loginUser} from "../API/userAPI";
-import Cookies from 'js-cookie'
-
-const Login = ({alertHandler}) => {
-    const history = useHistory()
+import {registerUser} from "../../API/userAPI"
+import {Link, Redirect} from "react-router-dom";
+import Cookies from "js-cookie";
+const Register = ({alertHandler}) => {
+    const jwt = Cookies.get('jwt')
     const [user, setUser] = useState({
         username: '',
+        email: '',
         password: ''
     })
 
@@ -21,18 +21,20 @@ const Login = ({alertHandler}) => {
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
-            const response = await loginUser(user)
-            const token = response.data
+            await registerUser(user)
             setUser({
                 username: '',
+                email: '',
                 password: ''
             })
-            Cookies.set('jwt', token)
-            alertHandler('Successfully Logged in', 'success')
-            history.push('/home')
+            alertHandler('Successfully Registered', 'success')
         }catch(e){
             alertHandler(e.response.data.message, 'error')
         }
+    }
+
+    if(jwt) {
+        return <Redirect to='/home'/>
     }
 
     return (
@@ -42,16 +44,20 @@ const Login = ({alertHandler}) => {
                 <br/>
                 <input type="text" id='username' name='username' value={user.username} onChange={handleFormInputChange}/>
                 <br/>
+                <label htmlFor="email">Email: </label>
+                <br/>
+                <input type="email" id='email' name='email' value={user.email} onChange={handleFormInputChange}/>
+                <br/>
                 <label htmlFor="password">Password: </label>
                 <br/>
                 <input type="password" id='password' name='password' value={user.password} onChange={handleFormInputChange}/>
                 <br/>
-                <button type='submit'>Login</button>
+                <button type='submit'>Register</button>
                 <br/>
-                <span>Not Registered Yet ? <Link to='/register'>Register</Link> </span>
+                <span>Already Registered ? <Link to='/login'>Login</Link> </span>
             </form>
         </div>
     )
 }
 
-export default Login;
+export default Register

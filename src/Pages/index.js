@@ -20,14 +20,14 @@ const RouterSetup = ({showAlert, closeAlert, alertInfo}) => {
     return (
         <Router>
             <Switch>
-                <Route exact path={['/', '/login']}>
+                <Route exact path={['/', '/home']}>
+                    <Home/>
+                </Route>
+                <Route path='/login'>
                     <Login alertHandler={alertHandler}/>
                 </Route>
                 <Route path='/register'>
                     <Register alertHandler={alertHandler}/>
-                </Route>
-                <Route path='/home'>
-                    <Home/>
                 </Route>
                 <Route path='*'>
                     <Error/>

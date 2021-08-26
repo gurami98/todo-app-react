@@ -1,10 +1,13 @@
 import React, {useState} from 'react'
-import {registerUser} from "../API/userAPI"
-import {Link} from "react-router-dom";
-const Register = ({alertHandler}) => {
+import {Link, Redirect, useHistory} from 'react-router-dom'
+import {loginUser, welcomeUser} from "../../API/userAPI";
+import Cookies from 'js-cookie'
+
+const Login = ({alertHandler}) => {
+    const history = useHistory()
+    const jwt = Cookies.get('jwt')
     const [user, setUser] = useState({
         username: '',
-        email: '',
         password: ''
     })
 
@@ -19,16 +22,27 @@ const Register = ({alertHandler}) => {
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
-            await registerUser(user)
+            const response = await loginUser(user)
+            const token = response.data
+            Cookies.set('jwt', token)
+            const usernameResponse = await welcomeUser({...user, token})
+            const username = usernameResponse.data
             setUser({
                 username: '',
-                email: '',
                 password: ''
             })
-            alertHandler('Successfully Registered', 'success')
+            alertHandler('Successfully Logged in', 'success')
+            history.push({
+                pathname: '/home',
+                state: username
+            })
         }catch(e){
             alertHandler(e.response.data.message, 'error')
         }
+    }
+
+    if(jwt) {
+        return <Redirect to='/home'/>
     }
 
     return (
@@ -38,20 +52,16 @@ const Register = ({alertHandler}) => {
                 <br/>
                 <input type="text" id='username' name='username' value={user.username} onChange={handleFormInputChange}/>
                 <br/>
-                <label htmlFor="email">Email: </label>
-                <br/>
-                <input type="email" id='email' name='email' value={user.email} onChange={handleFormInputChange}/>
-                <br/>
                 <label htmlFor="password">Password: </label>
                 <br/>
                 <input type="password" id='password' name='password' value={user.password} onChange={handleFormInputChange}/>
                 <br/>
-                <button type='submit'>Register</button>
+                <button type='submit'>Login</button>
                 <br/>
-                <span>Already Registered ? <Link to='/login'>Login</Link> </span>
+                <span>Not Registered Yet ? <Link to='/register'>Register</Link> </span>
             </form>
         </div>
     )
 }
 
-export default Register
+export default Login;
