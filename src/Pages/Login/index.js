@@ -24,7 +24,10 @@ const Login = ({alertHandler}) => {
         try {
             const response = await loginUser(user)
             const token = response.data
-            Cookies.set('jwt', token)
+            const in15Minutes = 1/192
+            Cookies.set('jwt', token, {
+                expires: in15Minutes
+            })
             const usernameResponse = await welcomeUser({...user, token})
             const username = usernameResponse.data
             setUser({

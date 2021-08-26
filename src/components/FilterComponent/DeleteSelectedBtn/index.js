@@ -1,6 +1,7 @@
 import './DeleteSelectedBtn.css'
 import CustomButton from "../../UIKITS/CustomButton";
 import {connect} from "react-redux";
+import CustomCheckbox from "../../UIKITS/CustomCheckbox";
 import {deleteSelectedTodos, toggleAllTodosDone} from "../../../API/todoAPI";
 import {
     changePagination,
@@ -40,11 +41,11 @@ const DeleteSelectedBtn = ({
 
     return (
         <div className='select-delete-main-container'>
-            <div className="round">
+            <CustomCheckbox>
                 <input type="checkbox" id="select-all" name="select-all" checked={isAllChecked} readOnly/>
                 <label htmlFor="checkbox" onClick={selectAllHandler}/>
                 <span>Select All</span>
-            </div>
+            </CustomCheckbox>
             <div className="delete-selected-btn-container">
                 <CustomButton deleteSelectedBtn={true} disabled={!isAnyChecked} onClick={deleteSelectedHandler}>Delete
                     Selected</CustomButton>

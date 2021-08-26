@@ -1,4 +1,5 @@
 import {useRef, useState} from "react";
+import CustomDropdownContainer from "../../UIKITS/CustomDropdownContainer";
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
@@ -23,20 +24,20 @@ const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
-			if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && dropdownItemsRef.current.classList.contains('show')) {
+			if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && priorityDropdownShow) {
 				setPriorityDropdownShow(false)
 			}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
 
 	return (
-		<div className="dropdown second">
+		<CustomDropdownContainer className="second">
 			<label>Priority: </label>
 			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(priorityDropdown.currentChoice)}
 			        className="dropbtn" type="button">{priorityDropdown.currentChoice} <span>▼</span>
 			</CustomButton>
-			<CustomDropdown ref={dropdownItemsRef} show={priorityDropdownShow} className={priorityDropdownShow ? 'show' : ''}>
-				<div className={"dropdown-items"}>
+			<CustomDropdown ref={dropdownItemsRef} show={priorityDropdownShow} >
+				<div>
 					{priorityDropdown.options?.map(item => {
 						return (
 							<p onClick={choosePriorityDropdown} key={item}>{item}</p>
@@ -44,7 +45,7 @@ const PriorityDropdown = ({priorityDropdown, choosePriority}) => {
 					})}
 				</div>
 			</CustomDropdown>
-		</div>
+		</CustomDropdownContainer>
 	)
 }
 

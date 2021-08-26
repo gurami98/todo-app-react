@@ -1,5 +1,4 @@
 import './App.css';
-import './styles/shared/shared.css'
 import { useEffect, useState } from "react";
 import {getAllTodoItems} from "./API/todoAPI";
 import TasksList from './components/TasksList'

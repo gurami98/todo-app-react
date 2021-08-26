@@ -2,6 +2,7 @@ import { GrSort } from "react-icons/gr";
 import { MdArrowDropDown } from "react-icons/md";
 import { useRef, useState } from "react";
 import './FilterDropdown.css';
+import CustomDropdownContainer from "../../UIKITS/CustomDropdownContainer";
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
@@ -30,21 +31,20 @@ const FilterDropdown = ({
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
-		if (filterDropdownItemsRef.current && !filterDropdownBtn.current.contains(e.target) && !filterDropdownItemsRef.current.contains(e.target) && filterDropdownItemsRef.current.classList.contains('show')) {
+		if (filterDropdownItemsRef.current && !filterDropdownBtn.current.contains(e.target) && !filterDropdownItemsRef.current.contains(e.target) && filterDropdownShow) {
 			setFilterDropdownShow(false)
 		}
 	}
 	document.addEventListener("mousedown", handleClickOutside);
 
 	return (
-		<div className="dropdown">
+		<CustomDropdownContainer>
 			<CustomButton filterBtn={true} ref={filterDropdownBtn} onClick={showFilterDropDown} className="dropbtn"
 			              type="button">
 				<GrSort/>{filterDropdown.currentChoice} <span><MdArrowDropDown/></span>
 			</CustomButton>
-			<CustomDropdown ref={filterDropdownItemsRef} show={filterDropdownShow}
-			                className={filterDropdownShow ? 'show' : ''}>
-				<div className={"dropdown-items"}>
+			<CustomDropdown ref={filterDropdownItemsRef} show={filterDropdownShow}>
+				<div>
 					{filterDropdown?.options?.map(item => {
 						return (
 							<p onClick={(e) => choseFilterType(e.target.innerHTML)} key={item}>{item}</p>
@@ -52,7 +52,7 @@ const FilterDropdown = ({
 					})}
 				</div>
 			</CustomDropdown>
-		</div>
+		</CustomDropdownContainer>
 	)
 }
 
