@@ -7,6 +7,8 @@ import {deleteTodoItem, updateTodoItem} from "../../../API/todoAPI";
 import {connect} from "react-redux";
 import {changePagination, deleteTodo, markDone, setActivePage} from '../../../store/actionCreators'
 import * as todoSelectors from "../../../selectors/todoSelectors"
+import alertHandler from "../../../helpers/alertHelper";
+import CustomCheckbox from "../../UIKITS/CustomCheckbox";
 
 const ListItem = styled.li`
   display: flex;
@@ -92,7 +94,7 @@ const EditText = styled.textarea`
 `
 
 const defaultHeight = 31;
-const Item = ({ item, index, alertHandler, markDone, activePage, pageCount, deleteTodo, setActivePage, changePagination }) => {
+const Item = ({ item, index, markDone, activePage, pageCount, deleteTodo, setActivePage, changePagination }) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)
@@ -174,10 +176,10 @@ const Item = ({ item, index, alertHandler, markDone, activePage, pageCount, dele
 	return (
 		<ListItem key={index} deadLine={hoursLeft < 48}>
 			<CustomDiv status={detailsShow}>
-				<div className="round">
+				<CustomCheckbox type={'itemCheckbox'}>
 					<input type="checkbox" id={index} onChange={(e) => updateHandler(index, {done: e.target.checked})} checked={item.done}/>
 					<label htmlFor={index}/>
-				</div>
+				</CustomCheckbox>
 				{
 					beingEdited ? <EditText autoFocus height={customHeight + "px"} className={'editable-span'} onKeyDown={(e) => handleKeyPress(e, index)} type="text" id={'li-' + index} value={editText}
 					                     onChange={e => setEditText(e.target.value)} onFocus={handleCursor}/>

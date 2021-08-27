@@ -4,8 +4,9 @@ const editText = 'edit'
 const deleteText = 'delete'
 
 const CustomButton = styled.button`
-  &:hover {
-    opacity: 0.8;
+  &:hover,
+  &:focus{
+    opacity: 0.7;
   }
 
   cursor: pointer;
@@ -14,6 +15,11 @@ const CustomButton = styled.button`
   border: 0;
   color: #2794BD;
   background-color: #F6F4F4;
+  
+  & span{
+    float: right;
+  }
+  
   @media (max-width: 800px) {
     margin-left: 0;
   }

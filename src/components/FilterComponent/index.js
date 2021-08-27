@@ -3,12 +3,12 @@ import ItemNumberDropdown from "./ItemNumberDropdown";
 import FilterDropdown from "./FilterDropdown";
 import Categories from "./Categories";
 
-const FilterComponent = ({ alertHandler}) => {
+const FilterComponent = () => {
 
 	return (
 		<>
 			<div id="filter-row1">
-				<DeleteSelectedBtn alertHandler={alertHandler} />
+				<DeleteSelectedBtn/>
 
 				<ItemNumberDropdown/>
 

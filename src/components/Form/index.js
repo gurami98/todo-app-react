@@ -15,6 +15,8 @@ import {
 } from "../../store/actionCreators";
 import { addTodoItem } from "../../API/todoAPI";
 import * as todoSelectors from "../../selectors/todoSelectors";
+import alertHandler from "../../helpers/alertHelper";
+
 export const defaultFormData = {
 	defaultCategoryText: 'University',
 	defaultPriorityText: 'Medium'
@@ -98,7 +100,6 @@ const Form = ({
 				  priorityDropdown,
 				  categoryDropdown,
 				  // actions
-	              alertHandler,
 	              resetPriority,
 	              resetCategory,
 	              renderCategoryDropdown,

@@ -1,5 +1,6 @@
 import {useRef, useState} from "react";
 import './CategoryDropdown.css'
+import CustomDropdownContainer from "../../UIKITS/CustomDropdownContainer";
 import CustomButton from "../../UIKITS/CustomButton";
 import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
@@ -40,7 +41,7 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 
 	const handleClickOutside = (e) => {
 		document.removeEventListener("mousedown", handleClickOutside);
-		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target)  && dropdownItemsRef.current.classList.contains('show')) {
+		if (dropdownItemsRef.current && !dropdownBtn.current.contains(e.target) && !dropdownItemsRef.current.contains(e.target) && categoryDropdownShow) {
 			setCategoryDropdownShow(false)
 			setCategoryDropdownInput('')
 		}
@@ -48,12 +49,12 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 	document.addEventListener("mousedown", handleClickOutside);
 
 	return (
-		<div className="dropdown">
+		<CustomDropdownContainer>
 			<label>To do for: </label>
 			<CustomButton dropBtn={true} ref={dropdownBtn} onClick={(e) => showDropDown(categoryDropdown.currentChoice)} className="dropbtn"
 			        type="button">{categoryDropdown.currentChoice} <span>▼</span></CustomButton>
-			<CustomDropdown ref={dropdownItemsRef} show={categoryDropdownShow} className={categoryDropdownShow ? 'show' : ''}>
-				<div className={"dropdown-items"}>
+			<CustomDropdown ref={dropdownItemsRef} show={categoryDropdownShow}>
+				<div>
 					{categoryDropdown.options?.map(item => {
 						return (
 							<p onClick={chooseCategoryDropdown} key={item}>{item}</p>
@@ -66,7 +67,7 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 					<button type="button" autoFocus onClick={handleAddType}>Add</button>
 				</div>
 			</CustomDropdown>
-		</div>
+		</CustomDropdownContainer>
 	)
 }
 
