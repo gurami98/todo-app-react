@@ -1,6 +1,7 @@
 import {createSelector} from "reselect";
 const defaultCategory = 'All Categories'
 
+export const getCurrentUsername = state => state.currentUser.username
 export const getActivePage = state => state.paginationInfo.activePage
 
 export const getItemsToShowCount = state => state.filterData.itemsToShowCount

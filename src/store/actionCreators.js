@@ -1,5 +1,14 @@
 import * as actions from "./actionTypes";
 
+export const renderUser = (username) => {
+	return {
+		type: actions.RENDER_USER,
+		payload: {
+			username
+		}
+	}
+}
+
 export const renderTodos = (todoArr) => {
 	return {
 		type: actions.RENDER_TODOS,

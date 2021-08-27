@@ -99,6 +99,7 @@ const Form = ({
 				  // states
 				  priorityDropdown,
 				  categoryDropdown,
+				  currentUsername,
 				  // actions
 	              resetPriority,
 	              resetCategory,
@@ -164,7 +165,7 @@ const Form = ({
 
 			let listData = {
 				text, taskCategory: categoryDropdown.currentChoice, dueDate, timeAdded: dateAdded,
-				priority: priorityDropdown.optionNumbers[priorityIndex], done: false
+				priority: priorityDropdown.optionNumbers[priorityIndex], done: false, user: currentUsername
 			}
 			try {
 				const resp = await addTodoItem(listData)
@@ -216,7 +217,8 @@ const mapStateToProps = (state) => {
 		priorityDropdown: todoSelectors.getPriorityDropdown(state),
 		categoryDropdown: todoSelectors.getCategoryDropdown(state),
 		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
-		pageCount: todoSelectors.getPageCount(state)
+		pageCount: todoSelectors.getPageCount(state),
+		currentUsername: todoSelectors.getCurrentUsername(state)
 	}
 }
 

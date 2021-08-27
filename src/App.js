@@ -11,7 +11,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux'
 import {
 	changePagination,
-	renderTodos,
+	renderTodos, renderUser,
 	setActivePage,
 	toggleLoading
 } from "./store/actionCreators";
@@ -20,6 +20,7 @@ import alertHandler from "./helpers/alertHelper";
 
 const App = ({
 	             //state
+				 currentUsername,
 				 itemsToShowCount,
 				 alertInfo,
 				 activeCategory,
@@ -30,11 +31,16 @@ const App = ({
 	             renderTodos,
 	             setActivePage,
 	             toggleLoading,
-				 pageCount
+				 pageCount,
+				 renderUser
              }) => {
 
 	const myStorage = window.localStorage.getItem('categoryDropdownData')
 	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
+
+	useEffect(() => {
+		renderUser(currentUsername)
+	}, [currentUsername])
 
 	useEffect(() => {
 		getList()
@@ -42,7 +48,7 @@ const App = ({
 			endPage: pageCount < 7 ? pageCount : 5,
 			startPage: 1
 		})
-	}, [])
+	}, [currentUsername])
 
 	useState(() => {
 		setActivePage(1)
@@ -59,12 +65,13 @@ const App = ({
 
 	const getList = async () => {
 		try {
-			const response = await getAllTodoItems()
-			const data = await response.json()
+			const response = await getAllTodoItems(currentUsername)
+			const data = await response.data
 			toggleLoading(false)
 			renderTodos(data)
 			setActivePage(1)
 		} catch (e) {
+			console.log(e)
 			alertHandler(e.response.data.message, 'error')
 		}
 	}
@@ -103,7 +110,8 @@ const mapDispatchToProps = {
 	changePagination,
 	renderTodos,
 	setActivePage,
-	toggleLoading
+	toggleLoading,
+	renderUser
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

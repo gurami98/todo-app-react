@@ -28,7 +28,7 @@ const Home = () => {
         <>
             <CustomHeading>Welcome, {currentUsername}</CustomHeading>
             <CustomLogoutBtn onClick={logOut}>Logout</CustomLogoutBtn>
-            <App/>
+            <App currentUsername={currentUsername}/>
         </>
     )
 }
