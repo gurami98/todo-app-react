@@ -21,8 +21,8 @@ const Error = () => {
     return (
         <CustomErrorContainer>
             <h1>404</h1>
-            <h1>Page Not Found</h1>
-            <h1>Redirecting in {seconds}</h1>
+            <h2>Page Not Found</h2>
+            <h2>Redirecting in {seconds}</h2>
         </CustomErrorContainer>
     )
 }

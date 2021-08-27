@@ -1,6 +1,5 @@
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
-import {closeAlert, showAlert} from "../store/actionCreators";
 // pages
 import Home from './Home'
 import Error from './Error'
@@ -10,13 +9,7 @@ import {connect} from "react-redux";
 import CustomAlert from "../components/CustomAlert"
 import * as todoSelectors from "../selectors/todoSelectors";
 
-const RouterSetup = ({showAlert, closeAlert, alertInfo}) => {
-    const alertHandler = (alertText, alertType) => {
-        showAlert(alertText, alertType)
-        setTimeout(() => {
-            closeAlert()
-        }, 3000)
-    }
+const RouterSetup = ({alertInfo}) => {
     return (
         <Router>
             <Switch>
@@ -24,10 +17,10 @@ const RouterSetup = ({showAlert, closeAlert, alertInfo}) => {
                     <Home/>
                 </Route>
                 <Route path='/login'>
-                    <Login alertHandler={alertHandler}/>
+                    <Login/>
                 </Route>
                 <Route path='/register'>
-                    <Register alertHandler={alertHandler}/>
+                    <Register/>
                 </Route>
                 <Route path='*'>
                     <Error/>
@@ -44,9 +37,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = {
-    showAlert,
-    closeAlert
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RouterSetup)
+export default connect(mapStateToProps)(RouterSetup)

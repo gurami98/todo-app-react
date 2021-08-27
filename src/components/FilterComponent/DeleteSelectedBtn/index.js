@@ -9,9 +9,9 @@ import {
     markAllDone
 } from "../../../store/actionCreators";
 import * as todoSelectors from "../../../selectors/todoSelectors";
+import alertHandler from "../../../helpers/alertHelper";
 
 const DeleteSelectedBtn = ({
-                               alertHandler,
                                 // redux state
                                isAllChecked,
                                isAnyChecked,

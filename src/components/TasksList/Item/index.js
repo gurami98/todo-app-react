@@ -7,6 +7,7 @@ import {deleteTodoItem, updateTodoItem} from "../../../API/todoAPI";
 import {connect} from "react-redux";
 import {changePagination, deleteTodo, markDone, setActivePage} from '../../../store/actionCreators'
 import * as todoSelectors from "../../../selectors/todoSelectors"
+import alertHandler from "../../../helpers/alertHelper";
 import CustomCheckbox from "../../UIKITS/CustomCheckbox";
 
 const ListItem = styled.li`
@@ -93,7 +94,7 @@ const EditText = styled.textarea`
 `
 
 const defaultHeight = 31;
-const Item = ({ item, index, alertHandler, markDone, activePage, pageCount, deleteTodo, setActivePage, changePagination }) => {
+const Item = ({ item, index, markDone, activePage, pageCount, deleteTodo, setActivePage, changePagination }) => {
 	const [editText, setEditText] = useState(item.text)
 	const [beingEdited, setBeingEdited] = useState(false)
 	const [detailsShow, setDetailsShow] = useState(false)

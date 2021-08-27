@@ -6,7 +6,9 @@ import CustomInput from "../../components/UIKITS/CustomInput";
 import CustomFormContainer from "../../components/UIKITS/CustomFormContainer";
 import CustomForm from "../../components/UIKITS/CustomForm";
 import CustomFormSubmitButton from "../../components/UIKITS/CustomFormSubmitButton";
-const Register = ({alertHandler}) => {
+import alertHandler from "../../helpers/alertHelper";
+
+const Register = () => {
     const jwt = Cookies.get('jwt')
     const [user, setUser] = useState({
         username: '',

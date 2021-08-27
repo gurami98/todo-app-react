@@ -16,7 +16,7 @@ const UnorderedList = styled.ul`
   }
 `
 
-const TasksList = ({alertHandler, itemsToShow}) => {
+const TasksList = ({itemsToShow}) => {
 
 	if(itemsToShow.length) {
 		return (
@@ -24,8 +24,7 @@ const TasksList = ({alertHandler, itemsToShow}) => {
 				{
 					itemsToShow.map(item => {
 						return (
-							<Item alertHandler={alertHandler}
-							      item={item} index={item._id} key={item._id}/>
+							<Item item={item} index={item._id} key={item._id}/>
 						)
 					})
 				}

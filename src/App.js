@@ -11,13 +11,12 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux'
 import {
 	changePagination,
-	closeAlert,
 	renderTodos,
 	setActivePage,
-	showAlert,
 	toggleLoading
 } from "./store/actionCreators";
 import * as todoSelectors from './selectors/todoSelectors'
+import alertHandler from "./helpers/alertHelper";
 
 const App = ({
 	             //state
@@ -28,10 +27,8 @@ const App = ({
 				 pagesToShow,
 	             // actions
 	             changePagination,
-	             closeAlert,
 	             renderTodos,
 	             setActivePage,
-	             showAlert,
 	             toggleLoading,
 				 pageCount
              }) => {
@@ -60,13 +57,6 @@ const App = ({
 		setActivePage(pageCount)
 	}, [itemsToShowCount])
 
-	const alertHandler = (alertText, alertType) => {
-		showAlert(alertText, alertType)
-		setTimeout(() => {
-			closeAlert()
-		}, 3000)
-	}
-
 	const getList = async () => {
 		try {
 			const response = await getAllTodoItems()
@@ -81,13 +71,13 @@ const App = ({
 
 	return (
 		<div className="App">
-			<FilterComponent alertHandler={alertHandler}/>
+			<FilterComponent/>
 
-			<Form alertHandler={alertHandler}/>
+			<Form/>
 
 			{
 				!loading ?
-					<TasksList alertHandler={alertHandler}/>
+					<TasksList/>
 					: <FontAwesomeIcon className={'loading-icon'} icon={faSpinner}/>
 			}
 
@@ -111,10 +101,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
 	changePagination,
-	closeAlert,
 	renderTodos,
 	setActivePage,
-	showAlert,
 	toggleLoading
 }
 
