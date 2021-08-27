@@ -1,7 +1,7 @@
 import axios from "axios";
 const API = 'http://localhost:3001'
 
-export const getAllTodoItems = (currentUsername) => axios.get(`${API}/todo/get-all/${currentUsername}`)
+export const getAllTodoItems = (token) => axios.get(`${API}/todo/get-all/${token}`)
 
 export const addTodoItem = (item) => axios.post(`${API}/todo/add`, item)
 

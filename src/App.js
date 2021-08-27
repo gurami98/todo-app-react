@@ -9,6 +9,7 @@ import FilterComponent from "./components/FilterComponent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux'
+import Cookies from 'js-cookie'
 import {
 	changePagination,
 	renderTodos, renderUser,
@@ -65,7 +66,8 @@ const App = ({
 
 	const getList = async () => {
 		try {
-			const response = await getAllTodoItems(currentUsername)
+			const token = Cookies.get('jwt')
+			const response = await getAllTodoItems(token)
 			const data = await response.data
 			toggleLoading(false)
 			renderTodos(data)
