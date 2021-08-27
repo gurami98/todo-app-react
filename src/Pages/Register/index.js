@@ -2,6 +2,10 @@ import React, {useState} from 'react'
 import {registerUser} from "../../API/userAPI"
 import {Link, Redirect} from "react-router-dom";
 import Cookies from "js-cookie";
+import CustomInput from "../../components/UIKITS/CustomInput";
+import CustomFormContainer from "../../components/UIKITS/CustomFormContainer";
+import CustomForm from "../../components/UIKITS/CustomForm";
+import CustomFormSubmitButton from "../../components/UIKITS/CustomFormSubmitButton";
 const Register = ({alertHandler}) => {
     const jwt = Cookies.get('jwt')
     const [user, setUser] = useState({
@@ -38,25 +42,18 @@ const Register = ({alertHandler}) => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleFormSubmit}>
+        <CustomFormContainer>
+            <CustomForm onSubmit={handleFormSubmit}>
                 <label htmlFor="username">Username: </label>
-                <br/>
-                <input type="text" id='username' name='username' value={user.username} onChange={handleFormInputChange}/>
-                <br/>
+                <CustomInput type="text" id='username' name='username' value={user.username} onChange={handleFormInputChange}/>
                 <label htmlFor="email">Email: </label>
-                <br/>
-                <input type="email" id='email' name='email' value={user.email} onChange={handleFormInputChange}/>
-                <br/>
+                <CustomInput type="email" id='email' name='email' value={user.email} onChange={handleFormInputChange}/>
                 <label htmlFor="password">Password: </label>
-                <br/>
-                <input type="password" id='password' name='password' value={user.password} onChange={handleFormInputChange}/>
-                <br/>
-                <button type='submit'>Register</button>
-                <br/>
+                <CustomInput type="password" id='password' name='password' value={user.password} onChange={handleFormInputChange}/>
+                <CustomFormSubmitButton type='submit'>Register</CustomFormSubmitButton>
                 <span>Already Registered ? <Link to='/login'>Login</Link> </span>
-            </form>
-        </div>
+            </CustomForm>
+        </CustomFormContainer>
     )
 }
 

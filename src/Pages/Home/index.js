@@ -3,6 +3,8 @@ import {useEffect, useState} from "react";
 import Cookies from 'js-cookie'
 import {Redirect, useHistory} from "react-router-dom";
 import {useLocation} from "react-router-dom";
+import CustomHeading from "./components/CustomHeading";
+import CustomLogoutBtn from "./components/CustomLogoutBtn";
 const Home = () => {
     const [currentUsername, setCurrentUsername] = useState('default name')
     const jwt = Cookies.get('jwt')
@@ -24,8 +26,8 @@ const Home = () => {
 
     return (
         <>
-            <h1>Welcome, {currentUsername}</h1>
-            <button onClick={logOut}>Logout</button>
+            <CustomHeading>Welcome, {currentUsername}</CustomHeading>
+            <CustomLogoutBtn onClick={logOut}>Logout</CustomLogoutBtn>
             <App/>
         </>
     )

@@ -2,6 +2,10 @@ import React, {useState} from 'react'
 import {Link, Redirect, useHistory} from 'react-router-dom'
 import {loginUser, welcomeUser} from "../../API/userAPI";
 import Cookies from 'js-cookie'
+import CustomFormContainer from "../../components/UIKITS/CustomFormContainer";
+import CustomForm from "../../components/UIKITS/CustomForm";
+import CustomInput from "../../components/UIKITS/CustomInput";
+import CustomFormSubmitButton from "../../components/UIKITS/CustomFormSubmitButton";
 
 const Login = ({alertHandler}) => {
     const history = useHistory()
@@ -49,21 +53,16 @@ const Login = ({alertHandler}) => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleFormSubmit}>
+        <CustomFormContainer>
+            <CustomForm onSubmit={handleFormSubmit}>
                 <label htmlFor="username">Username: </label>
-                <br/>
-                <input type="text" id='username' name='username' value={user.username} onChange={handleFormInputChange}/>
-                <br/>
+                <CustomInput type="text" id='username' name='username' value={user.username} onChange={handleFormInputChange}/>
                 <label htmlFor="password">Password: </label>
-                <br/>
-                <input type="password" id='password' name='password' value={user.password} onChange={handleFormInputChange}/>
-                <br/>
-                <button type='submit'>Login</button>
-                <br/>
+                <CustomInput type="password" id='password' name='password' value={user.password} onChange={handleFormInputChange}/>
+                <CustomFormSubmitButton type='submit'>Login</CustomFormSubmitButton>
                 <span>Not Registered Yet ? <Link to='/register'>Register</Link> </span>
-            </form>
-        </div>
+            </CustomForm>
+        </CustomFormContainer>
     )
 }
 
