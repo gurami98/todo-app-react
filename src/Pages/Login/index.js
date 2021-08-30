@@ -35,15 +35,16 @@ const Login = () => {
             })
             const usernameResponse = await welcomeUser({...user, token})
             const username = usernameResponse.data
+            history.push({
+                pathname: '/home',
+                state: user.username
+            })
             setUser({
                 username: '',
                 password: ''
             })
             alertHandler('Successfully Logged in', 'success')
-            history.push({
-                pathname: '/home',
-                state: username
-            })
+
         }catch(e){
             alertHandler(e.response.data.message, 'error')
         }
