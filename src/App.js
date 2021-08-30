@@ -12,16 +12,17 @@ import { connect } from 'react-redux'
 import Cookies from 'js-cookie'
 import {
 	changePagination,
-	renderTodos, renderUser,
+	renderTodos,
 	setActivePage,
 	toggleLoading
 } from "./store/actionCreators";
 import * as todoSelectors from './selectors/todoSelectors'
 import alertHandler from "./helpers/alertHelper";
+import * as userSelectors from "./selectors/userSelectors";
 
 const App = ({
 	             //state
-				 currentUsername,
+				 userName,
 				 itemsToShowCount,
 				 alertInfo,
 				 activeCategory,
@@ -32,16 +33,11 @@ const App = ({
 	             renderTodos,
 	             setActivePage,
 	             toggleLoading,
-				 pageCount,
-				 renderUser
+				 pageCount
              }) => {
 
 	const myStorage = window.localStorage.getItem('categoryDropdownData')
 	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
-
-	useEffect(() => {
-		renderUser(currentUsername)
-	}, [currentUsername])
 
 	useEffect(() => {
 		getList()
@@ -49,7 +45,7 @@ const App = ({
 			endPage: pageCount < 7 ? pageCount : 5,
 			startPage: 1
 		})
-	}, [currentUsername])
+	}, [userName])
 
 	useState(() => {
 		setActivePage(1)
@@ -73,7 +69,6 @@ const App = ({
 			renderTodos(data)
 			setActivePage(1)
 		} catch (e) {
-			console.log(e)
 			alertHandler(e.response.data.message, 'error')
 		}
 	}
@@ -104,7 +99,8 @@ const mapStateToProps = (state) => {
 		activeCategory: todoSelectors.getActiveCategory(state),
 		loading: todoSelectors.getLoadingStatus(state),
 		pagesToShow: todoSelectors.getPagesToShow(state),
-		pageCount: todoSelectors.getPageCount(state)
+		pageCount: todoSelectors.getPageCount(state),
+		userName: userSelectors.getCurrentUsername(state)
 	}
 }
 
@@ -112,8 +108,7 @@ const mapDispatchToProps = {
 	changePagination,
 	renderTodos,
 	setActivePage,
-	toggleLoading,
-	renderUser
+	toggleLoading
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

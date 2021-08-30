@@ -1,8 +1,8 @@
 import * as actions from "./actionTypes";
 
-export const renderUser = (username) => {
+export const setUsername = (username) => {
 	return {
-		type: actions.RENDER_USER,
+		type: actions.SET_USERNAME,
 		payload: {
 			username
 		}

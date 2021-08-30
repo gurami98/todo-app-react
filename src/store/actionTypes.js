@@ -1,4 +1,4 @@
-export const RENDER_USER = 'RENDER_USER'
+export const SET_USERNAME = 'SET_USERNAME'
 
 export const RENDER_TODOS = 'RENDER_TODOS'
 export const ADD_TODO = 'ADD_TODO'

@@ -16,6 +16,7 @@ import {
 import { addTodoItem } from "../../API/todoAPI";
 import * as todoSelectors from "../../selectors/todoSelectors";
 import alertHandler from "../../helpers/alertHelper";
+import * as userSelectors from "../../selectors/userSelectors";
 
 export const defaultFormData = {
 	defaultCategoryText: 'University',
@@ -218,7 +219,7 @@ const mapStateToProps = (state) => {
 		categoryDropdown: todoSelectors.getCategoryDropdown(state),
 		filteredArrByCategory: todoSelectors.getFilteredArrayByCategory(state),
 		pageCount: todoSelectors.getPageCount(state),
-		currentUsername: todoSelectors.getCurrentUsername(state)
+		currentUsername: userSelectors.getCurrentUsername(state)
 	}
 }
 

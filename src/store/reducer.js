@@ -32,7 +32,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         // FOR USER
-        case actions.RENDER_USER:
+        case actions.SET_USERNAME:
             return {...state, currentUser: {...state.currentUser, username: action.payload.username}}
         // FOR LIST
         case actions.RENDER_TODOS:
