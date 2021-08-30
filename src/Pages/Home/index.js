@@ -15,7 +15,7 @@ const Home = ({username, setUsername}) => {
     const history = useHistory()
 
     useEffect(() => {
-        getUsername()
+        jwt && getUsername()
     }, [])
 
     const getUsername = async () => {
