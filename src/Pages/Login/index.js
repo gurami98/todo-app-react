@@ -42,7 +42,7 @@ const Login = ({setUsername}) => {
                 username: '',
                 password: ''
             })
-            history.push('/home')
+            history.push('/')
             alertHandler('Successfully Logged in', 'success')
         }catch(e){
             alertHandler(e.response.data.message, 'error')
@@ -50,7 +50,7 @@ const Login = ({setUsername}) => {
     }
 
     if(jwt) {
-        return <Redirect to='/home'/>
+        return <Redirect to='/'/>
     }
 
     return (
