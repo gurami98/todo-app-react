@@ -1,5 +1,5 @@
 export const SET_USERNAME = 'SET_USERNAME'
-
+export const RESET_STORE = 'RESET_STORE'
 export const RENDER_TODOS = 'RENDER_TODOS'
 export const ADD_TODO = 'ADD_TODO'
 export const MARK_DONE = 'MARK_DONE'

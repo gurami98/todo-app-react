@@ -9,7 +9,7 @@ import * as todoSelectors from "../../../selectors/todoSelectors";
 import {addCategoryItem} from "../../../API/categoryAPI";
 import * as userSelectors from "../../../selectors/userSelectors";
 
-const CategoryDropdown = ({categoryDropdown, myStorage, username, addCategory, chooseCategory}) => {
+const CategoryDropdown = ({categoryDropdown, username, addCategory, chooseCategory}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
 	const [categoryDropdownInput, setCategoryDropdownInput] = useState('')
@@ -36,7 +36,6 @@ const CategoryDropdown = ({categoryDropdown, myStorage, username, addCategory, c
 		e.preventDefault();
 		if (categoryDropdownInput.trim()) {
 			addCategory(categoryDropdownInput)
-			// myStorage.setItem('categoryDropdownData', JSON.stringify([...categoryDropdown.options, categoryDropdownInput]))
 			await addCategoryItem({category: categoryDropdownInput, user: username})
 			setCategoryDropdownInput('')
 		}

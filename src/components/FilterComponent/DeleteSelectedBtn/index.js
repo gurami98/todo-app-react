@@ -2,6 +2,7 @@ import './DeleteSelectedBtn.css'
 import CustomButton from "../../UIKITS/CustomButton";
 import {connect} from "react-redux";
 import CustomCheckbox from "../../UIKITS/CustomCheckbox";
+import Cookies from "js-cookie";
 import {deleteSelectedTodos, toggleAllTodosDone} from "../../../API/todoAPI";
 import {
     changePagination,
@@ -20,9 +21,11 @@ const DeleteSelectedBtn = ({
                                markAllDone
                            }) => {
 
+    const jwt = Cookies.get('jwt')
+
     const deleteSelectedHandler = async () => {
         try {
-            await deleteSelectedTodos()
+            await deleteSelectedTodos(jwt)
             alertHandler('Items Successfully Removed', 'success')
             deleteSelected()
         } catch (e) {
@@ -32,7 +35,7 @@ const DeleteSelectedBtn = ({
 
     const selectAllHandler = async () => {
         try {
-            await toggleAllTodosDone({done: !isAllChecked})
+            await toggleAllTodosDone(jwt, { done: !isAllChecked})
             markAllDone(!isAllChecked)
         } catch (e) {
             alertHandler(e.response.data.message, 'error')

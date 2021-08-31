@@ -21,7 +21,6 @@ import * as userSelectors from "../../selectors/userSelectors";
 import {getAllCategories} from "../../API/categoryAPI";
 
 export const defaultFormData = {
-	defaultCategoryText: 'University',
 	defaultPriorityText: 'Medium'
 }
 const StyledForm = styled.form`
@@ -121,8 +120,6 @@ const Form = ({
 	const [text, setText] = useState('')
 	const [wrapperVisible, setWrapperVisible] = useState(false)
 
-	// const myStorage = window.localStorage
-
 	const jwt = Cookies.get('jwt')
 
 	useEffect(() => {
@@ -191,7 +188,7 @@ const Form = ({
 				alertHandler(e.response.data.message, 'error')
 			}
 
-			resetCategory(defaultFormData.defaultCategoryText)
+			resetCategory(categoryDropdown.options[0])
 			resetPriority(defaultFormData.defaultPriorityText)
 			setDueDate(currentDate)
 			setText('')
@@ -211,9 +208,7 @@ const Form = ({
 			</div>
 			<Wrapper visible={wrapperVisible}>
 				<div className="row1">
-					<CategoryDropdown
-						// myStorage={myStorage}
-					/>
+					<CategoryDropdown/>
 				</div>
 
 				<div className="row2">

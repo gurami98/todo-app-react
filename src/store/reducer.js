@@ -34,6 +34,9 @@ const reducer = (state = initialState, action) => {
         // FOR USER
         case actions.SET_USERNAME:
             return {...state, currentUser: {...state.currentUser, username: action.payload.username}}
+        // RESET STORE
+        case actions.RESET_STORE:
+            return initialState
         // FOR LIST
         case actions.RENDER_TODOS:
             return {...state, todos: [...action.payload.todoArr]}

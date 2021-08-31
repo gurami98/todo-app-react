@@ -5,13 +5,17 @@ export const getAllTodoItems = (token) => axios.get(`${API}/todo/get-all`, {
     headers: {
         'x-access-token': token
     }
-}) // with headers
+})
 
 export const addTodoItem = (item) => axios.post(`${API}/todo/add`, item)
 
-export const toggleAllTodosDone = (status) => axios.put(`${API}/todo/update-item/all`, status)
+export const toggleAllTodosDone = (token, status) => axios.put(`${API}/todo/update-item/all`, {token, status})
 
-export const deleteSelectedTodos = () => axios.delete(`${API}/todo/delete-item/selected`)
+export const deleteSelectedTodos = (token) => axios.delete(`${API}/todo/delete-item/selected`, {
+    headers: {
+        'x-access-token': token
+    }
+})
 
 export const deleteTodoItem = (index) => axios.delete(`${API}/todo/delete-item/${index}`)
 

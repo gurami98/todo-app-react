@@ -9,6 +9,12 @@ export const setUsername = (username) => {
 	}
 }
 
+export const resetStore = () => {
+	return{
+		type: actions.RESET_STORE
+	}
+}
+
 export const renderTodos = (todoArr) => {
 	return {
 		type: actions.RENDER_TODOS,
