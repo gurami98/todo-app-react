@@ -4,6 +4,9 @@ import {defaultFormData} from '../components/Form/index'
 
 const defaultFilterText = 'Sort By'
 const initialState = {
+    currentUser: {
+        username: 'default username'
+    },
     todos: [],
     filterData: {
         sort: {
@@ -28,6 +31,9 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        // FOR USER
+        case actions.SET_USERNAME:
+            return {...state, currentUser: {...state.currentUser, username: action.payload.username}}
         // FOR LIST
         case actions.RENDER_TODOS:
             return {...state, todos: [...action.payload.todoArr]}

@@ -9,6 +9,7 @@ import FilterComponent from "./components/FilterComponent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux'
+import Cookies from 'js-cookie'
 import {
 	changePagination,
 	renderTodos,
@@ -17,9 +18,11 @@ import {
 } from "./store/actionCreators";
 import * as todoSelectors from './selectors/todoSelectors'
 import alertHandler from "./helpers/alertHelper";
+import * as userSelectors from "./selectors/userSelectors";
 
 const App = ({
 	             //state
+				 userName,
 				 itemsToShowCount,
 				 alertInfo,
 				 activeCategory,
@@ -42,7 +45,7 @@ const App = ({
 			endPage: pageCount < 7 ? pageCount : 5,
 			startPage: 1
 		})
-	}, [])
+	}, [userName])
 
 	useState(() => {
 		setActivePage(1)
@@ -59,8 +62,9 @@ const App = ({
 
 	const getList = async () => {
 		try {
-			const response = await getAllTodoItems()
-			const data = await response.json()
+			const token = Cookies.get('jwt')
+			const response = await getAllTodoItems(token)
+			const data = await response.data
 			toggleLoading(false)
 			renderTodos(data)
 			setActivePage(1)
@@ -95,7 +99,8 @@ const mapStateToProps = (state) => {
 		activeCategory: todoSelectors.getActiveCategory(state),
 		loading: todoSelectors.getLoadingStatus(state),
 		pagesToShow: todoSelectors.getPagesToShow(state),
-		pageCount: todoSelectors.getPageCount(state)
+		pageCount: todoSelectors.getPageCount(state),
+		userName: userSelectors.getCurrentUsername(state)
 	}
 }
 

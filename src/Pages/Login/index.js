@@ -7,8 +7,10 @@ import CustomForm from "../../components/UIKITS/CustomForm";
 import CustomInput from "../../components/UIKITS/CustomInput";
 import CustomFormSubmitButton from "../../components/UIKITS/CustomFormSubmitButton";
 import alertHandler from "../../helpers/alertHelper";
+import {setUsername} from "../../store/actionCreators";
+import {connect} from "react-redux";
 
-const Login = () => {
+const Login = ({setUsername}) => {
     const history = useHistory()
     const jwt = Cookies.get('jwt')
     const [user, setUser] = useState({
@@ -34,23 +36,21 @@ const Login = () => {
                 expires: in15Minutes
             })
             const usernameResponse = await welcomeUser({...user, token})
-            const username = usernameResponse.data
+            const userName = usernameResponse.data
+            setUsername(userName)
             setUser({
                 username: '',
                 password: ''
             })
+            history.push('/')
             alertHandler('Successfully Logged in', 'success')
-            history.push({
-                pathname: '/home',
-                state: username
-            })
         }catch(e){
             alertHandler(e.response.data.message, 'error')
         }
     }
 
     if(jwt) {
-        return <Redirect to='/home'/>
+        return <Redirect to='/'/>
     }
 
     return (
@@ -67,4 +67,8 @@ const Login = () => {
     )
 }
 
-export default Login;
+const mapDispatchToProps = {
+    setUsername
+}
+
+export default connect(null, mapDispatchToProps)(Login);

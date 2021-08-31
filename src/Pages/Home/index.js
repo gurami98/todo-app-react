@@ -1,19 +1,32 @@
 import App from "../../App"
-import {useEffect, useState} from "react";
 import Cookies from 'js-cookie'
 import {Redirect, useHistory} from "react-router-dom";
-import {useLocation} from "react-router-dom";
 import CustomHeading from "./components/CustomHeading";
 import CustomLogoutBtn from "./components/CustomLogoutBtn";
-const Home = () => {
-    const [currentUsername, setCurrentUsername] = useState('default name')
+import * as userSelectors from "../../selectors/userSelectors";
+import {connect} from "react-redux";
+import {useEffect} from "react";
+import {setUsername} from "../../store/actionCreators";
+import {welcomeUser} from "../../API/userAPI";
+import alertHandler from "../../helpers/alertHelper";
+
+const Home = ({username, setUsername}) => {
     const jwt = Cookies.get('jwt')
     const history = useHistory()
-    const location = useLocation()
+
     useEffect(() => {
-        const state = location.state || undefined
-        state && setCurrentUsername(state)
-    }, [location])
+        jwt && getUsername()
+    }, [])
+
+    const getUsername = async () => {
+        try {
+            const usernameResponse = await welcomeUser({token: jwt})
+            const userName = usernameResponse.data
+            setUsername(userName)
+        }catch(e){
+            alertHandler(e.response.data.message, 'error')
+        }
+    }
 
     const logOut = () => {
         Cookies.remove('jwt')
@@ -26,11 +39,21 @@ const Home = () => {
 
     return (
         <>
-            <CustomHeading>Welcome, {currentUsername}</CustomHeading>
+            <CustomHeading>Welcome, {username}</CustomHeading>
             <CustomLogoutBtn onClick={logOut}>Logout</CustomLogoutBtn>
             <App/>
         </>
     )
 }
 
-export default Home
+const mapStateToProps = (state) => {
+    return {
+        username: userSelectors.getCurrentUsername(state)
+    }
+}
+
+const mapDispatchToProps = {
+    setUsername
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
