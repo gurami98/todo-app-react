@@ -36,9 +36,6 @@ const App = ({
 				 pageCount
              }) => {
 
-	const myStorage = window.localStorage.getItem('categoryDropdownData')
-	if (!myStorage) window.localStorage.setItem('categoryDropdownData', JSON.stringify(['University', 'Home', 'Work']))
-
 	useEffect(() => {
 		getList()
 		changePagination({

@@ -5,6 +5,7 @@ import PriorityDropdown from "./PriorityDropdown";
 import CustomButton from "../UIKITS/CustomButton";
 import './Form.css'
 import { connect } from 'react-redux'
+import Cookies from 'js-cookie'
 import {
 	resetPriority,
 	resetCategory,
@@ -17,9 +18,9 @@ import { addTodoItem } from "../../API/todoAPI";
 import * as todoSelectors from "../../selectors/todoSelectors";
 import alertHandler from "../../helpers/alertHelper";
 import * as userSelectors from "../../selectors/userSelectors";
+import {getAllCategories} from "../../API/categoryAPI";
 
 export const defaultFormData = {
-	defaultCategoryText: 'University',
 	defaultPriorityText: 'Medium'
 }
 const StyledForm = styled.form`
@@ -119,14 +120,25 @@ const Form = ({
 	const [text, setText] = useState('')
 	const [wrapperVisible, setWrapperVisible] = useState(false)
 
-	const myStorage = window.localStorage
+	const jwt = Cookies.get('jwt')
 
 	useEffect(() => {
-		renderCategoryDropdown({
-			options: [...JSON.parse(window.localStorage.getItem('categoryDropdownData'))],
-			currentChoice: defaultFormData.defaultCategoryText,
-			activeCategory: 'All Categories'
-		})
+		const fetchCategories = async () => {
+			const categoryResponse = await getAllCategories(jwt)
+			const categories = categoryResponse.data[0]?.categories || undefined
+			categories ? renderCategoryDropdown({
+				options: categories,
+				currentChoice: categories[0],
+				activeCategory: 'All Categories'
+			}) :
+			renderCategoryDropdown({
+				options: [],
+				currentChoice: 'No Categories',
+				activeCategory: 'All Categories'
+			})
+
+		}
+		fetchCategories()
 	}, [])
 
 	useEffect(() => {
@@ -176,7 +188,7 @@ const Form = ({
 				alertHandler(e.response.data.message, 'error')
 			}
 
-			resetCategory(defaultFormData.defaultCategoryText)
+			resetCategory(categoryDropdown.options[0])
 			resetPriority(defaultFormData.defaultPriorityText)
 			setDueDate(currentDate)
 			setText('')
@@ -196,7 +208,7 @@ const Form = ({
 			</div>
 			<Wrapper visible={wrapperVisible}>
 				<div className="row1">
-					<CategoryDropdown myStorage={myStorage}/>
+					<CategoryDropdown/>
 				</div>
 
 				<div className="row2">

@@ -6,8 +6,10 @@ import CustomDropdown from "../../UIKITS/CustomDropdown";
 import { connect } from 'react-redux'
 import {chooseCategory, addCategory} from "../../../store/actionCreators";
 import * as todoSelectors from "../../../selectors/todoSelectors";
+import {addCategoryItem} from "../../../API/categoryAPI";
+import * as userSelectors from "../../../selectors/userSelectors";
 
-const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCategory}) => {
+const CategoryDropdown = ({categoryDropdown, username, addCategory, chooseCategory}) => {
 	const dropdownItemsRef = useRef(null)
 	const dropdownBtn = useRef(null)
 	const [categoryDropdownInput, setCategoryDropdownInput] = useState('')
@@ -30,12 +32,12 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 
 	const handleDropInputKeyPress = (e) => e.key === 'Enter' && handleAddType(e)
 
-	const handleAddType = (e) => {
+	const handleAddType = async (e) => {
 		e.preventDefault();
 		if (categoryDropdownInput.trim()) {
-			setCategoryDropdownInput('')
 			addCategory(categoryDropdownInput)
-			myStorage.setItem('categoryDropdownData', JSON.stringify([...categoryDropdown.options, categoryDropdownInput]))
+			await addCategoryItem({category: categoryDropdownInput, user: username})
+			setCategoryDropdownInput('')
 		}
 	}
 
@@ -73,7 +75,8 @@ const CategoryDropdown = ({categoryDropdown, myStorage, addCategory, chooseCateg
 
 const mapStateToProps = (state) => {
 	return {
-		categoryDropdown: todoSelectors.getCategoryDropdown(state)
+		categoryDropdown: todoSelectors.getCategoryDropdown(state),
+		username: userSelectors.getCurrentUsername(state)
 	}
 }
 

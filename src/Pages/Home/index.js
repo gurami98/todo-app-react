@@ -6,11 +6,11 @@ import CustomLogoutBtn from "./components/CustomLogoutBtn";
 import * as userSelectors from "../../selectors/userSelectors";
 import {connect} from "react-redux";
 import {useEffect} from "react";
-import {setUsername} from "../../store/actionCreators";
+import {resetStore, setUsername} from "../../store/actionCreators";
 import {welcomeUser} from "../../API/userAPI";
 import alertHandler from "../../helpers/alertHelper";
 
-const Home = ({username, setUsername}) => {
+const Home = ({username, setUsername, resetStore}) => {
     const jwt = Cookies.get('jwt')
     const history = useHistory()
 
@@ -30,6 +30,7 @@ const Home = ({username, setUsername}) => {
 
     const logOut = () => {
         Cookies.remove('jwt')
+        resetStore()
         history.push('/login')
     }
 
@@ -53,7 +54,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    setUsername
+    setUsername,
+    resetStore
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
