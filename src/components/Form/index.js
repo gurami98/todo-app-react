@@ -133,7 +133,7 @@ const Form = ({
 			}) :
 			renderCategoryDropdown({
 				options: [],
-				currentChoice: 'No Categories',
+				currentChoice: 'Add Categories',
 				activeCategory: 'All Categories'
 			})
 
@@ -172,7 +172,7 @@ const Form = ({
 
 	const handleSubmit = async (e, text) => {
 		e.preventDefault()
-		if (text.trim() && dueDate.trim()) {
+		if (text.trim() && dueDate.trim() && (categoryDropdown.currentChoice && categoryDropdown.currentChoice !== 'Add Categories')) {
 			let dateAdded = new Date()
 			let priorityIndex = priorityDropdown.options.indexOf(priorityDropdown.currentChoice)
 
