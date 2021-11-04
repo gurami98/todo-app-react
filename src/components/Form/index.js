@@ -52,10 +52,10 @@ const Input = styled.input`
   outline: none;
   border: 0;
   box-sizing: border-box;
-  background-color: transparent;
+  //background-color: transparent;
 
   &::placeholder {
-    color: white;
+    color: #2794BD;
     font-size: 16px;
   }
 
