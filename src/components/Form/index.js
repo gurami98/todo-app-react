@@ -199,7 +199,7 @@ const Form = ({
 		<StyledForm ref={formRef} autoComplete="off">
 			<div className="input-container">
 				<label onClick={handleToggle}>+</label>
-				<Input onFocus={() => setWrapperVisible(true)} id='add-item' placeholder='Add a task' autoFocus type="text"
+				<Input onFocus={() => setWrapperVisible(true)} id='add-item' placeholder='Task Name' autoFocus type="text"
 				       value={text} onChange={e => setText(e.target.value)} onKeyDown={handleFormInputKeyPress}/>
 
 				<CustomButton type='button' onClick={(e) => handleSubmit(e, text)}>
